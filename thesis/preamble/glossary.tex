@@ -1,0 +1,27 @@
+% Acronyms.
+\newacronym{iid}{i.i.d.}{independently and identically distributed}
+%\newacronym[\glslongpluralkey={Markov Decision Processes}]{MDP}{MDP}{Markov Decision Process}
+%\newacronym[\glsshortpluralkey={KL}]{KL}{KL}{Kullback-Leibler divergence}
+
+% Operators.
+\newglossary[opg]{operator}{opi}{opo}{List of Operators}
+\newglossaryentry{ln}{
+  sort        = { natural logarithm },
+  name        = { \ensuremath{\mathrm{ln}} },
+  symbol      = { \ensuremath{\mathrm{ln}\left(\; \bullet \;\right)} },
+  description = { the natural logarithm },
+  type        = operator
+}
+
+% Symbols.
+\newglossary[syg]{symbol}{sys}{syo}{List of Symbols}
+\newglossaryentry{theta}{
+  sort        = {parameters theta},
+  name        = {\ensuremath{\cvec{\theta}}},
+  description = {vector of parameters from a probability distribution},
+  type        = symbol
+}
+
+
+% Create the gloassaries.
+\makeglossaries

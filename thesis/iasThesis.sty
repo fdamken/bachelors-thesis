@@ -1,0 +1,60 @@
+\makeatletter
+
+% Make LOF a section.
+\renewcommand\listoffigures{
+	\section*{\listfigurename}
+	\@mkboth{\MakeUppercase\listfigurename}{\MakeUppercase\listfigurename}
+	\@starttoc{lof}
+}
+% Make LOT a section.
+\renewcommand\listoftables{
+	\section*{\listtablename}
+	\@mkboth{\MakeUppercase\listtablename}{\MakeUppercase\listtablename}
+	\@starttoc{lot}
+}
+
+\makeatother
+
+
+
+% Style definitions.
+
+% Matrix/Vector notation.
+\newcommand{\cvec}[1]{\boldsymbol{\mathrm{#1}}}
+\newcommand{\cmat}[1]{\boldsymbol{\mathrm{#1}}}
+
+
+\renewcommand{\arraystretch}{1.5}
+\parindent0pt
+
+% Do not include subsections and lower in TOC.
+\setcounter{tocdepth}{1}
+
+% BibTeX.
+\renewcommand{\bibname}{References}
+\bibliographystyle{ieeetr}
+
+% TikZ-related stuff.
+
+
+
+% Glossary styles.
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newglossarystyle{iasThesisGeneral}{
+	\glossarystyle{super3colheader}%
+	\renewenvironment{theglossary}%
+		{\begin{longtable}{L{0.15\textwidth}L{0.8\textwidth}R{0\textwidth}}}%
+		{\end{longtable}}%
+	\renewcommand*{\glossaryheader}{\bf{\entryname} & \bf{\descriptionname} & \\}
+	\renewcommand*{\glossaryentryfield}[5]{\glsentryitem{##1}\glstarget{##1}{##2} & ##3 \\}
+}
+\newglossarystyle{iasThesisOperators}{
+	\glossarystyle{super3colheader}
+	\renewenvironment{theglossary}
+		{\begin{longtable}{L{0.15\textwidth}L{0.55\textwidth}L{0.25\textwidth}}}%
+		{\end{longtable}}%
+	\renewcommand*{\glossaryheader}{\bf{\entryname} & \bf{\descriptionname} & \bf{Operator} \\}
+	\renewcommand*{\glossaryentryfield}[5]{\glsentryitem{##1}\glstarget{##1}{##2} & ##3 & ##4 \\}
+}

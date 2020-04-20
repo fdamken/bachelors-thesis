@@ -1,0 +1,129 @@
+
+@article{doerschTutorialVariationalAutoencoders2016,
+  title = {Tutorial on {{Variational Autoencoders}}},
+  author = {Doersch, Carl},
+  year = {2016},
+  month = aug,
+  abstract = {In just three years, Variational Autoencoders (VAEs) have emerged as one of the most popular approaches to unsupervised learning of complicated distributions. VAEs are appealing because they are built on top of standard function approximators (neural networks), and can be trained with stochastic gradient descent. VAEs have already shown promise in generating many kinds of complicated data, including handwritten digits, faces, house numbers, CIFAR images, physical models of scenes, segmentation, and predicting the future from static images. This tutorial introduces the intuitions behind VAEs, explains the mathematics behind them, and describes some empirical behavior. No prior knowledge of variational Bayesian methods is assumed.},
+  archivePrefix = {arXiv},
+  eprint = {1606.05908},
+  eprinttype = {arxiv},
+  file = {/home/fdamken/Zotero/storage/F4N3MJ8B/Doersch - 2016 - Tutorial on Variational Autoencoders.pdf;/home/fdamken/Zotero/storage/WBAC9J3J/1606.html},
+  journal = {arXiv:1606.05908 [cs, stat]},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
+@techreport{ghahramaniParameterEstimationLinear1996,
+  title = {Parameter Estimation for Linear Dynamical Systems},
+  author = {Ghahramani, Zoubin and Hinton, Geoffrey E.},
+  year = {Februrary 22, 1996},
+  institution = {{University of Toronto}},
+  abstract = {Linear systems have been used extensively in engineering to model and control the behavior of dynamical systems. In this note, we present the Expectation Maximization (EM) algorithm for estimating the parameters of linear systems (Shumway and Stoffer, 1982). We also point out the relationship between linear dynamical systems, factor analysis, and hidden Markov models.},
+  file = {/home/fdamken/Zotero/storage/RHES3QAG/Ghahramani and Hinton - 1996 - Parameter estimation for linear dynamical systems.pdf},
+  number = {CRG-TR-96-2}
+}
+
+@article{karlDeepVariationalBayes2017,
+  title = {Deep {{Variational Bayes Filters}}: {{Unsupervised Learning}} of {{State Space Models}} from {{Raw Data}}},
+  shorttitle = {Deep {{Variational Bayes Filters}}},
+  author = {Karl, Maximilian and Soelch, Maximilian and Bayer, Justin and {van der Smagt}, Patrick},
+  year = {2017},
+  month = mar,
+  abstract = {We introduce Deep Variational Bayes Filters (DVBF), a new method for unsupervised learning and identification of latent Markovian state space models. Leveraging recent advances in Stochastic Gradient Variational Bayes, DVBF can overcome intractable inference distributions via variational inference. Thus, it can handle highly nonlinear input data with temporal and spatial dependencies such as image sequences without domain knowledge. Our experiments show that enabling backpropagation through transitions enforces state space assumptions and significantly improves information content of the latent embedding. This also enables realistic long-term prediction.},
+  archivePrefix = {arXiv},
+  eprint = {1605.06432},
+  eprinttype = {arxiv},
+  file = {/home/fdamken/Zotero/storage/EVWLJ4FN/Karl et al. - 2017 - Deep Variational Bayes Filters Unsupervised Learn.pdf;/home/fdamken/Zotero/storage/AWT822ZV/dvbfintro.html;/home/fdamken/Zotero/storage/HWEUGJNN/1605.html},
+  journal = {arXiv:1605.06432 [cs, stat]},
+  keywords = {Computer Science - Machine Learning,Electrical Engineering and Systems Science - Systems and Control,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
+@article{kingmaAutoEncodingVariationalBayes2014,
+  title = {Auto-{{Encoding Variational Bayes}}},
+  author = {Kingma, Diederik P. and Welling, Max},
+  year = {2014},
+  month = may,
+  abstract = {How can we perform efficient inference and learning in directed probabilistic models, in the presence of continuous latent variables with intractable posterior distributions, and large datasets? We introduce a stochastic variational inference and learning algorithm that scales to large datasets and, under some mild differentiability conditions, even works in the intractable case. Our contributions is two-fold. First, we show that a reparameterization of the variational lower bound yields a lower bound estimator that can be straightforwardly optimized using standard stochastic gradient methods. Second, we show that for i.i.d. datasets with continuous latent variables per datapoint, posterior inference can be made especially efficient by fitting an approximate inference model (also called a recognition model) to the intractable posterior using the proposed lower bound estimator. Theoretical advantages are reflected in experimental results.},
+  archivePrefix = {arXiv},
+  eprint = {1312.6114},
+  eprinttype = {arxiv},
+  file = {/home/fdamken/Zotero/storage/XNWXKDKZ/Kingma and Welling - 2014 - Auto-Encoding Variational Bayes.pdf;/home/fdamken/Zotero/storage/VMLNAGA4/1312.html},
+  journal = {arXiv:1312.6114 [cs, stat]},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
+@article{luschDeepLearningUniversal2018a,
+  title = {Deep Learning for Universal Linear Embeddings of Nonlinear Dynamics},
+  author = {Lusch, Bethany and Kutz, J. Nathan and Brunton, Steven L.},
+  year = {2018},
+  month = dec,
+  volume = {9},
+  pages = {4950},
+  issn = {2041-1723},
+  doi = {10.1038/s41467-018-07210-0},
+  abstract = {Identifying coordinate transformations that make strongly nonlinear dynamics approximately linear is a central challenge in modern dynamical systems. These transformations have the potential to enable prediction, estimation, and control of nonlinear systems using standard linear theory. The Koopman operator has emerged as a leading data-driven embedding, as eigenfunctions of this operator provide intrinsic coordinates that globally linearize the dynamics. However, identifying and representing these eigenfunctions has proven to be mathematically and computationally challenging. This work leverages the power of deep learning to discover representations of Koopman eigenfunctions from trajectory data of dynamical systems. Our network is parsimonious and interpretable by construction, embedding the dynamics on a low-dimensional manifold that is of the intrinsic rank of the dynamics and parameterized by the Koopman eigenfunctions. In particular, we identify nonlinear coordinates on which the dynamics are globally linear using a modified auto-encoder. We also generalize Koopman representations to include a ubiquitous class of systems that exhibit continuous spectra, ranging from the simple pendulum to nonlinear optics and broadband turbulence. Our framework parametrizes the continuous frequency using an auxiliary network, enabling a compact and efficient embedding at the intrinsic rank, while connecting our models to half a century of asymptotics. In this way, we benefit from the power and generality of deep learning, while retaining the physical interpretability of Koopman embeddings.},
+  archivePrefix = {arXiv},
+  eprint = {1712.09707},
+  eprinttype = {arxiv},
+  file = {/home/fdamken/Zotero/storage/RRYUXGIZ/Lusch et al. - 2018 - Deep learning for universal linear embeddings of n.pdf;/home/fdamken/Zotero/storage/LS6VRGYR/1712.html},
+  journal = {Nature Communications},
+  keywords = {Computer Science - Machine Learning,Mathematics - Dynamical Systems,Statistics - Machine Learning},
+  number = {1}
+}
+
+@techreport{minkaBayesianLinearRegression1999,
+  title = {Bayesian {{Linear Regression}}},
+  author = {Minka, Thomas P.},
+  year = {1999},
+  institution = {{3594 Security Ticket Control}},
+  abstract = {This note derives the posterior, evidence, and predictive density for linear multivariate regression under zero-mean Gaussian noise. Many Bayesian texts, such as Box \& Tiao (1973), cover linear regression. This note contributes to the discussion by paying careful attention to invariance issues, demonstrating model selection based on the evidence, and illustrating the shape of the predictive density. Piecewise regression and basis function regression are also discussed. 1 Introduction The data model is that an input vector x of length m multiplies a coefficient matrix A to produce an output vector y of length d, with Gaussian noise added:  y = Ax + e (1)  e N (0; V) (2)  p(yjx; A;V) N (Ax; V) (3) This is a conditional model for y only: the distribution of x is not needed and in fact irrelevant to all inferences in this paper. As we shall see, conditional models create subtleties in Bayesian inference. In the special case x = 1 and m = 1, the conditioning disappears and we simply have a ...},
+  file = {/home/fdamken/Zotero/storage/QSGJ23H4/Minka - 1999 - Bayesian Linear Regression.pdf;/home/fdamken/Zotero/storage/T4PYCVH9/summary.html}
+}
+
+@techreport{minkaHiddenMarkovModels1999,
+  title = {From {{Hidden Markov Models}} to {{Linear Dynamical Systems}}},
+  author = {Minka, Thomas P.},
+  year = {1999},
+  month = jul,
+  abstract = {Hidden Markov Models (HMMs) and Linear Dynamical Systems (LDSs) ate based on the same assumption: a hidden state variable, of which we can make noisy measurements, evolves with Markovian dynamics. Both have the same independency diagram and consequently the learning and inference algorithms for both have the same structure. The only difference is that the HMM uses a discrete state variable with arbitrary dynamics and arbitrary measurements while the LDS uses a continuous state variable with linear-Gaussian dynamics and measurements. We show how the forward-backward equations for the HMM, specialized to linear-Gaussian assumptions, lead directly to Kalman filtering and Rauch-Tung-Streibel smoothing. We also investigate the most general possible modeling assumptions which can lead to efficient recursion in the case of continuous state variables.},
+  file = {/home/fdamken/Zotero/storage/3Y5XFY3M/Minka - 1999 - From Hidden Markov Models to Linear Dynamical Syst.pdf},
+  number = {TR-531}
+}
+
+@techreport{minkaOldNewMatrix2000,
+  title = {Old and {{New Matrix Algebra Useful}} for {{Statistics}}},
+  author = {Minka, Thomas P.},
+  year = {2000},
+  month = dec,
+  file = {/home/fdamken/Zotero/storage/H4D9Y8PU/Minka - 2000 - Old and New Matrix Algebra Useful for Statistics.pdf}
+}
+
+@techreport{petersenMatrixCookbook2012,
+  title = {The {{Matrix Cookbook}}},
+  author = {Petersen, Kaare Brandt and Petersen, Michael Syskind},
+  year = {2012},
+  month = nov,
+  file = {/home/fdamken/Zotero/storage/GW9ZBD5W/Petersen and Petersen - 2012 - The Matrix Cookbook.pdf}
+}
+
+@article{shumwayApproachTimeSeries1982,
+  title = {An {{Approach}} to {{Time Series Smoothing}} and {{Forecasting Using}} the {{Em Algorithm}}},
+  author = {Shumway, R. H. and Stoffer, D. S.},
+  year = {1982},
+  volume = {3},
+  pages = {253--264},
+  issn = {1467-9892},
+  doi = {10.1111/j.1467-9892.1982.tb00349.x},
+  abstract = {Abstract. An approach to smoothing and forecasting for time series with missing observations is proposed. For an underlying state-space model, the EM algorithm is used in conjunction with the conventional Kalman smoothed estimators to derive a simple recursive procedure for estimating the parameters by maximum likelihood. An example is given which involves smoothing and forecasting an economic series using the maximum likelihood estimators for the parameters.},
+  file = {/home/fdamken/Zotero/storage/IC35UB4V/j.1467-9892.1982.tb00349.html},
+  journal = {Journal of Time Series Analysis},
+  keywords = {EM algorithm,forecasting,Kalman filter,maximum likelihood,Missing data},
+  language = {en},
+  note = {\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1467-9892.1982.tb00349.x},
+  number = {4}
+}
+
+

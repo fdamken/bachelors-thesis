@@ -1,0 +1,89 @@
+% !TeX program = lualatex
+
+
+% Do not surround the equal signs with spaces, it causes errors!
+\documentclass[
+	ruledheaders=section,
+	class=report,
+	thesis={type=bachelor},
+	accentcolor=1c,
+	custommargins=true,
+	marginpar=false,
+	%BCOR = 5mm, % Bindekorrektur
+	parskip=half-,
+	fontsize=11pt,
+	instbox=false
+]{tudapub}
+
+% Include preamble to not clutter this file.
+\input{preamble/packages}
+\input{preamble/glossary}
+\input{preamble/tikzGraphs}
+
+
+\begin{document}
+	% No page numbering for the preamble.
+	\pagenumbering{gobble}
+
+	\Metadata{
+		title = Learning Stochastic Nonlinear Dynamics With the Koopman Operator,
+		author = Fabian Damken
+	}
+
+	\title{Learning Stochastic Nonlinear Dynamics With the Koopman Operator}
+	\subtitle{Lernen stochastischer nichtlinearer Systemdynamiken mit dem Koopman-Operator}
+	\author{Fabian Damken}
+	\birthplace{Frankfurt am Main}
+	\reviewer{Jan Peters \and Joe Watson}
+	\department{inf}
+	\institute{Intelligent Autonomous Systems}
+	%\group{Working Group}
+	\addTitleBoxLogo*{\includegraphics[width=0.75\linewidth]{img/iasLogo.pdf}}
+
+	\submissiondate{\today}
+	\examdate{\today}
+
+	%\tuprints{urn=1234,printid=12345}
+	%\dedication{Für alle, die \TeX{} nutzen.}
+
+	\maketitle
+
+	\affidavit
+
+	\tableofcontents
+
+	\chapter*{Figures~and~Tables}
+		\begingroup
+		\let\clearpage\relax
+		\listoffigures\listoftables
+		\endgroup
+	% end
+
+	\chapter*{Abbreviations,~Symbols and Operators}
+		\glsaddall
+		\printglossary[type = acronym, title = List of Abbreviations, style = iasThesisGeneral]
+		\printglossary[type = symbol, style = iasThesisGeneral]
+		\printglossary[type = operator, style = iasThesisOperators]
+	% end
+
+	% Start page numbering.
+	\pagenumbering{arabic}
+
+	% Someone wants content, for whatever reason.
+	\input{content/0-introduction}
+	\input{content/1-motivation}
+	\input{content/2-foundations}
+	\input{content/3-experiments}
+	\input{content/4-results}
+	\input{content/5-discussion}
+	\input{content/6-outlook}
+
+	\cleardoublepage
+	\bibliography{literature/lit}
+	\nocite{*}
+
+	\cleardoublepage
+
+	\appendix
+	\input{meta/appendix}
+\end{document}
