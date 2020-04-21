@@ -5,20 +5,37 @@
 
 % Operators.
 \newglossary[opg]{operator}{opi}{opo}{List of Operators}
+\newglossaryentry{expectation}{
+	sort        = { expectation value },
+	name        = { \ensuremath{\E} },
+	symbol      = { \ensuremath{\E}\left[\; \bullet \;\right] },
+	description = { the expectation value },
+	type        = operator
+}
 \newglossaryentry{ln}{
   sort        = { natural logarithm },
-  name        = { \ensuremath{\mathrm{ln}} },
-  symbol      = { \ensuremath{\mathrm{ln}\left(\; \bullet \;\right)} },
+  name        = { \ensuremath{\ln} },
+  symbol      = { \ensuremath{\ln\left(\; \bullet \;\right)} },
   description = { the natural logarithm },
   type        = operator
 }
+\newglossaryentry{trace}{
+	sort        = { linalg trace },
+	name        = { \ensuremath{\tr} },
+	symbol      = { \ensuremath{\tr\left(\; \bullet \;\right)} },
+	description = { the trace of a matrix },
+	type        = operator
+}
+
+% TODO: Other:
+%  - Gaussian distribution
 
 % Symbols.
 \newglossary[syg]{symbol}{sys}{syo}{List of Symbols}
 \newglossaryentry{theta}{
-  sort        = {parameters theta},
-  name        = {\ensuremath{\cvec{\theta}}},
-  description = {vector of parameters from a probability distribution},
+  sort        = { parameters theta },
+  name        = { \ensuremath{\vec{\theta}} },
+  description = { vector of parameters from a probability distribution },
   type        = symbol
 }
 

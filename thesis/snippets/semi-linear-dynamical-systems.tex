@@ -1,0 +1,96 @@
+\section{Linear Dynamical Systems with Nonlinear Measurements}
+	The idea is to replace the linear measurements \( \vec{x}_t \) in the Gaussian-linear dynamical system
+	\begin{align*}
+		\vec{s}_{t + 1} & = \mat{A} \vec{s}_t + \vec{w}_t \\
+		\vec{x}_t       & = \mat{C} \vec{s}_t + \vec{v}_t
+	\end{align*}
+	reported in~\cite{ghahramaniParameterEstimationLinear1996} with an arbitrary, possibly nonlinear function \( \vec{g}\paren{\vec{s}_t \given \vec{\theta}} \) with parameters \( \vec{\theta} \). In all of the following, the parameters are kept implicit for brevity. The vectors \( \vec{w}_t \) and \( \vec{v}_t \)	represent the Gaussian noise of the system (with zero mean and covariance matrices \( \mat{\Gamma} \) and \( \mat{\Sigma} \), respectively). Then the states \( \vec{s}_t \), \( \vec{s}_{t - 1} \) and \( \vec{x}_t \) are jointly Gaussian \cite{minkaHiddenMarkovModels1999}:
+	\begin{align*}
+		p\paren{\vec{s}_t \given \vec{s}_{t - 1}} &\sim \normal\paren{\mat{A} \vec{s}_{t - 1}, \mat{\Gamma}} \\
+		p\paren{\vec{x}_t \given \vec{s}_t}       &\sim \normal\paren{\vec{g}\paren{\vec{s}_t}, \mat{\Sigma}}
+	\end{align*}
+	This model can also be written as a set of (both linear and nonlinear) equations:
+	\begin{align*}
+		\vec{s}_{t + 1} & =    \mat{A} \vec{s}_t + \vec{w}_t          \\
+		\vec{w}_t       & \sim \normal\paren{\vec{0}, \mat{\Gamma}}   \\
+		\vec{x}_t       & =    \vec{g}\paren{\vec{x}_t} + \vec{v}_t \\
+		\vec{v}_t       & \sim \normal\paren{\vec{0}, \mat{\Sigma}}
+	\end{align*}
+	
+	The log-likelihood \( \ln p(\vec{s}_{1:T}, \vec{x}_{1:T}) \) then has the form
+	\begin{align*}
+		\ln p\paren{\vec{s}_{1:T}, \vec{x}_{1:T}}
+			&= \ln p\paren{\vec{s}_1} \prod_{t = 2}^{T} p\paren{\vec{s}_t \given \vec{s}_{t - 1}} \prod_{t = 1}^{T} p\paren{\vec{x}_t \given \vec{s}_t} \\
+			&= \ln p\paren{\vec{s}_1} + \sum_{t = 2}^{T} \ln p\paren{\vec{s}_t \given \vec{s}_{t - 1}} + \sum_{t = 1}^{T} \ln p\paren{\vec{x}_t \given \vec{s}_t} \\
+			&= \logGaussianMulti{\vec{s}_1}{\vec{m}_0}{\mat{V}_0}{k} \\
+				&\qquad\qquad + \sum_{t = 2}^{T} \paren{ \logGaussianMulti{\vec{s}_t}{\mat{A}\vec{s}_{t - 1}}{\mat{\Gamma}}{k} } \\
+				&\qquad\qquad + \sum_{t = 1}^{T} \paren{ \logGaussianMulti{\vec{x}_t}{\vec{g}\paren{\vec{s}_t}}{\mat{\Sigma}}{p} } \\
+			&= -\frac{T \paren{p + k}}{2} \ln \paren{2\pi} - \frac{T}{2} \ln \lvert \mat{\Sigma} \rvert - \frac{T - 1}{2} \ln \lvert \mat{\Gamma} \rvert \\
+				&\qquad\qquad -\frac{1}{2} \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} \paren{\vec{s}_1 - \vec{m}_0} \\
+				&\qquad\qquad -\frac{1}{2} \sum_{t = 2}^{T} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}^T \mat{\Gamma}^{-1} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}} \\
+				&\qquad\qquad -\frac{1}{2} \sum_{t = 1}^{T} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}
+	\end{align*}
+	where \( p\paren{\vec{s}_1} \sim \normal\paren{\vec{m}_0, \mat{V}_0} \) is the initial state distribution. This log-likelihood (or, more specifically, the expected log-likelihood) is needed for deriving the M-step.
+
+	\subsection{Derivation of the M-Step}
+		To derive the M-step (that is, maximizing the expected log-likelihood), the expected log-likelihood \( Q = \E\bracket{\ln p\paren{\vec{s}_{1:T}, \vec{x}_{1:T}} \Biggiven \vec{x}_{1:T}} \) has to be calculated. For simplicity, let
+		\begin{align*}
+			q_1 &\coloneqq -\frac{T \paren{p + k}}{2} \ln \paren{2\pi} - \frac{T}{2} \ln \lvert \mat{\Sigma} \rvert - \frac{T - 1}{2} \ln \lvert \mat{\Gamma} \rvert \\
+			q_2 &\coloneqq -\frac{1}{2} \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} \paren{\vec{s}_1 - \vec{m}_0} \\
+			q_3 &\coloneqq -\frac{1}{2} \sum_{t = 2}^{T} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}^T \mat{\Gamma}^{-1} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}} \\
+			q_4 &\coloneqq -\frac{1}{2} \sum_{t = 1}^{T} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}
+		\end{align*}
+		such that \( Q = \E\bracket{q_1 \given \vec{x}_{1:T}} + \E\bracket{q_2 \given \vec{x}_{1:T}} + \E\bracket{q_3 \given \vec{x}_{1:T}} + \E\bracket{q_4 \given \vec{x}_{1:T}} \) where the expectations are all w.r.t. \( \vec{s}_{1:T} \) given the observations \( \vec{x}_{1:T} \). The explicit dependence on the given observations are left out for brevity in the following derivations. Also let
+		\begin{align*}
+			\hat{\vec{s}}_t    & \coloneqq \E\bracket{\vec{s}_t \given \vec{x}_{1:T}}                                           \\
+			\mat{P}_t          & \coloneqq \E\bracket{\vec{s}_t \vec{s}_t^T \given \vec{x}_{1:T}}                               \\
+			\mat{P}_{t, t - 1} & \coloneqq \E\bracket{\vec{s}_t \vec{s}_{t - 1} \given \vec{x}_{1:T}}                           \\
+			\hat{\vec{g}}_t    & \coloneqq \E\bracket{\vec{g}\paren{\vec{s}_t} \given \vec{x}_{1:T}}                            \\
+			\mat{G}_t          & \coloneqq \E\bracket{\vec{g}\paren{\vec{s}_t} \vec{g}^T\paren{\vec{s}_t} \given \vec{x}_{1:T}}
+		\end{align*}
+		to further simplify the expected log-likelihood which depends on these three expectations.
+		
+		As \(q_1\) is constant w.r.t. \( \vec{s}_{1:T} \), its expected value is just itself:
+		\begin{equation*}
+			\E\bracket{q_1} = -\frac{T \paren{p + k}}{2} \ln \paren{2\pi} - \frac{T}{2} \ln \lvert \mat{\Sigma} \rvert - \frac{T - 1}{2} \ln \lvert \mat{\Gamma} \rvert
+		\end{equation*}
+		The derivation of \( \E\bracket{q_2} \) is also simple:
+		\begin{align*}
+			\E\bracket{q_2}
+				&= \E\bracket{-\frac{1}{2} \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} \paren{\vec{s}_1 - \vec{m}_0}} \\
+				&= \E\bracket{-\frac{1}{2} \tr\paren{ \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} \paren{\vec{s}_1 - \vec{m}_0} }} \\
+				&= \E\bracket{-\frac{1}{2} \tr\paren{ \paren{\vec{s}_1 - \vec{m}_0} \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} }} \\
+				&= \E\bracket{-\frac{1}{2} \tr\paren{ \paren{\vec{s}_1 - \vec{m}_0} \paren{\vec{s}_1^T - \vec{m}_0^T} \mat{V}_0^{-1} }} \\
+				&= \E\bracket{-\frac{1}{2} \tr\paren{ \paren{\vec{s}_1 \vec{s}_1^T - \vec{s}_1 \vec{m}_0^T - \vec{m}_0 \vec{s}_1^T + \vec{m}_0 \vec{m}_0^T} \mat{V}_0^{-1} }} \\
+				&= \E\bracket{-\frac{1}{2} \tr\paren{ \vec{s}_1 \vec{s}_1^T \mat{V}_0^{-1} - \vec{s}_1 \vec{m}_0^T \mat{V}_0^{-1} - \vec{m}_0 \vec{s}_1^T \mat{V}_0^{-1} + \vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1} }} \\
+				&= -\frac{1}{2} \tr\paren{\mat{P}_1 \mat{V}_0^{-1}} + \frac{1}{2} \tr\paren{\hat{\vec{s}}_1 \vec{m}_0^T \mat{V}_0^{-1}} + \frac{1}{2} \tr\paren{\vec{m}_0 \hat{\vec{s}}_1^T \mat{V}_0^{-1}} - \frac{1}{2} \tr\paren{\vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1}} \\
+		\end{align*}
+		The derivation of \( \E\bracket{q_3} \) turns out to be a bit more complicated:
+		\begin{align*}
+			\E\bracket{q_3}
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 2}^{T} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}^T \mat{\Gamma}^{-1} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\!\paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}^T \mat{\Gamma}^{-1} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\!\paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}} \paren{\vec{s}_t^T - \vec{s}_{t - 1}^T \mat{A}^T} \mat{\Gamma}^{-1}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\!\paren{\vec{s}_t \vec{s}_t^T - \vec{s}_t \vec{s}_{t - 1}^T \mat{A}^T - \mat{A}\vec{s}_{t - 1} \vec{s}_t^T + \mat{A}\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T} \mat{\Gamma}^{-1}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\vec{s}_t \vec{s}_t^T \mat{\Gamma}^{-1} - \vec{s}_t \vec{s}_{t - 1}^T \mat{A}^T \mat{\Gamma}^{-1} - \mat{A}\vec{s}_{t - 1} \vec{s}_t^T \mat{\Gamma}^{-1} + \mat{A}\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T \mat{\Gamma}^{-1}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\vec{s}_t \vec{s}_t^T \mat{\Gamma}^{-1} - \vec{s}_t \vec{s}_{t - 1}^T \mat{A}^T \mat{\Gamma}^{-1} - \mat{A} \vec{s}_t \vec{s}_{t - 1}^T \mat{\Gamma}^{-1} + \mat{A}\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T \mat{\Gamma}^{-1}}} \\
+				&= -\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\mat{P}_t \mat{\Gamma}^{-1}} - \tr\paren{\mat{P}_{t, t - 1} \mat{A}^T \mat{\Gamma}^{-1}} - \tr\paren{\mat{A} \mat{P}_{t, t - 1} \mat{\Gamma}^{-1}} + \tr\paren{\mat{A} \mat{P}_{t - 1} \mat{A}^T \mat{\Gamma}^{-1}} \\
+		\end{align*}
+		The derivation of \( \E\bracket{q_4} \) is analogous to the one for \( \E\bracket{q_3} \):
+		\begin{align*}
+			\E\bracket{q_4}
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 1}^{T} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{\!\paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{\!\paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{\!\paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}} \paren{\vec{x}_t^T - \vec{g}^T\!\paren{\vec{s}_t}} \mat{\Sigma}^{-1}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{\!\paren{ \vec{x}_t \vec{x}_t^T - \vec{x}_t \vec{g}^T\!\paren{\vec{s}_t} - \vec{g}\paren{\vec{s}_t} \vec{x}_t^T + \vec{g}\paren{\vec{s}_t} \vec{g}^T\!\paren{\vec{s}_t} } \mat{\Sigma}^{-1}}} \\
+				&= \E\bracket{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{ \vec{x}_t \vec{x}_t^T \mat{\Sigma}^{-1} - \vec{x}_t \vec{g}^T\!\paren{\vec{s}_t} \mat{\Sigma}^{-1} - \vec{g}\paren{\vec{s}_t} \vec{x}_t^T \mat{\Sigma}^{-1} + \vec{g}\paren{\vec{s}_t} \vec{g}^T\!\paren{\vec{s}_t} \mat{\Sigma}^{-1} }} \\
+				&= -\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{ \vec{x}_t \vec{x}_t^T \mat{\Sigma}^{-1} } - \tr\paren{ \vec{x}_t \hat{\vec{g}}_t^T \mat{\Sigma}^{-1} } - \tr\paren{ \hat{\vec{g}}_t \vec{x}_t^T \mat{\Sigma}^{-1} } + \tr\paren{ \mat{G}_t \mat{\Sigma}^{-1} } \\
+		\end{align*}
+		However, this depends on the expectations \( \hat{\vec{g}}_t \) and \( \mat{G}_t \), which will be a problem. Leave it for now and figure it out later on. % TODO: How???
+		
+		To get the M-step expressions, take the derivatives of the expected log-likelihood \(Q\) w.r.t. the state dynamics matrix \( \mat{A} \), the state noise covariance \( \mat{\Gamma} \), the output function parameters \( \vec{\theta} \), the output noise covariance \( \vec{\Sigma} \), the initial state mean \( \vec{m}_0 \) and the initial state covariance \( \mat{V}_0 \). % TODO: Adjust paragraph to take non-linearity of the output function parameters into account.
+		
+		% TODO: Take derivatives.
+	% end
+% end

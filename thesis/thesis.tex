@@ -17,6 +17,7 @@
 
 % Include preamble to not clutter this file.
 \input{preamble/packages}
+\input{preamble/styles}
 \input{preamble/glossary}
 \input{preamble/tikzGraphs}
 
@@ -70,13 +71,13 @@
 	\pagenumbering{arabic}
 
 	% Someone wants content, for whatever reason.
-	\input{content/0-introduction}
-	\input{content/1-motivation}
-	\input{content/2-foundations}
-	\input{content/3-experiments}
-	\input{content/4-results}
-	\input{content/5-discussion}
-	\input{content/6-outlook}
+	\include{content/0-introduction}
+	\include{content/1-motivation}
+	\include{content/2-foundations}
+	\include{content/3-experiments}
+	\include{content/4-results}
+	\include{content/5-discussion}
+	\include{content/6-outlook}
 
 	\cleardoublepage
 	\bibliography{literature/lit}
@@ -85,5 +86,8 @@
 	\cleardoublepage
 
 	\appendix
-	\input{meta/appendix}
+	\include{meta/appendix}
+	\chapter{Snippets}
+		\include{snippets/semi-linear-dynamical-systems}
+	% end
 \end{document}
