@@ -25,17 +25,20 @@
 % Shorthands.
 \newcommand{\normal}{\mathcal{N}}
 \newcommand{\gaussianMulti}[4]{\frac{1}{\left(2\pi\right)^{#4/2} \cdot \lvert #3 \rvert^{1/2}} \exp \bigg\{\! -\frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right) \bigg\}}
-\newcommand{\logGaussianMulti}[4]{\frac{1}{2} \ln \lvert #3 \rvert - \frac{#4}{2} \ln\left(2\pi\right) - \frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right)}
+\newcommand{\logGaussianMulti}[4]{-\frac{1}{2} \ln \lvert #3 \rvert - \frac{#4}{2} \ln\left(2\pi\right) - \frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right)}
 \newcommand{\given}{\,\vert\,}
 \newcommand{\biggiven}{\,\big\vert\,}
 \newcommand{\Biggiven}{\,\Big\vert\,}
 \newcommand{\bigggiven}{\,\bigg\vert\,}
 \newcommand{\Bigggiven}{\,\Bigg\vert\,}
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\new}{\mathrm{new}}
 
-\newcommand{\paren}[1]{\mathopen{}\left( {#1}_{{}_{}}\,\negthickspace\right)\mathclose{}}
-\newcommand{\bracket}[1]{\mathopen{}\left[ {#1}_{{}_{}}\,\negthickspace\right]\mathclose{}}
+\newcommand{\E}[2][]{\mathbb{E}_{#1}\bracket{#2}}
+\newcommand{\oversetfootnotemark}[1]{\overset{(\raisebox{-4.5pt}{\hspace{0.5pt}\footnotemark})}{#1}}
+\let\realfootnotetext\footnotetext
+\renewcommand{\footnotetext}[1]{\realfootnotetext{\, #1}}
+\newcommand{\doublefootnotetext}[2]{\addtocounter{footnote}{-1} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2}}
+\newcommand{\triplefootnotetext}[3]{\addtocounter{footnote}{-2} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2} \stepcounter{footnote} \footnotetext{#3}}
 
 \renewcommand{\arraystretch}{1.5}
 \parindent0pt
@@ -50,7 +53,28 @@
 \renewcommand{\bibname}{References}
 \bibliographystyle{ieeetr}
 
+% Penalties.
+
 % TikZ-related stuff.
+
+% Auto-growing paranthesis.
+\newcommand\swapifbranches[3]{#1{#3}{#2}}
+\makeatletter
+\MHInternalSyntaxOn
+\patchcmd{\DeclarePairedDelimiter}{\@ifstar}{\swapifbranches\@ifstar}{}{}
+\MHInternalSyntaxOff
+\makeatother
+\DeclarePairedDelimiter{\pairedparen}{(}{)}
+\DeclarePairedDelimiter{\pairedbracket}{[}{]}
+%\DeclarePairedDelimiter{\pairedbraces}{\{}{\}}
+\DeclarePairedDelimiter{\pairedvert}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\pairedVert}{\lVert}{\rVert}
+% Hints for TeXStudio that \paren, \bracket and \braces accept an argument.
+\newcommand{\paren}[1]{\pairedparen{#1}}
+\newcommand{\bracket}[1]{\pairedbracket{#1}}
+%\newcommand{\braces}[1]{\pairedbraces{#1}}
+\newcommand{\Det}[1]{\pairedvert{#1}}
+\newcommand{\Norm}[1]{\pairedVert{#1}}
 
 
 
