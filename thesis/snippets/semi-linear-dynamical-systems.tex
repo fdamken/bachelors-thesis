@@ -1,172 +1,273 @@
 \section{Linear Dynamical Systems with Nonlinear Measurements}
-	Our idea is to replace the linear measurements \( \vec{x}_t \) in the Gaussian-linear dynamical system
-	\begin{align*}
-		\vec{s}_{t + 1} & = \mat{A} \vec{s}_t + \vec{w}_t \\
-		\vec{x}_t       & = \mat{C} \vec{s}_t + \vec{v}_t
-	\end{align*}
-	reported in~\cite{ghahramaniParameterEstimationLinear1996} with an arbitrary, possibly nonlinear function \( \vec{g}\paren{\vec{s}_t \given \vec{\theta}} \) with parameters \( \vec{\theta} \). In all of the following, we keep the parameters implicit for brevity. The vectors \( \vec{w}_t \) and \( \vec{v}_t \)	represent the Gaussian noise of the system (with zero mean and covariance matrices \( \mat{\Gamma} \) and \( \mat{\Sigma} \), respectively). Then the states \( \vec{s}_t \), \( \vec{s}_{t - 1} \) and \( \vec{x}_t \) are jointly Gaussian \cite{minkaHiddenMarkovModels1999}:
-	\begin{align*}
-		p\paren{\vec{s}_t \given \vec{s}_{t - 1}} &\sim \normal\paren{\mat{A} \vec{s}_{t - 1}, \mat{\Gamma}} \\
-		p\paren{\vec{x}_t \given \vec{s}_t}       &\sim \normal\paren{\vec{g}\paren{\vec{s}_t}, \mat{\Sigma}}
-	\end{align*}
-	This model can also be written as a set of (both linear and nonlinear) equations:
-	\begin{align*}
-		\vec{s}_{t + 1} & =    \mat{A} \vec{s}_t + \vec{w}_t          \\
-		\vec{w}_t       & \sim \normal\paren{\vec{0}, \mat{\Gamma}}   \\
-		\vec{x}_t       & =    \vec{g}\paren{\vec{x}_t} + \vec{v}_t \\
-		\vec{v}_t       & \sim \normal\paren{\vec{0}, \mat{\Sigma}}
-	\end{align*}
-	
-	The log-likelihood \( \ln p\paren{\vec{s}_{1:T}, \vec{x}_{1:T}} \) then has the form
-	\begin{align*}
-		\ln p\paren{\vec{s}_{1:T}, \vec{x}_{1:T}}
-			&= \ln p\paren{\vec{s}_1} \prod_{t = 2}^{T} p\paren{\vec{s}_t \given \vec{s}_{t - 1}} \prod_{t = 1}^{T} p\paren{\vec{x}_t \given \vec{s}_t} \\
-			&= \ln p\paren{\vec{s}_1} + \sum_{t = 2}^{T} \ln p\paren{\vec{s}_t \given \vec{s}_{t - 1}} + \sum_{t = 1}^{T} \ln p\paren{\vec{x}_t \given \vec{s}_t} \\
-			&= \logGaussianMulti{\vec{s}_1}{\vec{m}_0}{\mat{V}_0}{k} \\
-				&\qquad\qquad + \sum_{t = 2}^{T} \paren{ \logGaussianMulti{\vec{s}_t}{\mat{A}\vec{s}_{t - 1}}{\mat{\Gamma}}{k} } \\
-				&\qquad\qquad + \sum_{t = 1}^{T} \paren{ \logGaussianMulti{\vec{x}_t}{\vec{g}\paren{\vec{s}_t}}{\mat{\Sigma}}{p} } \\
-			&= -\frac{T \paren{p + k}}{2} \ln \paren{2\pi} - \frac{1}{2} \ln \Det{\mat{V}_0} - \frac{T}{2} \ln \Det{\mat{\Sigma}} - \frac{T - 1}{2} \ln \Det{\mat{\Gamma}} \\
-				&\qquad\qquad -\frac{1}{2} \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} \paren{\vec{s}_1 - \vec{m}_0} \\
-				&\qquad\qquad -\frac{1}{2} \sum_{t = 2}^{T} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}^T \mat{\Gamma}^{-1} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}} \\
-				&\qquad\qquad -\frac{1}{2} \sum_{t = 1}^{T} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}
-	\end{align*}
-	where \( p\paren{\vec{s}_1} \sim \normal\paren{\vec{m}_0, \mat{V}_0} \) is the initial state distribution. This log-likelihood (or, more specifically, the expected log-likelihood) is needed for deriving the M-step.
 
-	\subsection{Derivation of the M-Step}
-		To derive the M-step (that is, maximizing the expected log-likelihood), we first calculate the expected complete log-likelihood \( Q = \E{\ln p\paren{\vec{s}_{1:T}, \vec{x}_{1:T}} \Biggiven \vec{x}_{1:T}} \). For simplicity, let
-		\begin{align*}
-			q_1 &\coloneqq -\frac{T \paren{p + k}}{2} \ln \paren{2\pi} - \frac{1}{2} \ln \Det{\mat{V}_0} - \frac{T}{2} \ln \Det{\mat{\Sigma}} - \frac{T - 1}{2} \ln \Det{\mat{\Gamma}} \\
-			q_2 &\coloneqq -\frac{1}{2} \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} \paren{\vec{s}_1 - \vec{m}_0} \\
-			q_3 &\coloneqq -\frac{1}{2} \sum_{t = 2}^{T} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}^T \mat{\Gamma}^{-1} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}} \\
-			q_4 &\coloneqq -\frac{1}{2} \sum_{t = 1}^{T} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}
-		\end{align*}
-		such that \( Q = \E{q_1 \given \vec{x}_{1:T}} + \E{q_2 \given \vec{x}_{1:T}} + \E{q_3 \given \vec{x}_{1:T}} + \E{q_4 \given \vec{x}_{1:T}} \) where the expectations are all w.r.t. \( \vec{s}_{1:T} \) given the observations \( \vec{x}_{1:T} \). We leave out the explicit dependence on the given observations for brevity in the following derivations. Also let
-		\begin{align*}
-			\hat{\vec{s}}_t    & \coloneqq \E{\vec{s}_t \given \vec{x}_{1:T}}                                           \\
-			\mat{P}_t          & \coloneqq \E{\vec{s}_t \vec{s}_t^T \given \vec{x}_{1:T}}                               \\
-			\mat{P}_{t, t - 1} & \coloneqq \E{\vec{s}_t \vec{s}_{t - 1}^T \given \vec{x}_{1:T}}                         \\
-			\hat{\vec{g}}_t    & \coloneqq \E{\vec{g}\paren{\vec{s}_t} \given \vec{x}_{1:T}}                            \\
-			\mat{G}_t          & \coloneqq \E{\vec{g}\paren{\vec{s}_t} \vec{g}^T\paren{\vec{s}_t} \given \vec{x}_{1:T}}
-		\end{align*}
-		to further simplify the expected log-likelihood which depends on these five expectations.
-		
-		As \(q_1\) is constant w.r.t. \( \vec{s}_{1:T} \), its expected value is just itself:
-		\begin{equation*}
-			\E{q_1} = -\frac{T \paren{p + k}}{2} \ln \paren{2\pi} - \frac{1}{2} \ln \Det{\mat{V}_0} - \frac{T}{2} \ln \Det{\mat{\Sigma}} - \frac{T - 1}{2} \ln \Det{\mat{\Gamma}}
-		\end{equation*}
-		The derivation of \( \E{q_2} \) is also simple:
-		\begin{align*}
-			\E{q_2}
-				&= \E{-\frac{1}{2} \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} \paren{\vec{s}_1 - \vec{m}_0}} \\
-				&= \E{-\frac{1}{2} \tr\paren{ \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} \paren{\vec{s}_1 - \vec{m}_0} }} \\
-				&= \E{-\frac{1}{2} \tr\paren{ \paren{\vec{s}_1 - \vec{m}_0} \paren{\vec{s}_1 - \vec{m}_0}^T \mat{V}_0^{-1} }} \\
-				&= \E{-\frac{1}{2} \tr\paren{ \paren{\vec{s}_1 - \vec{m}_0} \paren{\vec{s}_1^T - \vec{m}_0^T} \mat{V}_0^{-1} }} \\
-				&= \E{-\frac{1}{2} \tr\paren{ \paren{\vec{s}_1 \vec{s}_1^T - \vec{s}_1 \vec{m}_0^T - \vec{m}_0 \vec{s}_1^T + \vec{m}_0 \vec{m}_0^T} \mat{V}_0^{-1} }} \\
-				&= \E{-\frac{1}{2} \tr\paren{ \vec{s}_1 \vec{s}_1^T \mat{V}_0^{-1} - \vec{s}_1 \vec{m}_0^T \mat{V}_0^{-1} - \vec{m}_0 \vec{s}_1^T \mat{V}_0^{-1} + \vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1} }} \\
-				&= -\frac{1}{2} \tr\paren{\mat{P}_1 \mat{V}_0^{-1}} + \frac{1}{2} \tr\paren{\hat{\vec{s}}_1 \vec{m}_0^T \mat{V}_0^{-1}} + \frac{1}{2} \tr\paren{\vec{m}_0 \hat{\vec{s}}_1^T \mat{V}_0^{-1}} - \frac{1}{2} \tr\paren{\vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1}}
-		\end{align*}
-		The derivation of \( \E{q_3} \) turns out to be a bit more complicated:
-		\begin{align*}
-			\E{q_3}
-				&= \E{-\frac{1}{2} \sum_{t = 2}^{T} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}^T \mat{\Gamma}^{-1} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\!\paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}^T \mat{\Gamma}^{-1} \paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\!\paren{\vec{s}_t - \mat{A}\vec{s}_{t - 1}} \paren{\vec{s}_t^T - \vec{s}_{t - 1}^T \mat{A}^T} \mat{\Gamma}^{-1}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\!\paren{\vec{s}_t \vec{s}_t^T - \vec{s}_t \vec{s}_{t - 1}^T \mat{A}^T - \mat{A}\vec{s}_{t - 1} \vec{s}_t^T + \mat{A}\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T} \mat{\Gamma}^{-1}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\vec{s}_t \vec{s}_t^T \mat{\Gamma}^{-1} - \vec{s}_t \vec{s}_{t - 1}^T \mat{A}^T \mat{\Gamma}^{-1} - \mat{A}\vec{s}_{t - 1} \vec{s}_t^T \mat{\Gamma}^{-1} + \mat{A}\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T \mat{\Gamma}^{-1}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\vec{s}_t \vec{s}_t^T \mat{\Gamma}^{-1} - \vec{s}_t \vec{s}_{t - 1}^T \mat{A}^T \mat{\Gamma}^{-1} - \mat{A} \vec{s}_t \vec{s}_{t - 1}^T \mat{\Gamma}^{-1} + \mat{A}\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T \mat{\Gamma}^{-1}}} \\
-				&= -\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\mat{P}_t \mat{\Gamma}^{-1}} - \tr\paren{\mat{P}_{t, t - 1} \mat{A}^T \mat{\Gamma}^{-1}} - \tr\paren{\mat{A} \mat{P}_{t, t - 1} \mat{\Gamma}^{-1}} + \tr\paren{\mat{A} \mat{P}_{t - 1} \mat{A}^T \mat{\Gamma}^{-1}}
-		\end{align*}
-		The derivation of \( \E{q_4} \) is analogous to the one for \( \E{q_3} \):
-		\begin{align*}
-			\E{q_4}
-				&= \E{-\frac{1}{2} \sum_{t = 1}^{T} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{\!\paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{\!\paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}} \paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}}^T \mat{\Sigma}^{-1}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{\!\paren{\vec{x}_t - \vec{g}\paren{\vec{s}_t}} \paren{\vec{x}_t^T - \vec{g}^T\!\paren{\vec{s}_t}} \mat{\Sigma}^{-1}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{\!\paren{ \vec{x}_t \vec{x}_t^T - \vec{x}_t \vec{g}^T\!\paren{\vec{s}_t} - \vec{g}\paren{\vec{s}_t} \vec{x}_t^T + \vec{g}\paren{\vec{s}_t} \vec{g}^T\!\paren{\vec{s}_t} } \mat{\Sigma}^{-1}}} \\
-				&= \E{-\frac{1}{2} \sum_{t = 1}^{T} \tr(\vec{x}_t \vec{x}_t^T \mat{\Sigma}^{-1} - \vec{x}_t \vec{g}^T\!\paren{\vec{s}_t} \mat{\Sigma}^{-1} - \vec{g}\paren{\vec{s}_t} \vec{x}_t^T \mat{\Sigma}^{-1} + \vec{g}\paren{\vec{s}_t} \vec{g}^T\!\paren{\vec{s}_t} \mat{\Sigma}^{-1})} \\
-				&= -\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{ \vec{x}_t \vec{x}_t^T \mat{\Sigma}^{-1} } - \tr\paren{ \vec{x}_t \hat{\vec{g}}_t^T \mat{\Sigma}^{-1} } - \tr\paren{ \hat{\vec{g}}_t \vec{x}_t^T \mat{\Sigma}^{-1} } + \tr\paren{ \mat{G}_t \mat{\Sigma}^{-1} }
-		\end{align*}
-		However, this depends on the expectations \( \hat{\vec{g}}_t \) and \( \mat{G}_t \), which will be a problem. Leave it for now and figure it out later on. % TODO
-		
-		With \( Q_1 \coloneqq \E{q_1} \), \(  Q_2 \coloneqq \E{q_2} \), \( Q_3 \coloneqq \E{q_3} \) and \( Q_4 \coloneqq \E{q_4} \), the expected complete log-likelihood is
-		\begin{align*}
-			Q
-				&= Q_1 + Q_2 + Q_3 + Q_4 \\
-				&= -\frac{T \paren{p + k}}{2} \ln \paren{2\pi} - \frac{1}{2} \ln \Det{\mat{V}_0} - \frac{T}{2} \ln \Det{\mat{\Sigma}} - \frac{T - 1}{2} \ln \Det{\mat{\Gamma}} \\
-				&\qquad\qquad -\frac{1}{2} \tr\paren{\mat{P}_1 \mat{V}_0^{-1}} + \frac{1}{2} \tr\paren{\hat{\vec{s}}_1 \vec{m}_0^T \mat{V}_0^{-1}} + \frac{1}{2} \tr\paren{\vec{m}_0 \hat{\vec{s}}_1^T \mat{V}_0^{-1}} - \frac{1}{2} \tr\paren{\vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1}} \\
-				&\qquad\qquad -\frac{1}{2} \sum_{t = 2}^{T} \tr\paren{\mat{P}_t \mat{\Gamma}^{-1}} - \tr\paren{\mat{P}_{t, t - 1} \mat{A}^T \mat{\Gamma}^{-1}} - \tr\paren{\mat{A} \mat{P}_{t, t - 1} \mat{\Gamma}^{-1}} + \tr\paren{\mat{A} \mat{P}_{t - 1} \mat{A}^T \mat{\Gamma}^{-1}} \\
-				&\qquad\qquad -\frac{1}{2} \sum_{t = 1}^{T} \tr\paren{ \vec{x}_t \vec{x}_t^T \mat{\Sigma}^{-1} } - \tr\paren{ \vec{x}_t \hat{\vec{g}}_t^T \mat{\Sigma}^{-1} } - \tr\paren{ \hat{\vec{g}}_t \vec{x}_t^T \mat{\Sigma}^{-1} } + \tr\paren{ \mat{G}_t \mat{\Sigma}^{-1} }
-		\end{align*}
-		where \( Q_1 \), \( Q_2 \), \( Q_3 \) and \( Q_4 \) are, obviously, functions of the parameters \( \mat{A} \), \( \mat{\Gamma} \), \( \vec{\theta} \), \( \vec{\Sigma} \), \( \vec{m}_0 \) and \( \mat{V}_0 \):
-		\begin{align*}
-			Q_1 &= Q_1\paren{\mat{V}_0, \mat{\Gamma}, \mat{\Sigma}} \\
-			Q_2 &= Q_2\paren{\vec{m}_0, \mat{V}_0} \\
-			Q_3 &= Q_3\paren{\mat{A}, \mat{\Gamma}} \\
-			Q_4 &= Q_4\paren{\vec{\theta}, \mat{\Sigma}}
-		\end{align*}
-		
-		To get the M-step expressions, we take the derivatives of the expected complete log-likelihood \(Q\) w.r.t. the state dynamics matrix \( \mat{A} \), the state noise covariance \( \mat{\Gamma} \), the output function parameters \( \vec{\theta} \), the output noise covariance \( \vec{\Sigma} \), the initial state mean \( \vec{m}_0 \) and the initial state covariance \( \mat{V}_0 \) and set them to zero.
-		
-		\begin{itemize}
-			\item State dynamics matrix:
-		\end{itemize}
-		\begin{align*}
-			&& \pdv{Q}{\mat{A}}
-				&= \pdv{Q_1}{\mat{A}} + \pdv{Q_2}{\mat{A}} + \pdv{Q_3}{\mat{A}} + \pdv{Q_4}{\mat{A}} = \pdv{Q_3}{\mat{A}} & \\
-			&&	&= -\frac{1}{2} \sum_{t = 2}^{T} - \mat{\Gamma}^{-1} \mat{P}_{t, t - 1} - \mat{\Gamma}^{-T} \mat{P}_{t, t - 1}^T + \mat{\Gamma}^{-T} \mat{A} \mat{P}_{t - 1}^T + \mat{\Gamma}^{-1} \mat{A} \mat{P}_{t - 1} & \\
-			&&	&\oversetfootnotemark{=} \sum_{t = 2}^{T} \mat{\Gamma}^{-1} \mat{P}_{t, t - 1} - \sum_{t = 2}^{T} \mat{\Gamma}^{-1} \mat{A} \mat{P}_{t - 1} \overset{!}{=} 0 & \\
-			\implies && \mat{A}^\new &= \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}} \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}}^{-1} &
-		\end{align*}
-		\footnotetext{Covariance and correlation matrices (\( \mat{\Gamma} \), \( \mat{\Sigma} \), \( \mat{P}_t \), \( \mat{P}_{t, t - 1} \)) are symmetric by definition.}
-		
-		\begin{itemize}
-			\item State noise covariance:
-		\end{itemize}
-		\begin{align*}
-			&& \pdv{Q}{\mat{\Gamma}^{-1}}
-				&= \pdv{Q_1}{\mat{\Gamma}^{-1}} + \pdv{Q_2}{\mat{\Gamma}^{-1}} + \pdv{Q_3}{\mat{\Gamma}^{-1}} + \pdv{Q_4}{\mat{\Gamma}^{-1}} = \pdv{Q_1}{\mat{\Gamma}^{-1}} + \pdv{Q_3}{\mat{\Gamma}^{-1}} & \\
-			&&	&\oversetfootnotemark{=} \frac{T - 1}{2} \mat{\Gamma} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t^T - \mat{A} \mat{P}_{t, t - 1}^T - \mat{P}_{t, t - 1}^T \mat{A}^T + \mat{A} \mat{P}_{t - 1}^T \mat{A}^T & \\
-			&&	&= \frac{T - 1}{2} \mat{\Gamma} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t - \mat{A} \mat{P}_{t, t - 1} - \mat{P}_{t, t - 1} \mat{A}^T + \mat{A} \mat{P}_{t - 1} \mat{A}^T & \\
-			&&	&= \frac{T - 1}{2} \mat{\Gamma} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t - \mat{A} \mat{P}_{t, t - 1} - \mat{P}_{t, t - 1} \mat{A}^T + \mat{A} \mat{P}_{t - 1} \mat{A}^T & \\
-			&&	&= \frac{T - 1}{2} \mat{\Gamma} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{1}{2} \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} + \frac{1}{2} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}} \paren{\mat{A}^\new}^T - \frac{1}{2} \mat{A}^\new \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}} \paren{\mat{A}^\new}^T & \\
-			%
-			&&	&= \frac{T - 1}{2} \mat{\Gamma} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{1}{2} \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} + \frac{1}{2} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}} \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}}^{-T} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}}^T & \\
-			&&	&\qquad\qquad - \frac{1}{2} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}} \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}}^{-1} \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}} \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}}^{-T} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}}^T & \\
-			%
-			&&	&\oversetfootnotemark{=} \frac{T - 1}{2} \mat{\Gamma} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{1}{2} \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} + \frac{1}{2} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}} \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}}^{-1} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}} & \\
-			&&	&\qquad\qquad - \frac{1}{2} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}} \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}}^{-1} \cancel{\paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}} \paren{\sum_{t = 2}^{T} \mat{P}_{t - 1}}^{-1}} \paren{\sum_{t = 2}^{T} \mat{P}_{t, t - 1}} & \\
-			&&	&= \frac{T - 1}{2} \mat{\Gamma} - \frac{1}{2} \paren{ \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} } \overset{!}{=} 0 & \\
-			\implies && \mat{\Gamma}^\new &= \frac{1}{T - 1} \paren{ \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} } &
-		\end{align*}
-		\doublefootnotetext
-			{One aspect of \( \pdv{Q_1}{\mat{\Gamma}^{-1}} \): \( \pdv{\mat{\Gamma}^{-1}} \ln \Det{\mat{\Gamma}} = \pdv{\mat{\Gamma}^{-1}} \ln \Det{\paren{\mat{\Gamma}^{-1}}^{-1}} = \paren{ \pdv{\Det{\paren{\mat{\Gamma}^{-1}}^{-1}}} \ln \Det{\paren{\mat{\Gamma}^{-1}}^{-1}} } \paren{ \pdv{\mat{\Gamma}^{-1}} \Det{\paren{\mat{\Gamma}^{-1}}^{-1}} } \overset{\text{cov. matrix}}{=} -\mat{\Gamma} \)}
-			{The sum of symmetric matrices is still symmetric: \( (\mat{A} + \mat{B})^T = \mat{A}^T + \mat{B}^T = \mat{A} + \mat{B} \) for symmetric \( \mat{A} \), \( \mat{B} \).}
-		
-		\begin{itemize}
-			\item Initial state mean:
-		\end{itemize}
-		\begin{align*}
-			&& \pdv{Q}{\vec{m}_0}
-				&= \pdv{Q_1}{\vec{m}_0} + \pdv{Q_2}{\vec{m}_0} + \pdv{Q_3}{\vec{m}_0} + \pdv{Q_4}{\vec{m}_0} = \pdv{Q_2}{\vec{m}_0} & \\
-			&&	&= \frac{1}{2} \mat{V}_0^{-1} \hat{\vec{s}}_1 + \frac{1}{2} \mat{V}_0^{-T} \hat{\vec{s}}_1 - \frac{1}{2} \paren{\mat{V}_0^{-1} \vec{m}_0 + \mat{V}_0^{-T} \vec{m}_0} & \\
-			&&	&= \mat{V}_0^{-1} \paren{\hat{\vec{s}}_1 - \vec{m}_0} \overset{!}{=} 0 & \\
-			\implies && \vec{m}_0^\new &= \hat{\vec{s}}_1 &
-		\end{align*}
-		
-		\begin{itemize}
-			\item Initial state covariance:
-		\end{itemize}
-		\begin{align*}
-			&& \pdv{Q}{\mat{V}_0^{-1}}
-				&= \pdv{Q_1}{\mat{V}_0^{-1}} + \pdv{Q_12}{\mat{V}_0^{-1}} + \pdv{Q_3}{\mat{V}_0^{-1}} + \pdv{Q_4}{\mat{V}_0^{-1}} = \pdv{Q_1}{\mat{V}_0^{-1}} + \pdv{Q_2}{\mat{V}_0^{-1}} & \\
-			&&	&= \frac{1}{2} \mat{V}_0 - \frac{1}{2} \mat{P}_1^T + \frac{1}{2} \vec{m}_0 \hat{\vec{s}}_1^T + \frac{1}{2} \hat{\vec{s}}_1 \vec{m}_0^T - \frac{1}{2} \vec{m}_0 \vec{m}_0^T & \\
-			&&	&= \frac{1}{2} \mat{V}_0 - \frac{1}{2} \mat{P}_1 + \frac{1}{2} \vec{m}_0^\new \hat{\vec{s}}_1^T + \frac{1}{2} \hat{\vec{s}}_1 \paren{\vec{m}_0^\new}^T - \frac{1}{2} \vec{m}_0^\new \paren{\vec{m}_0^\new}^T & \\
-			&&	&= \frac{1}{2} \mat{V}_0 - \frac{1}{2} \mat{P}_1 + \frac{1}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T + \frac{1}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T - \frac{1}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T & \\
-			&&	&= \frac{1}{2} \mat{V}_0 - \frac{1}{2} \mat{P}_1 + \frac{1}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \overset{!}{=} 0 & \\
-			\implies && \mat{V}_0^\new &= \mat{P}_1 - \hat{\vec{s}}_1 \hat{\vec{s}}_1 &
-		\end{align*}
-		
-		The formulas for the state dynamics matrix, the state noise covariance, the initial state mean and the initial state covariance match exactly the formulas given in~\cite{ghahramaniParameterEstimationLinear1996}.
-	% end
+
+
+Our idea is to replace the linear measurements \( \vec{y}_t \) in an \ac{lgds}
+\begin{align*}
+	\vec{s}_{t + 1} & = \mat{A} \vec{s}_t + \vec{w}_t \\
+	\vec{y}_t       & = \mat{C} \vec{s}_t + \vec{v}_t
+\end{align*}
+reported in~\cite{ghahramaniParameterEstimationLinear1996} with an arbitrary, possible nonlinear but differentiable function \( \vec{g}_{\vec{\theta}} : \R^k \to \R^p \) with characterizing parameters \( \vec{\theta} \). In all of the following, we keep the parameters implicit for brevity.
+
+The vectors \( \vec{w}_t \) and \( \vec{v}_t \) represent the purely additive Gaussian noise of the system (with zero mean and covariance \( \mat{Q} \) and \( \mat{R} \), respectively). Then the states \( \vec{s}_t \), \( \vec{s}_{t - 1} \) and emissions \( \vec{y}_t \) are jointly Gaussian~\cite{minkaHiddenMarkovModels1999}:
+\begin{align*}
+	p(\vec{s}_t \given \vec{s}_{t - 1}) & \sim \normal(\mat{A} \vec{s}_{t - 1}, \mat{Q})    \\
+	p(\vec{y}_t \given \vec{s}_t)       & \sim \normal\big(\vec{g}(\vec{s}_t), \mat{R}\big)
+\end{align*}
+This model can also be written as a set of both linear and nonlinear equations:
+\begin{align*}
+	\vec{s}_{t + 1} & = \mat{A} \vec{s}_t + \vec{w}_t  \\
+	\vec{w}_t       & \sim \normal(\vec{0}, \mat{Q})   \\
+	\vec{y}_t       & = \vec{g}(\vec{s}_t) + \vec{v}_t \\
+	\vec{v}_t       & \sim \normal(\vec{0}, \mat{R})
+\end{align*}
+
+In all of the following, we assume to have \(N\) \ac{iid} observation sequences. Let \( \vec{y}_{1:T}^{(n)} \) be the \(n\)-th observation sequence and \( \vec{s}_{1:T}^{(n)} \) the corresponding state sequence. All sequences share a single state dynamics matrix, the same noise covariances and observation function. Let \( \vec{y}_{1:T} \coloneqq \big(\vec{y}_{1:T}^{(1)}, \vec{y}_{1:T}^{(2)}, \cdots, \vec{y}_{1:T}^{(N)}\big) \) and \( \vec{s}_{1:T} \coloneqq \big(\vec{s}_{1:T}^{(1)}, \vec{s}_{1:T}^{(2)}, \cdots, \vec{s}_{1:T}^{(n)}\big) \) be the sequences of all observation and state sequences, respectively. The same goes for \( \vec{y}_t \) and \( \vec{s}_t \).
+
+For a single observation sequence, the complete log-likelihood \( \ln p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big) \) has the form
+\begin{align*}
+	\ln p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big)
+		&= \ln p\Big(\vec{s}_1^{(n)}\Big) \prod_{t = 2}^{T} p\Big(\vec{s}_t^{(n)} \given \vec{s}_{t - 1}^{(n)}\Big) \prod_{t = 1}^{T} p\Big(\vec{y}_t^{(n)} \given \vec{s}_t^{(n)}\Big) \\
+		&= \ln p\Big(\vec{s}_1^{(n)}\Big) + \sum_{t = 2}^{T} \ln p\Big(\vec{s}_t^{(n)} \given \vec{s}_{t - 1}^{(n)}\Big) + \sum_{t = 1}^{T} \ln p\Big(\vec{y}_t^{(n)} \given \vec{s}_t^{(n)}\Big) \\
+		&= \logGaussianMulti{\vec{s}_1^{(n)}}{\vec{m}_0}{\mat{V}_0}{k} \\
+			&\qquad\qquad + \sum_{t = 2}^{T} \bigg( \logGaussianMulti{\vec{s}_t^{(n)}}{\mat{A} \vec{s}_{t - 1}^{(n)}}{\mat{Q}}{k} \bigg) \\
+			&\qquad\qquad + \sum_{t = 1}^{T} \bigg( \logGaussianMulti{\vec{y}_t^{(n)}}{\vec{g}\Big(\vec{s}_t^{(n)}\Big)}{\mat{R}}{p} \bigg) \\
+		&= -\frac{T(k + p)}{2} \ln(2\pi) - \frac{1}{2} \ln \lvert \mat{V}_0 \rvert - \frac{T - 1}{2} \ln \lvert \mat{Q} \rvert - \frac{T}{2} \ln \lvert \mat{R} \rvert \\
+			&\qquad\qquad -\frac{1}{2} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big)^T \mat{V}_0^{-1} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big) \\
+			&\qquad\qquad -\frac{1}{2} \sum_{t = 2}^{T} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \\
+			&\qquad\qquad -\frac{1}{2} \sum_{t = 1}^{T} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)
+\end{align*}
+where \( \vec{m}_0 \) and \( \mat{V}_0 \) describe the initial state mean and covariance. As the observation sequences are independent, we can formulate the joint complete log-likelihood \( \ln p(\vec{s}_{1:T}, \vec{y}_{1:T}) \) as the sum of all subsequent log-likelihoods:
+\begin{align*}
+	\ln p(\vec{s}_{1:T}, \vec{y}_{1:T})
+		&= \ln \prod_{n = 1}^{N} p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big) = \sum_{n = 1}^{N} \ln p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big) \\
+		&= -\frac{NT(k + p)}{2} \ln(2\pi) - \frac{N}{2} \ln \lvert \mat{V}_0 \rvert - \frac{N(T - 1)}{2} \ln \lvert \mat{Q} \rvert - \frac{NT}{2} \ln \lvert \mat{R} \rvert \\
+			&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big)^T \mat{V}_0^{-1} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big) \\
+			&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \\
+			&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)
+\end{align*}
+
+To derive the M-step formulas, we need to maximize the \emph{expected} complete log-likelihood. Therefore, we will now derive the expected log-likelihood
+\begin{equation*}
+	Q = \E\big[ p(\vec{s}_{1:T}, \vec{y}_{1:T}) \given \vec{y}_{1:T} \big]
+\end{equation*}
+This expectation depends on three expectations
+\begin{align*}
+	\hat{\vec{s}}_t^{(n)}    & \coloneqq \E\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big]                                      & \hat{\vec{s}}_t    & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_t^{(n)}          \\
+	\mat{P}_t^{(n)}          & \coloneqq \E\bigg[\vec{s}_t^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:T}\bigg]       & \mat{P}_t          & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\mat{P}}_t^{(n)}          \\
+	\mat{P}_{t, t - 1}^{(n)} & \coloneqq \E\bigg[\vec{s}_t^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:T}\bigg] & \mat{P}_{t, t - 1} & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\mat{P}}_{t, t - 1}^{(n)}
+\end{align*}
+which form the expected state, self-correlation and cross-correlation, respectively. Additionally we define
+\begin{align}
+	\hat{\vec{g}}_t^{(n)} & \coloneqq \E\Big[\vec{g}\Big(\vec{s}_t^{(n)}\Big) \Biggiven \vec{y}_{1:T}\Big]    \label{eqn:expectedMeasurement}                                              \\
+	\mat{G}_t^{(n)}       & \coloneqq \E\bigg[\vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t\Big)\Big)^T \bigggiven \vec{y}_{1:T}\bigg]    \label{eqn:expectedMeasurementMat}
+\end{align}
+to be the expectations of the measurement function \( \vec{g}(\vec{s}_t) \). We will see that evaluating this expectation is not possible in a closed form and has to be approximated, but for now we will be deriving the expected complete log-likelihood dependent on the defined expectations.
+
+For simplicity, let
+\begin{align*}
+	q_1 &\coloneqq -\frac{NT(k + p)}{2} \ln(2\pi) - \frac{N}{2} \ln \lvert \mat{V}_0 \rvert - \frac{N(T - 1)}{2} \ln \lvert \mat{Q} \rvert - \frac{NT}{2} \ln \lvert \mat{R} \rvert \\
+	q_2 &\coloneqq -\frac{1}{2} \sum_{n = 1}^{N} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big)^T \mat{V}_0^{-1} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big) \\
+	q_3 &\coloneqq -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \\
+	q_4 &\coloneqq -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)
+\end{align*}
+such that \( \ln p(\vec{s}_{1:T}, \vec{y}_{1:T}) = q_1 + q_2 + q_3 + q_4 \) and, with \(Q_1\), \(Q_2\), \(Q_3\) and \(Q_4\) being the corresponding expectations, \( Q = Q_1 + Q_2 + Q_3 + Q_4 \). Also let \( \vec{y}_t \coloneqq \sum_{n = 1}^{N} \vec{y}_t^{(n)} \).
+
+We start with \(Q_1\):
+\begin{equation*}
+	Q_1 = \E[q_1 \given \vec{y}_{1:T}] = -\frac{NT(k + p)}{2} \ln(2\pi) - \frac{N}{2} \ln \lvert \mat{V}_0 \rvert - \frac{N(T - 1)}{2} \ln \lvert \mat{Q} \rvert - \frac{NT}{2} \ln \lvert \mat{R} \rvert
+\end{equation*}
+Then following \(Q_1\):
+\begin{align*}
+	Q_2
+		&= \E[q_2 \given \vec{y}_{1:T}] \\
+		&= \E\Bigg[ -\frac{1}{2} \sum_{n = 1}^{N} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big)^T \mat{V}_0^{-1} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \E\Bigg[ \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big)^T \mat{V}_0^{-1} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big)^T \mat{V}_0^{-1} \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big)\!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big) \Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big)^T \mat{V}_0^{-1} \!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{s}_1^{(n)} - \vec{m}_0 \Big) \Big( \Big(\vec{s}_1^{(n)}\Big)^T - \vec{m}_0^T \Big) \mat{V}_0^{-1} \!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \E\Bigg[ \tr\!\bigg(\! \vec{s}_1^{(n)} \Big(\vec{s}_1^{(n)}\Big)^T - \vec{s}_1^{(n)} \vec{m}_0^T - \vec{m}\Big(\vec{s}_1^{(n)}\Big)^T + \vec{m}_0 \vec{m}_0^T \!\bigg) \mat{V}_0^{-1} \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \tr\!\bigg(\! \mat{P}_1^{(n)} \mat{V}_0^{-1} - \hat{\vec{s}}_1^{(n)} \vec{m}_0^T \mat{V}_0^{-1} - \vec{m}\Big(\hat{\vec{s}}_1^{(n)}\Big)^T \mat{V}_0^{-1} + \vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1} \!\bigg) \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \tr\!\Big( \mat{P}_1^{(n)} \mat{V}_0^{-1} \Big) - \tr\!\Big( \hat{\vec{s}}_1^{(n)} \vec{m}_0^T \mat{V}_0^{-1} \Big) - \tr\!\bigg(\! \vec{m}_0 \Big(\hat{\vec{s}}_1^{(n)}\Big)^T \mat{V}_0^{-1} \!\bigg) + \tr\!\Big(\vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1} \Big) \\
+		&=  -\frac{N}{2} \tr\!\Big( \mat{P}_1 \mat{V}_0^{-1} \Big) + \frac{N}{2} \tr\!\Big( \hat{\vec{s}}_1 \vec{m}_0^T \mat{V}_0^{-1} \Big) + \frac{N}{2} \tr\!\Big( \vec{m}_0 \hat{\vec{s}}_1^T \mat{V}_0^{-1} \Big) - \frac{N}{2} \tr\!\Big(\vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1} \Big)
+\end{align*}
+And \(Q_3\):
+\begin{align*}
+	Q_3
+		&= \E[q_3 \given \vec{y}_{1:T}] \\
+		&= \E\Bigg[ -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)\!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \Big(\big(\vec{s}_t^{(n)}\big)^T - \big(\vec{s}_{t - 1}^{(n)}\big)^T \mat{A}^T \Big) \mat{Q}^{-1} \!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{s}_t^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T - \vec{s}_t^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \mat{A}^T - \mat{A} \vec{s}_{t - 1}^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T - \mat{A} \vec{s}_{t - 1}^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \mat{A}^T \Big) \mat{Q}^{-1} \!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} - \mat{P}_{t, t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} - \mat{A} \underbrace{\mat{P}_{t - 1, t}^{(n)}}_{=\, \mat{P}_{t, t - 1}^{(n)}} \mat{Q}^{-1} - \mat{A} \mat{P}_{t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} \Big) \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{P}_{t, t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t, t - 1}^{(n)} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} \Big) \\
+		&= -\frac{N}{2} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{P}_{t, t - 1} \mat{A}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t, t - 1} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t - 1} \mat{A}^T \mat{Q}^{-1} \Big)
+\end{align*}
+Finally, we drive \(Q_4\). This is the one that depends on the non-closed-form expectations~\ref{eqn:expectedMeasurement} and~\ref{eqn:expectedMeasurementMat}:
+\begin{align*}
+	Q_4
+		&= \E[q_4 \given \vec{y}_{1:T}] \\
+		&= \E\Bigg[ -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \E\Bigg[ \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)\!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big) \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \E\Bigg[ \tr\!\bigg(\!\Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big) \bigg(\!\Big(\vec{y}_t^{(n)}\Big)^T - \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T \bigg) \mat{R}^{-1} \!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \E\Bigg[ \tr\!\bigg(\!\bigg(\! \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{y}_t^{(n)}\Big)^T + \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T \bigg) \mat{R}^{-1} \!\bigg) \bigggiven \vec{y}_{1:T} \Bigg] \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \tr\!\bigg(\! \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T \mat{R}^{-1} - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} + \mat{G}_t^{(n)} \mat{R}^{-1} \!\bigg) \\
+		&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \tr\!\bigg(\! \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) - \tr\!\bigg(\! \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) - \tr\!\bigg(\! \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) + \tr\!\Big( \mat{G}_t^{(n)} \mat{R}^{-1} \Big) \\
+\end{align*}
+
+Putting it all together, the expected complete log-likelihood across all observation sequences is given as
+\begin{align*}
+	Q
+		&= Q_1 + Q_2 + Q_3 + Q_4 \\
+		&= -\frac{NT(k + p)}{2} \ln(2\pi) - \frac{N}{2} \ln \lvert \mat{V}_0 \rvert - \frac{N(T - 1)}{2} \ln \lvert \mat{Q} \rvert - \frac{NT}{2} \ln \lvert \mat{R} \rvert \\
+			&\qquad\qquad -\frac{N}{2} \tr\!\Big( \mat{P}_1 \mat{V}_0^{-1} \Big) + \frac{N}{2} \tr\!\Big( \hat{\vec{s}}_1 \vec{m}_0^T \mat{V}_0^{-1} \Big) + \frac{N}{2} \tr\!\Big( \vec{m}_0 \hat{\vec{s}}_1^T \mat{V}_0^{-1} \Big) - \frac{N}{2} \tr\!\Big(\vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1} \Big) \\
+			&\qquad\qquad -\frac{N}{2} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{P}_{t, t - 1} \mat{A}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t, t - 1} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t - 1} \mat{A}^T \mat{Q}^{-1} \Big) \\
+			&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \tr\!\bigg(\! \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) - \tr\!\bigg(\! \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) - \tr\!\bigg(\! \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) + \tr\!\Big( \mat{G}_t^{(n)} \mat{R}^{-1} \Big)
+\end{align*}
+where \( Q_1 \), \( Q_2 \), \( Q_3 \) and \( Q_4 \) are functions of the parameters \( \mat{A} \), \( \mat{Q} \), \( \vec{\theta} \), \( \mat{R} \), \( \vec{m}_0 \) and \( \mat{V}_0 \):
+\begin{align*}
+	Q_1 & = Q_1(\mat{V}_0, \mat{Q}, \mat{R}) \\
+	Q_2 & = Q_2(\vec{m}_0, \mat{V}_0)        \\
+	Q_3 & = Q_3(\mat{A}, \mat{Q})            \\
+	Q_4 & = Q_4(\vec{\theta}, \mat{R})
+\end{align*}
+
+% TODO: Evaluate \hat{g} and G.
+
+Now we have everything together to derive the M-step equations by maximizing \(Q\).
+
+
+\subsection{M-Step}
+	To maximize \(Q\) \ac{wrt} all parameters, that is
+	\begin{itemize}
+		\item state dynamics matrix \(\mat{A}\),
+		\item state noise covariance \(\mat{Q}\),
+		\item measurement function parameters \(\vec{\theta}\),
+		\item measurement noise covariance \(\mat{R}\),
+		\item initial state mean \(\vec{m}_0\) and
+		\item initial state covariance \(\mat{V}_0\),
+	\end{itemize}
+	we have to take the derivatives \ac{wrt} to all the above parameters and set them to zero.
+	
+	To maximize \(Q\) \ac{wrt} all parameters, we have to take the derivatives \ac{wrt} the parameters and set them to zero.
+	\begin{itemize}
+		\item State dynamics matrix \(\mat{A}\):
+	\end{itemize}
+	\begin{align}
+		&&\pdv{Q}{\mat{A}}
+			&= \pdv{Q_1}{\mat{A}} + \pdv{Q_2}{\mat{A}} + \pdv{Q_3}{\mat{A}} + \pdv{Q_4}{\mat{A}} = \pdv{Q_3}{\mat{A}} & \nonumber \\
+		&&	&= -\frac{N}{2} \sum_{t = 2}^{T} -\mat{Q}^{-1} \mat{P}_{t, t - 1} - \mat{Q}^{-T} \mat{P}_{t, t - 1}^T + \mat{Q}^{-T} \mat{A} \mat{P}_{t - 1}^T + \mat{Q}^{-1} \mat{A} \mat{P}_{t - 1} & \nonumber \\
+		&&	&\oversetfootnotemark{=} -N \sum_{t = 2}^{T} -\mat{Q}^{-1} \mat{P}_{t, t - 1} + \mat{Q}^{-1} \mat{A} \mat{P}_{t - 1} \overset{!}{=} \mat{0} & \nonumber \\
+		\implies && \mat{A}^\new &= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} & \label{eqn:stateDynamicsMatrix}
+	\end{align}
+	\footnotetext{Covariance and correlation matrices (\( \mat{Q} \), \( \mat{R} \), \( \mat{P}_t \), \( \mat{P}_{t, t - 1} \)) are symmetric by definition.}
+	
+	\begin{itemize}
+		\item State noise covariance \(\mat{Q}\): \\ Instead of maximizing \ac{wrt} \(\mat{Q}\), we can also minimize \ac{wrt} \(\mat{Q}^{-1}\) which has the same effect.
+	\end{itemize}
+	\begin{align}
+		&&\pdv{Q}{\mat{Q}^{-1}}
+			&= \pdv{Q_1}{\mat{Q}^{-1}} + \pdv{Q_2}{\mat{Q}^{-1}} + \pdv{Q_3}{\mat{Q}^{-1}} + \pdv{Q_4}{\mat{Q}^{-1}} = \pdv{Q_1}{\mat{Q}^{-1}} + \pdv{Q_3}{\mat{Q}^{-1}} & \nonumber \\
+		&&	&\oversetfootnotemark{=} \frac{N(T - 1)}{2} \mat{Q} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t^T - \mat{A} \mat{P}_{t, t - 1}^T - \mat{P}_{t, t - 1}^T \mat{A}^T + \mat{A} \mat{P}_{t - 1}^T \mat{A}^T & \nonumber \\
+		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t - \mat{A} \mat{P}_{t, t - 1} - \mat{P}_{t, t - 1} \mat{A}^T + \mat{A} \mat{P}_{t - 1} \mat{A}^T & \nonumber \\
+		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{N}{2} \sum_{t = 2}^{T} \mat{A} \mat{P}_{t, t - 1} + \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \mat{A}^T - \frac{N}{2} \sum_{t = 2}^{T} \mat{A} \mat{P}_{t - 1} \mat{A}^T & \nonumber \\
+		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{N}{2} \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} + \frac{N}{2} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \big(\mat{A}^\new\big)^T & \nonumber \\
+			&&	&\qquad\qquad - \frac{N}{2} \mat{A}^\new \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg) \big(\mat{A}^\new\big)^T & \nonumber \\
+		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{N}{2} \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} + \frac{N}{2} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-T} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg)^T & \nonumber \\
+			&&	&\qquad\qquad - \frac{N}{2} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-T} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg)^T & \nonumber \\
+		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{N}{2} \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} + \frac{N}{2} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) & \nonumber \\
+			&&	&\qquad\qquad - \frac{N}{2} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} \cancel{\Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1}} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) & \nonumber \\
+		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \overset{!}{=} \mat{0} & \nonumber \\
+		\implies && \mat{Q}^\new &= \frac{1}{T - 1} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) & \label{eqn:stateNoiseCovariance}
+	\end{align}
+	\footnotetext{Note that \( \pdv{\mat{Q}^{-1}} \ln \det \mat{Q} = \pdv{\mat{Q}^{-1}} \ln \det \big(\mat{Q}^{-1}\big)^{-1} = \bigg( \pdv{\det (\mat{Q}^{-1})^{-1}} \ln \det \big(\mat{Q}^{-1}\big)^{-1} \bigg) \bigg( \pdv{\mat{Q}^{-1}} \det \big(\mat{Q}^{-1}\big)^{-1} \bigg) \overset{\text{cov. matrix}}{=} -\mat{Q} \)}
+
+	\begin{itemize}
+		\item Initial state mean \(\vec{m}_0\):
+	\end{itemize}
+	\begin{align}
+		&&\pdv{Q}{\vec{m}_0}
+			&= \pdv{Q_1}{\vec{m}_0} + \pdv{Q_2}{\vec{m}_0} + \pdv{Q_3}{\vec{m}_0} + \pdv{Q_4}{\vec{m}_0} = \pdv{Q_2}{\vec{m}_0} & \nonumber \\
+		&&	&= \frac{N}{2} \mat{V}_0^{-1} \hat{\vec{s}}_1 + \frac{N}{2} \mat{V}_0^{-T} \hat{\vec{s}}_1 - \frac{N}{2} \big( \mat{V}_0^{-1} \vec{m}_0 + \mat{V}_0^{-T} \vec{m}_0 \big) & \nonumber \\
+		&&	&= N \mat{V}_0^{-1} \hat{\vec{s}}_1 - N \mat{V}_0^{-1} \vec{m}_0 & \nonumber \\
+		&&	&= N \mat{V}_0^{-1} \big( \hat{\vec{s}}_1 - \vec{m}_0 \big) \overset{!}{=} \vec{0} & \nonumber \\
+		\implies && \vec{m}_0^\new &= \hat{\vec{s}}_1 = \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_1^{(n)} & \label{eqn:initialStateMean}
+	\end{align}
+	
+	\begin{itemize}
+		\item Initial state covariance \(\mat{V}_0\):
+	\end{itemize}
+	\begin{align}
+		&&\pdv{Q}{\mat{V}_0^{-1}}
+			&= \pdv{Q_1}{\mat{V}_0^{-1}} + \pdv{Q_2}{\mat{V}_0^{-1}} + \pdv{Q_3}{\mat{V}_0^{-1}} + \pdv{Q_4}{\mat{V}_0^{-1}} = \pdv{Q_1}{\mat{V}_0^{-1}} + \pdv{Q_2}{\mat{V}_0^{-1}} & \nonumber \\
+		&&	&= \frac{N}{2} \mat{V}_0 - \frac{N}{2} \mat{P}_1^T + \frac{N}{2} \vec{m}_0 \hat{\vec{s}}_1^T + \frac{N}{2} \hat{\vec{s}}_1 \vec{m}_0^T - \frac{N}{2} \vec{m}_0 \vec{m}_0^T & \nonumber \\
+		&&	&= \frac{N}{2} \mat{V}_0 - \frac{N}{2} \mat{P}_1^T + \frac{N}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T + \frac{N}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T - \frac{N}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T & \nonumber \\
+		&&	&= \frac{N}{2} \mat{V}_0 - \frac{N}{2} \mat{P}_1^T + \frac{N}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \overset{!}{=} \mat{0} & \nonumber \\
+		\implies && \mat{V}_0^\new &= \mat{P}_1^T - \hat{\vec{s}}_1 \hat{\vec{s}}_1^T & \label{eqn:initialStateCovariance}
+	\end{align}
+	
+	\begin{itemize}
+		\item Measurement noise covariance \(\mat{R}\):
+	\end{itemize}
+	\begin{align}
+		&&\pdv{Q}{\mat{R}^{-1}}
+			&= \pdv{Q_1}{\mat{R}^{-1}} + \pdv{Q_2}{\mat{R}^{-1}} + \pdv{Q_3}{\mat{R}^{-1}} + \pdv{Q_4}{\mat{R}^{-1}} = \pdv{Q_1}{\mat{R}^{-1}} + \pdv{Q_4}{\mat{R}^{-1}} & \nonumber \\
+		&&	&= \frac{NT}{2} \mat{R} - \frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T \overset{!}{=} \mat{0} & \nonumber \\
+		\implies && \mat{R} &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T & \label{eqn:measurementNoiseCovariance}
+	\end{align}
+	
+	The equations for the state dynamics matrix~\ref{eqn:stateDynamicsMatrix}, the state noise covariance~\ref{eqn:stateNoiseCovariance}, the initial state mean~\ref{eqn:initialStateMean} and the initial state covariance~\ref{eqn:initialStateCovariance} match exactly the equations given in~\cite{ghahramaniParameterEstimationLinear1996}. The equation for the measurement noise covariance~\ref{eqn:measurementNoiseCovariance} differs from the one given in~\cite{ghahramaniParameterEstimationLinear1996} as we are having nonlinear measurements and thus we cannot write the covariance in such a compact form.
+	
+	As said before, the expectations~\ref{eqn:expectedMeasurement} and~\ref{eqn:expectedMeasurementMat} are problematic as we cannot evaluate the integrals
+	\begin{align*}
+		\hat{\vec{g}}_t^{(n)} &= \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \dd{\vec{s}_{1:T}^{(n)}} \\
+		\mat{G}_t^{(n)}       &= \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T} \Big) \dd{\vec{s}_{1:T}^{(n)}}
+	\end{align*}
+	in closed form (the function \( \vec{g}(\cdot) \) is nonlinear). Note that the posterior distribution is Gaussian
+	\begin{equation*} % TODO: Is the posterior covariance dependent on the observation sequence?
+		p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \sim \normal\Big(\hat{\vec{m}}_t^{(n)}, \hat{\mat{V}}_t\Big)
+	\end{equation*}
+	where \( \hat{\vec{m}}_t^{(n)} \) and \( \hat{\mat{V}}_t \) form the posterior mean and covariance, respectively. These are calculated in the E-step (formulas~\ref{eqn:posteriorMean} and~\ref{eqn:posteriorCov} \todo{references}). Due to this Gaussian behavior, we can approximate the integrals using the spherical-radial cubature rule~\cite{solinCubatureIntegrationMethods2010} given in equation~\ref{eqn:sphericalRadialGaussianCubatureRule} (with \( \vec{\xi}_i = \sqrt{k} [\vec{1}]_i \)):
+	\begin{align}
+		\int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \dd{\vec{s}_{1:T}^{(n)}}
+			&\approx \sum_{i = 1}^{2k} \vec{g}\bigg(\sqrt{\hat{\mat{V}}_t} \vec{\xi}_i + \hat{\vec{m}}_t^{(n)}\bigg)  \label{eqn:lgsCubatureG} \\
+		\int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T} \Big)
+			&\approx \sum_{i = 1}^{2k} \vec{g}\bigg(\sqrt{\hat{\mat{V}}_t} \vec{\xi}_i + \hat{\vec{m}}_t^{(n)}\bigg) \bigg( \vec{g}\bigg(\sqrt{\hat{\mat{V}}_t} \vec{\xi}_i + \hat{\vec{m}}_t^{(n)}\bigg) \bigg)^T  \label{eqn:lgsCubatureGG}
+	\end{align}
+	These approximations can be inserted into the closed-form calculation of \(\mat{R}\) given in equation~\ref{eqn:measurementNoiseCovariance} and can be easily differentiated \ac{wrt} \(\vec{\theta}\), \ac{eg} by using a neural network for approximating \(\vec{g}(\cdot)\) and an autograd engine like PyTorch~\cite{paszkePyTorchImperativeStyle2019}. Then we can use a numerical optimizer (\ac{eg} Adam~\cite{kingmaAdamMethodStochastic2017} or Adagrad~\cite{duchiAdaptiveSubgradientMethods2011}) and take one optimization step in each invocation of the M-step. That way we do not maximize \(Q\) in every M-step, but increase \(Q\) such that the convergence properties will still hold~\cite{moonExpectationmaximizationAlgorithm1996}.
+	
+	We are now able to perform the M-step with the closed-form maximizations given in equations~\ref{eqn:stateDynamicsMatrix},~\ref{eqn:stateNoiseCovariance},~\ref{eqn:initialStateMean},~\ref{eqn:initialStateCovariance} and~\ref{eqn:measurementNoiseCovariance} and using a numerical approach for the measurement parameters \(\vec{\theta}\) by applying cubature approximations given in~\ref{eqn:lgsCubatureG} and~\ref{eqn:lgsCubatureGG}. For completeness, we summarize all of them here:
+	\begin{align*}
+		\mat{A}^\new &= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} \\
+		\mat{Q}^\new &= \frac{1}{T - 1} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \\
+		\vec{m}_0^\new &= \hat{\vec{s}}_1 = \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_1^{(n)} \\
+		\mat{V}_0^\new &= \mat{P}_1^T - \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \\
+		\mat{R} &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T \\
+		\hat{\vec{g}}_t^{(n)} &\approx \sum_{i = 1}^{2k} \vec{g}\bigg(\sqrt{\hat{\mat{V}}_t} \vec{\xi}_i + \hat{\vec{m}}_t^{(n)}\bigg) \\
+		\mat{G}_t^{(n)} &\approx \sum_{i = 1}^{2k} \vec{g}\bigg(\sqrt{\hat{\mat{V}}_t} \vec{\xi}_i + \hat{\vec{m}}_t^{(n)}\bigg) \bigg( \vec{g}\bigg(\sqrt{\hat{\mat{V}}_t} \vec{\xi}_i + \hat{\vec{m}}_t^{(n)}\bigg) \bigg)^T
+	\end{align*}
 % end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

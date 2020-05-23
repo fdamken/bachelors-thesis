@@ -19,10 +19,16 @@
 
 % Style definitions.
 
+\MakeOuterQuote{"}
+
+% Captions should be centered.
+\captionsetup{justification=centering}
+
 % Matrix/Vector notation.
 \renewcommand{\vec}[1]{\boldsymbol{\mathrm{#1}}}
 \newcommand{\mat}[1]{\boldsymbol{\mathrm{#1}}}
 % Shorthands.
+\newcommand{\R}{\mathbb{R}}
 \newcommand{\normal}{\mathcal{N}}
 \newcommand{\gaussianMulti}[4]{\frac{1}{\left(2\pi\right)^{#4/2} \cdot \lvert #3 \rvert^{1/2}} \exp \bigg\{\! -\frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right) \bigg\}}
 \newcommand{\logGaussianMulti}[4]{-\frac{1}{2} \ln \lvert #3 \rvert - \frac{#4}{2} \ln\left(2\pi\right) - \frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right)}
@@ -33,9 +39,11 @@
 \newcommand{\Bigggiven}{\,\Bigg\vert\,}
 \newcommand{\new}{\mathrm{new}}
 
-\newcommand{\E}[2][]{\mathbb{E}_{#1}\bracket{#2}}
-\newcommand{\oversetfootnotemark}[1]{\overset{(\raisebox{-4.5pt}{\hspace{0.5pt}\footnotemark})}{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\oversetfootnotemark}[1]{\stepcounter{footnote} \overset{\mathclap{(\thefootnote)}}{#1}}
+\let\realfootnote\footnote
 \let\realfootnotetext\footnotetext
+\renewcommand{\footnote}[1]{\realfootnote{\, #1}}
 \renewcommand{\footnotetext}[1]{\realfootnotetext{\, #1}}
 \newcommand{\doublefootnotetext}[2]{\addtocounter{footnote}{-1} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2}}
 \newcommand{\triplefootnotetext}[3]{\addtocounter{footnote}{-2} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2} \stepcounter{footnote} \footnotetext{#3}}
@@ -44,14 +52,15 @@
 \parindent0pt
 
 % Allow page breaks inside of equations.
-\allowdisplaybreaks
+%\allowdisplaybreaks
 
 % Do not include subsections and lower in TOC.
 \setcounter{tocdepth}{1}
 
 % BibTeX.
 \renewcommand{\bibname}{References}
-\bibliographystyle{ieeetr}
+%\bibliographystyle{ieeetr}
+\bibliographystyle{alpha}
 
 % Penalties.
 
