@@ -29,17 +29,20 @@
 \newcommand{\mat}[1]{\boldsymbol{\mathrm{#1}}}
 % Shorthands.
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
 \newcommand{\normal}{\mathcal{N}}
 \newcommand{\gaussianMulti}[4]{\frac{1}{\left(2\pi\right)^{#4/2} \cdot \lvert #3 \rvert^{1/2}} \exp \bigg\{\! -\frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right) \bigg\}}
 \newcommand{\logGaussianMulti}[4]{-\frac{1}{2} \ln \lvert #3 \rvert - \frac{#4}{2} \ln\left(2\pi\right) - \frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right)}
+\newcommand{\subgiven}{\vert}
 \newcommand{\given}{\,\vert\,}
 \newcommand{\biggiven}{\,\big\vert\,}
 \newcommand{\Biggiven}{\,\Big\vert\,}
 \newcommand{\bigggiven}{\,\bigg\vert\,}
 \newcommand{\Bigggiven}{\,\Bigg\vert\,}
 \newcommand{\new}{\mathrm{new}}
+% Math operators.
+\DeclareMathOperator{\Cov}{Cov}
 
-\newcommand{\E}{\mathbb{E}}
 \newcommand{\oversetfootnotemark}[1]{\stepcounter{footnote} \overset{\mathclap{(\thefootnote)}}{#1}}
 \let\realfootnote\footnote
 \let\realfootnotetext\footnotetext

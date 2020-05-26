@@ -25,7 +25,7 @@
 
 
 \begin{document}
-	% No page numbering for the preamble.
+	% No page numbering for preamble.
 	\pagenumbering{gobble}
 
 	\Metadata{
@@ -40,7 +40,8 @@
 	\birthplace{Frankfurt am Main}
 	\reviewer{Jan Peters \and Joe Watson}
 	\department{inf}
-	\institute{Intelligent Autonomous Systems}
+	\institute{TU Darmstadt}
+	\group{Intelligent Autonomous Systems}
 	%\group{Working Group}
 	\addTitleBoxLogo*{\includegraphics[width=0.75\linewidth]{img/iasLogo.pdf}}
 
@@ -53,6 +54,9 @@
 	\maketitle
 
 	\affidavit
+
+	% Roman page numbering for toc and glossaries.
+	\pagenumbering{roman}
 
 	\tableofcontents
 
@@ -69,8 +73,9 @@
 		\printglossary[type = symbol, style = iasThesisGeneral]
 		\printglossary[type = operator, style = iasThesisOperators]
 	% end
-
-	% Start page numbering.
+	
+	% Arabic page numbering for content.
+	\cleardoublepage
 	\pagenumbering{arabic}
 
 	% Someone wants content, for whatever reason.
@@ -86,7 +91,9 @@
 	\bibliography{literature/lit}
 	\nocite{*}
 
+	% Alph page numbering for content.
 	\cleardoublepage
+	\pagenumbering{alph}
 
 	\appendix
 	\include{meta/appendix}
