@@ -1,7 +1,5 @@
 \section{Linear Dynamical Systems with Nonlinear Measurements}
 
-
-
 Our idea is to replace the linear measurements \( \vec{y}_t \) in an \ac{lgds}
 \begin{align*}
 	\vec{s}_{t + 1} & = \mat{A} \vec{s}_t + \vec{w}_t \\
@@ -28,7 +26,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 	For a single observation sequence, the complete log-likelihood \( \ln p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big) \) has the form
 	\begin{align*}
 		\ln p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big)
-			&= \ln p\Big(\vec{s}_1^{(n)}\Big) \prod_{t = 2}^{T} p\Big(\vec{s}_t^{(n)} \given \vec{s}_{t - 1}^{(n)}\Big) \prod_{t = 1}^{T} p\Big(\vec{y}_t^{(n)} \given \vec{s}_t^{(n)}\Big) \\
+			&= \ln \Bigg(\! p\Big(\vec{s}_1^{(n)}\Big) \prod_{t = 2}^{T} p\Big(\vec{s}_t^{(n)} \given \vec{s}_{t - 1}^{(n)}\Big) \prod_{t = 1}^{T} p\Big(\vec{y}_t^{(n)} \given \vec{s}_t^{(n)}\Big) \!\Bigg) \\
 			&= \ln p\Big(\vec{s}_1^{(n)}\Big) + \sum_{t = 2}^{T} \ln p\Big(\vec{s}_t^{(n)} \given \vec{s}_{t - 1}^{(n)}\Big) + \sum_{t = 1}^{T} \ln p\Big(\vec{y}_t^{(n)} \given \vec{s}_t^{(n)}\Big) \\
 			&= \logGaussianMulti{\vec{s}_1^{(n)}}{\vec{m}_0}{\mat{V}_0}{k} \\
 				&\qquad\qquad + \sum_{t = 2}^{T} \bigg( \logGaussianMulti{\vec{s}_t^{(n)}}{\mat{A} \vec{s}_{t - 1}^{(n)}}{\mat{Q}}{k} \bigg) \\
@@ -52,11 +50,11 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 	\begin{equation*}
 		Q = \E\big[ p(\vec{s}_{1:T}, \vec{y}_{1:T}) \given \vec{y}_{1:T} \big]
 	\end{equation*}
-	This expectation depends on three expectations
+	This quantity depends on three expectations
 	\begin{align*}
-		\hat{\vec{s}}_{t \subgiven t_0}^{(n)}  & \coloneqq \E\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t_0}\Big]                                      & \hat{\vec{s}}_{t, t_0}           & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t_0}^{(n)}        \\
-		\mat{P}_{t \subgiven t_0}^{(n)}        & \coloneqq \E\bigg[\vec{s}_t^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t_0}\bigg]       & \mat{P}_{t \subgiven t_0}        & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\mat{P}}_{t \subgiven t_0}^{(n)}        \\
-		\mat{P}_{t, t - 1 \subgiven t_0}^{(n)} & \coloneqq \E\bigg[\vec{s}_t^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:t_0}\bigg] & \mat{P}_{t, t - 1 \subgiven t_0} & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\mat{P}}_{t, t - 1 \subgiven t_0}^{(n)}
+		\hat{\vec{s}}_{t \subgiven t_0}^{(n)}  & \coloneqq \E\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t_0}\Big]                                      & \hat{\vec{s}}_{t, t_0}           & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t_0}^{(n)}  \\
+		\mat{P}_{t \subgiven t_0}^{(n)}        & \coloneqq \E\bigg[\vec{s}_t^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t_0}\bigg]       & \mat{P}_{t \subgiven t_0}        & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t \subgiven t_0}^{(n)}        \\
+		\mat{P}_{t, t - 1 \subgiven t_0}^{(n)} & \coloneqq \E\bigg[\vec{s}_t^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:t_0}\bigg] & \mat{P}_{t, t - 1 \subgiven t_0} & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t, t - 1 \subgiven t_0}^{(n)}
 	\end{align*}
 	which form the expected state, self-correlation and cross-correlation, respectively. We call \( \hat{\vec{s}}_{t \subgiven t - 1} \) the prior, \( \hat{\vec{s}}_{t \subgiven t} \) the posterior and \( \hat{\vec{s}}_{t \subgiven T} \) the smoothed states (same for the self- and cross-correlation). For brevity, we also write \( \hat{\vec{s}}_t \) for the smoothed states \( \hat{\vec{s}}_{t \subgiven T} \) (same for the self- and cross-correlation). Additionally we define
 	\begin{align}
@@ -72,13 +70,13 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		q_3 &\coloneqq -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \\
 		q_4 &\coloneqq -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)
 	\end{align*}
-	such that \( \ln p(\vec{s}_{1:T}, \vec{y}_{1:T}) = q_1 + q_2 + q_3 + q_4 \) and, with \(Q_1\), \(Q_2\), \(Q_3\) and \(Q_4\) being the corresponding expectations, \( Q = Q_1 + Q_2 + Q_3 + Q_4 \). Also let \( \vec{y}_t \coloneqq \sum_{n = 1}^{N} \vec{y}_t^{(n)} \).
+	such that \( \ln p(\vec{s}_{1:T}, \vec{y}_{1:T}) = q_1 + q_2 + q_3 + q_4 \) and, with \(Q_1\), \(Q_2\), \(Q_3\) and \(Q_4\) being the corresponding expectations, \( Q = Q_1 + Q_2 + Q_3 + Q_4 \).
 	
 	We start with \(Q_1\):
 	\begin{equation*}
 		Q_1 = \E[q_1 \given \vec{y}_{1:T}] = -\frac{NT(k + p)}{2} \ln(2\pi) - \frac{N}{2} \ln \lvert \mat{V}_0 \rvert - \frac{N(T - 1)}{2} \ln \lvert \mat{Q} \rvert - \frac{NT}{2} \ln \lvert \mat{R} \rvert
 	\end{equation*}
-	Then following \(Q_1\):
+	Then following \(Q_2\):
 	\begin{align*}
 		Q_2
 			&= \E[q_2 \given \vec{y}_{1:T}] \\
@@ -106,7 +104,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 			&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{P}_{t, t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t, t - 1}^{(n)} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} \Big) \\
 			&= -\frac{N}{2} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{P}_{t, t - 1} \mat{A}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t, t - 1} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t - 1} \mat{A}^T \mat{Q}^{-1} \Big)
 	\end{align*}
-	Finally, we drive \(Q_4\). This is the one that depends on the non-closed-form expectations~\eqref{eq:expectedMeasurement} and~\eqref{eq:expectedMeasurementMat}:
+	Finally, we derive \(Q_4\). This is the one that depends on the non-closed-form expectations~\eqref{eq:expectedMeasurement} and~\eqref{eq:expectedMeasurementMat}:
 	\begin{align*}
 		Q_4
 			&= \E[q_4 \given \vec{y}_{1:T}] \\
@@ -167,7 +165,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 	\begin{align}
 		&&\pdv{Q}{\mat{Q}^{-1}}
 			&= \pdv{Q_1}{\mat{Q}^{-1}} + \pdv{Q_2}{\mat{Q}^{-1}} + \pdv{Q_3}{\mat{Q}^{-1}} + \pdv{Q_4}{\mat{Q}^{-1}} = \pdv{Q_1}{\mat{Q}^{-1}} + \pdv{Q_3}{\mat{Q}^{-1}} & \nonumber \\
-		&&	&\oversetfootnotemark{=} \frac{N(T - 1)}{2} \mat{Q} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t^T - \mat{A} \mat{P}_{t, t - 1}^T - \mat{P}_{t, t - 1}^T \mat{A}^T + \mat{A} \mat{P}_{t - 1}^T \mat{A}^T & \nonumber \\
+		&&	&\oversetfootnotemark{=} \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t^T - \mat{A} \mat{P}_{t, t - 1}^T - \mat{P}_{t, t - 1}^T \mat{A}^T + \mat{A} \mat{P}_{t - 1}^T \mat{A}^T & \nonumber \\
 		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t - \mat{A} \mat{P}_{t, t - 1} - \mat{P}_{t, t - 1} \mat{A}^T + \mat{A} \mat{P}_{t - 1} \mat{A}^T & \nonumber \\
 		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{N}{2} \sum_{t = 2}^{T} \mat{A} \mat{P}_{t, t - 1} + \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \mat{A}^T - \frac{N}{2} \sum_{t = 2}^{T} \mat{A} \mat{P}_{t - 1} \mat{A}^T & \nonumber \\
 		&&	&= \frac{N(T - 1)}{2} \mat{Q} - \frac{N}{2} \sum_{t = 2}^{T} \mat{P}_t + \frac{N}{2} \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} + \frac{N}{2} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \big(\mat{A}^\new\big)^T & \nonumber \\
@@ -212,7 +210,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		&&\pdv{Q}{\mat{R}^{-1}}
 			&= \pdv{Q_1}{\mat{R}^{-1}} + \pdv{Q_2}{\mat{R}^{-1}} + \pdv{Q_3}{\mat{R}^{-1}} + \pdv{Q_4}{\mat{R}^{-1}} = \pdv{Q_1}{\mat{R}^{-1}} + \pdv{Q_4}{\mat{R}^{-1}} & \nonumber \\
 		&&	&= \frac{NT}{2} \mat{R} - \frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T \overset{!}{=} \mat{0} & \nonumber \\
-		\implies && \mat{R} &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T & \label{eq:measurementNoiseCovariance}
+		\implies && \mat{R}^\new &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T & \label{eq:measurementNoiseCovariance}
 	\end{align}
 	
 	The equations for the state dynamics matrix~\eqref{eq:stateDynamicsMatrix}, the state noise covariance~\eqref{eq:stateNoiseCovariance}, the initial state mean~\eqref{eq:initialStateMean} and the initial state covariance~\eqref{eq:initialStateCovariance} match exactly the equations given in~\cite{ghahramaniParameterEstimationLinear1996}. The equation for the measurement noise covariance~\eqref{eq:measurementNoiseCovariance} differs from the one given in~\cite{ghahramaniParameterEstimationLinear1996} as we are having nonlinear measurements and thus we cannot write the covariance in such a compact form.
@@ -228,10 +226,10 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 	\end{equation*}
 	where \( \hat{\vec{s}}_{t}^{(n)} \) and \( \mat{V}_{t} \) form the posterior mean and covariance, respectively. These are calculated in the E-step (formulas~\eqref{eq:posteriorMean} and~\eqref{eq:posteriorCov}). Due to this Gaussian behavior, we can approximate the integrals using the spherical-radial cubature rule~\cite{solinCubatureIntegrationMethods2010} given in equation~\eqref{eq:sphericalRadialGaussianCubatureRule} (with \( \vec{\xi}_i = \sqrt{k} [\vec{1}]_i \)):
 	\begin{align}
-		\int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \dd{\vec{s}_{1:T}^{(n)}}
-			&\approx \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg)  \label{eq:lgsCubatureG} \\
-		\int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T} \Big)
-			&\approx \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg)\!\bigg)^T  \label{eq:lgsCubatureGG}
+		\int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \dd{\vec{s}_t^{(n)}}
+			&\approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg)  \label{eq:lgsCubatureG} \\
+		\int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T} \Big) \dd{\vec{s}_t^{(n)}}
+			&\approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg)\!\bigg)^T  \label{eq:lgsCubatureGG}
 	\end{align}
 	These approximations can be inserted into the closed-form calculation of \(\mat{R}\) given in equation~\eqref{eq:measurementNoiseCovariance} and can be easily differentiated \ac{wrt} \(\vec{\theta}\), \ac{eg} by using a neural network for approximating \(\vec{g}(\cdot)\) and an autograd engine like PyTorch~\cite{paszkePyTorchImperativeStyle2019}. Then we can use a numerical optimizer (\ac{eg} Adam~\cite{kingmaAdamMethodStochastic2017} or Adagrad~\cite{duchiAdaptiveSubgradientMethods2011}) and take one optimization step in each invocation of the M-step. That way we do not maximize \(Q\) in every M-step, but increase \(Q\) such that the convergence properties will still hold~\cite{moonExpectationmaximizationAlgorithm1996}.
 	
@@ -241,166 +239,137 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		\mat{Q}^\new &= \frac{1}{T - 1} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \\
 		\vec{m}_0^\new &= \hat{\vec{s}}_1 = \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_1^{(n)} \\
 		\mat{V}_0^\new &= \mat{P}_1^T - \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \\
-		\mat{R} &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T \\
-		\hat{\vec{g}}_t^{(n)} &\approx \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg) \\
-		\mat{G}_t^{(n)} &\approx \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg)\!\bigg)^T
+		\mat{R}^\new &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T \\
+		\hat{\vec{g}}_t^{(n)} &\approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg) \\
+		\mat{G}_t^{(n)} &\approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\!\bigg)\!\bigg)^T
 	\end{align*}
 
 	We proceed by deriving the E-step.
 % end
 
 \subsection{E-Step}
-	To get the expectations \( \hat{\vec{s}}_t \), \( \mat{P}_{t} \) and \( \mat{P}_{t, t - 1} \), we need to calculate the distribution \( p(\vec{s}_t \given \vec{y}_{1:T}) \) for each time step \(t\) (and, consequently, for each observation sequence \(n\)). This is exactly the posterior distribution calculated by a smoother. Thus we divide the E-step into two parts~\cite{minkaHiddenMarkovModels1999}:
+	To get the expectations \( \hat{\vec{s}}_t^{(n)} \), \( \mat{P}_{t} \) and \( \mat{P}_{t, t - 1} \), we need to calculate the distribution \( p\Big(\vec{s}_t^{(n)} \biggiven \vec{y}_{1:T}\Big) \) for each time step \(t\) (and, consequently, for each observation sequence \(n\)). This is exactly the posterior distribution calculated by a smoother. Thus we divide the E-step into two parts~\cite{minkaHiddenMarkovModels1999}:
 	\begin{enumerate}
-		\item Filtering: To calculate the posterior distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \), we employ a Gaussian filter similar to the standard Kalman filter.
-		\item Smoothing: To calculate the smoothed posterior distribution \( p(\vec{s}_t \given \vec{y}_{1:T}) \), we employ a Gaussian \ac{rts} smoother.
+		\item Filtering: To calculate the posterior distribution \( p\Big(\vec{s}_t^{(n)} \biggiven \vec{y}_{1:t}\Big) \), we employ a Gaussian filter similar to the standard Kalman filter.
+		\item Smoothing: To calculate the smoothed posterior distribution \( p\Big(\vec{s}_t^{(n)} \biggiven \vec{y}_{1:T}\Big) \), we employ a Gaussian \ac{rts} smoother.
 	\end{enumerate}
+	Note that we write \( \vec{s}_{t \subgiven t_0} \) and \( \vec{y}_{t \subgiven t_0} \) for the sequences \( \Big(\vec{s}_{t \subgiven t_0}^{(1)}, \vec{s}_{t \subgiven t_0}^{(2)}, \cdots, \vec{s}_{t \subgiven t_0}^{(N)}\Big) \) and \( \Big(\vec{y}_{t\subgiven t_0}^{(1)}, \vec{y}_{t \subgiven t_0}^{(2)}, \cdots, \vec{y}_{t \subgiven t_0}^{(N)}\Big) \), respectively.
 
-	% TODO: Specify what that all s-hats refer to a single sequence...
 	\subsubsection{Forward Pass}
 		To derive the forward pass equations, we utilize the groundwork done in~\cite{deisenrothProbabilisticPerspectiveGaussian2011} which concludes that the filter is given as
 		\begin{align*}
-			\hat{\vec{s}}_{t \subgiven t} & = \hat{\vec{s}}_{t \subgiven t - 1} + \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} (\vec{y}_t - \hat{\vec{y}}_{t \subgiven t - 1}) \\
-			\mat{V}_{t \subgiven t}       & = \mat{V}_{t \subgiven t - 1} - \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \mat{V}_{t \subgiven t - 1}
+			\hat{\vec{s}}_{t \subgiven t}^{(n)} & = \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} + \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \Big(\vec{y}_t^{(n)} - \hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big) \\
+			\mat{V}_{t \subgiven t}       & = \mat{V}_{t \subgiven t - 1} - \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \mat{K}_{t \subgiven t - 1}^T
 		\end{align*}
 		with the expectations and covariances
 		\begin{align}
-			\hat{\vec{s}}_{t \subgiven t - 1} & \coloneqq \E_{\vec{s}_t}[\vec{s}_t \given \vec{y}_{1:t - 1}]                         \label{eq:filterPriorState}      \\
-			\mat{V}_{t \subgiven t - 1}       & \coloneqq \Cov_{\vec{s}_t}[\vec{s}_t \given \vec{y}_{1:t - 1}]                       \label{eq:filterPriorCovariance} \\
-			\hat{\vec{y}}_{t \subgiven t - 1} & \coloneqq \E_{\vec{y}_t}[\vec{y}_t \given \vec{y}_{1:t - 1}]                         \label{eq:filterPriorMeas}       \\
-			\mat{S}_{t \subgiven t - 1}       & \coloneqq \Cov_{\vec{y}_t}[\vec{y}_t \given \vec{y}_{1:t - 1}]                       \label{eq:filterPriorMeasCov}    \\
-			\mat{K}_{t \subgiven t - 1}       & \coloneqq \Cov_{\vec{s}_t, \vec{y}_t}[\vec{s}_t, \vec{y}_t \given \vec{y}_{1:t - 1}] \label{eq:filterPriorKalman}
+			\hat{\vec{s}}_{t \subgiven t - 1}^{(n)} & \coloneqq \E_{\vec{s}_t^{(n)}}\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorState}                                                                     \\
+			\mat{V}_{t \subgiven t - 1}             & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}}\!\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorCovariance}                               \\
+			\hat{\vec{y}}_{t \subgiven t - 1}^{(n)} & \coloneqq \E_{\vec{y}_t^{(n)}}\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorMeas}                                                                      \\
+			\mat{S}_{t \subgiven t - 1}             & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{y}_t^{(n)}}\!\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorMeasCov}                                  \\
+			\mat{K}_{t \subgiven t - 1}             & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\!\Big[\vec{s}_t^{(n)}, \vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorKalman}
 		\end{align}
 		which are priors for the state, state covariance, measurement, measurement covariance and cross-covariance, respectively. As in our case only the measurements are nonlinear, we can easily evaluate the prior state~\eqref{eq:filterPriorState} and the prior covariance~\eqref{eq:filterPriorCovariance} by exploiting the linearity of the expectation operator:
 		\begin{align*}
-			\hat{\vec{s}}_{t \subgiven t - 1}
-				&= \E_{\vec{s}_t}[\vec{s}_t \given \vec{y}_{1:t - 1}] \\
-				&= \E_{\vec{s}_{t - 1}, \vec{w}_t}[\mat{A} \vec{s}_{t - 1} + \vec{w}_t \given \vec{y}_{1:t - 1}] \\
-				&= \mat{A} \E_{\vec{s}_{t - 1}}[\vec{s}_{t - 1} \given \vec{y}_{1:t - 1}] \\
-				&= \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1} \\
+			\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}
+				&= \E_{\vec{s}_t^{(n)}}\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \E_{\vec{s}_{t - 1}^{(n)}, \vec{w}_t^{(n)}}\Big[\mat{A} \vec{s}_{t - 1}^{(n)} + \vec{w}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \mat{A} \E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \\
 			\mat{V}_{t \subgiven t - 1}
-				&= \Cov_{\vec{s}_t}[\vec{s}_t \given \vec{y}_{1:t - 1}] \\
-				&= \Cov_{\vec{s}_{t - 1}}[\mat{A} \vec{s}_{t - 1} \given \vec{y}_{1:t - 1}] + \Cov_{\vec{w}_t}[\vec{w}_t \given \vec{y}_{1:t - 1}] \\
-				&= \E_{\vec{s}_t}[\vec{s}_t \vec{s}_t^T \given \vec{y}_{1:t - 1}] + \mat{Q} \\
-				&= \E_{\vec{s}_{t - 1}}[\mat{A} \vec{s}_{t - 1} \vec{s}_{t - 1} \mat{A}^T \given \vec{y}_{1:t - 1}] + \mat{Q} \\
-				&= \mat{A} \E_{\vec{s}_{t - 1}}[\vec{s}_{t - 1} \vec{s}_{t - 1} \given \vec{y}_{1:t - 1}] \mat{A}^T + \mat{Q} \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}}\!\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_{t - 1}^{(n)}}\!\Big[\mat{A} \vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] + \Cov_{\vec{w}_t^{(n)}}\!\Big[\vec{w}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}}\bigg[\vec{s}_t^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] + \mat{Q} \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\mat{A} \vec{s}_{t - 1}^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \mat{A}^T \bigggiven \vec{y}_{1:t - 1}\bigg] + \mat{Q} \\
+				&= \mat{A} \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] \mat{A}^T + \mat{Q} \\
 				&= \mat{A} \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T + \mat{Q}
 		\end{align*}
 		
-		%By plugging in \( \vec{g}(\vec{s}_t) = \mat{C} \vec{s}_t \), \ac{ie} a purely linear system, we get exactly the Kalman filter equations:
-		%\begin{align*}
-		%	\hat{\vec{y}}_{t \subgiven t - 1} &= \mat{C} \hat{\vec{y}}_{t - 1 \subgiven t - 1} \\
-		%	\mat{S}_{t \subgiven t - 1}
-		%		&= \Cov_{\vec{y}_t}[\vec{y}_t \given \vec{y}_{1:t - 1}] \\
-		%		&= \Cov_{\vec{s}_t}[\mat{C} \vec{s}_t \given \vec{y}_{1:t - 1}] + \mat{R} \\
-		%		&= \mat{C} \E_{\vec{s}_t}[\vec{s}_t \vec{s}_t^T \given \vec{y}_{1:t - 1}] \mat{C}^T + \mat{R} \\
-		%		&= \mat{C} \mat{V}_{t \subgiven t - 1} \mat{C}^T + \mat{R} \\
-		%	\mat{K}_{t \subgiven t - 1} % TODO: This does not match the Kalman filter equation...
-		%		&= \Cov_{\vec{s}_t, \vec{y}_t}[\vec{s}_t, \vec{y}_t \given \vec{y}_{1:t - 1}] \\
-		%		&= \E_{\vec{s}_t}[\vec{s}_t \vec{s}_t^T \mat{C}^T \given \vec{y}_{1:t - 1}] - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T \\
-		%		&= \E_{\vec{s}_t}[\vec{s}_t \vec{s}_t^T \given \vec{y}_{1:t - 1}] \mat{C}^T - \mat{A} \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^T \mat{C}^T \\
-		%		&= \mat{V}_{t \subgiven t - 1} \mat{C}^T - \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1} \hat{\vec{s}}_{t \subgiven t - 1}^T \mat{C}^T
-		%\end{align*}
-		
 		But we are using a nonlinear measurement function \( \vec{g}(\cdot) \). Hence, it is not possible to compute the integrals produced by the expectations/covariances~\eqref{eq:filterPriorMeas},~\eqref{eq:filterPriorMeasCov} and~\eqref{eq:filterPriorKalman}. As in the derivation of the M-step, we apply cubature methods to approximate the integrals:
 		\begin{align*}
-			\hat{\vec{y}}_{t \subgiven t - 1}
-				&= \E_{\vec{y}_t}[\vec{y}_t \given \vec{y}_{1:t - 1}] \\
-				&= \E_{\vec{s}_t}[\vec{g}(\vec{s}_t) \given \vec{y}_{1:t - 1}] \\
-				&= \int\! \vec{g}(\vec{s}_t) p(\vec{s}_t \given \vec{y}_{1:t - 1}) \dd{\vec{s}_t} \\
-				&= \int\! \vec{g}(\vec{s}_t) \,\normal(\hat{\vec{s}}_{t \subgiven t - 1}, \mat{V}_{t \subgiven t - 1}) \dd{\vec{s}_t} \\
-				&\approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\big( \sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1} \big) \\
+			\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}
+				&= \E_{\vec{y}_t^{(n)}}\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \E_{\vec{s}_t^{(n)}}\Big[\vec{g}\Big(\vec{s}_t^{(n)}\Big) \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big) \dd{\vec{s}_t^{(n)}} \\
+				&= \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) \,\normal\Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}, \mat{V}_{t \subgiven t - 1}\Big) \dd{\vec{s}_t^{(n)}} \\
+				&\approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\! \sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \!\bigg)
 		\end{align*}
 		\begin{align*}
 			\mat{S}_{t \subgiven t - 1}
-				&= \Cov_{\vec{y}_t}[\vec{y}_t \given \vec{y}_{1:t - 1}] \\
-				&= \Cov_{\vec{s}_t}[\vec{g}(\vec{s}_t) \given \vec{y}_{1:t - 1}] \\
-				&= \E_{\vec{s}_t}\bigg[\vec{g}(\vec{s}_t) \Big(\vec{g}(\vec{s}_t)\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] \\
-				&= \int\! \vec{g}(\vec{s}_t) \Big(\vec{g}(\vec{s}_t)\Big)^T p(\vec{s}_t \given \vec{y}_{1:t - 1}) \dd{\vec{s}_t} \\
-				&= \int\! \vec{g}(\vec{s}_t) \Big(\vec{g}(\vec{s}_t)\Big)^T \,\normal(\hat{\vec{s}}_{t \subgiven t - 1}, \mat{V}_{t \subgiven t - 1}) \\
-				&\approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}\!\bigg)\!\bigg)^T \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{y}_t^{(n)}}\!\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}}\!\Big[\vec{g}\Big(\vec{s}_t^{(n)}\Big) \Biggiven \vec{y}_{1:t - 1}\Big] + \Cov_{\vec{v}_t^{(n)}}\!\Big[\vec{v}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}}\bigg[\vec{g}\Big(\vec{s}_t^{(n)}\bigg) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] + \mat{R} \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T p\Big(\vec{s}_t^{(n)} \given \vec{y}_{1:t - 1}\Big) \dd{\vec{s}_t^{(n)}} + \mat{R} \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T \,\normal\Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}, \mat{V}_{t \subgiven t - 1}\Big) \dd{\vec{s}_t^{(n)}} + \mat{R} \\
+				&\approx \frac{1}{2kN} \sum_{n = 1}^{N} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T + \mat{R} \\
 		\end{align*}
 		\begin{align*}
 			\mat{K}_{t \subgiven t - 1}
-				&= \Cov_{\vec{s}_t, \vec{y}_t}[\vec{s}_t, \vec{y}_t \given \vec{y}_{1:t - 1}] \\
-				&= \E_{\vec{s}_t, \vec{y}_t}[\vec{s}_t \vec{y}_t^T \given \vec{y}_{1:t - 1}] - \E_{\vec{s}_t}[\vec{s}_t \given \vec{y}_{1:t - 1}] \big(\E_{\vec{y}_t}[\vec{y}_t \given \vec{y}_{1:t - 1}]\big)^T \\
-				&= \E_{\vec{s}_t, \vec{y}_t}[\vec{s}_t \vec{y}_t^T \given \vec{y}_{1:t - 1}] - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T \\
-				&= \E_{\vec{s}_t}[\vec{s}_t \Big(\vec{g}(\vec{s}_t)\Big)^T \given \vec{y}_{1:t - 1}] - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T \\
-				&= \int\! \vec{s}_t \Big(\vec{g}(\vec{s}_t)\Big)^T p(\vec{s}_t \given \vec{y}_{1:t - 1}) \dd{\vec{s}_t} - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T \\
-				&= \int\! \vec{s}_t \Big(\vec{g}(\vec{s}_t)\Big)^T \,\normal(\hat{\vec{s}}_{t \subgiven t - 1}, \mat{V}_{t \subgiven t - 1}) \dd{\vec{s}_t} - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T \\
-				&\approx \frac{1}{2k} \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}\!\bigg)\!\bigg)^T - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T
+				&= \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\!\Big[\vec{s}_t^{(n)}, \vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\bigg[\vec{s}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}^{(n)}\bigg] - \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}}\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \bigg(\E_{\vec{y}_t^{(n)}}\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]\bigg)^T \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\bigg[\vec{s}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}}\bigg[\vec{s}_t^{(n)} \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \int\! \vec{s}_t^{(n)} \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big) \dd{\vec{s}_t^{(n)}} - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
+				&= \frac{1}{N} \sum_{n = 1}^{N} \int\! \vec{s}_t \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T \,\normal\Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}, \mat{V}_{t \subgiven t - 1}\Big) \dd{\vec{s}_t} - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
+				&\approx \frac{1}{2kN} \sum_{n = 1}^{N}  \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T
 		\end{align*}
 		This completes the derivation of the forward pass equations.
 		
 		For completeness, we summarize all of them here:
 		\begin{align*}
-			\hat{\vec{s}}_{t \subgiven t - 1} & = \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1} \\
-			\mat{V}_{t \subgiven t - 1}       & = \mat{A} \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T + \mat{Q} \\
-			\hat{\vec{y}}_{t \subgiven t - 1} & \approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\big( \sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1} \big)   \\
-			\mat{S}_{t \subgiven t - 1}       & \approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}\!\bigg)\!\bigg)^T \\
-			\mat{K}_{t \subgiven t - 1}       & \approx \frac{1}{2k} \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}\!\bigg)\!\bigg)^T - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T \\
-			\hat{\vec{s}}_{t \subgiven t}     & = \hat{\vec{s}}_{t \subgiven t - 1} + \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} (\vec{y}_t - \hat{\vec{y}}_{t \subgiven t - 1}) \\
-			\mat{V}_{t \subgiven t}           & = \mat{V}_{t \subgiven t - 1} - \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \mat{V}_{t \subgiven t - 1}  
+			\hat{\vec{s}}_{t \subgiven t - 1}^{(n)} &= \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \\
+			\mat{V}_{t \subgiven t - 1} &= \mat{A} \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T + \mat{Q} \\
+			\hat{\vec{y}}_{t \subgiven t - 1}^{(n)} &= \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\! \sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \!\bigg) \\
+			\mat{S}_{t \subgiven t - 1} &= \frac{1}{2kN} \sum_{n = 1}^{N} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T + \mat{R} \\
+			\mat{K}_{t \subgiven t - 1} &= \frac{1}{2kN} \sum_{n = 1}^{N}  \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
+			\hat{\vec{s}}_{t \subgiven t}^{(n)} &= \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} + \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \Big(\vec{y}_t^{(n)} - \hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big) \\
+			\mat{V}_{t \subgiven t} &= \mat{V}_{t \subgiven t - 1} - \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \mat{K}_{t \subgiven t - 1}^T
 		\end{align*}
-		The forward pass is initialized with \( \hat{\vec{s}}_{0 \subgiven 0} = \vec{m}_0 \) and \( \mat{V}_{0 \subgiven 0} = \mat{V}_0 \).
+		The forward pass is initialized with \( \hat{\vec{s}}_{0 \subgiven 0}^{(n)} = \vec{m}_0 \) and \( \mat{V}_{0 \subgiven 0} = \mat{V}_0 \) for all \( n = 1, 2, \cdots, N \).
 	% end
 	
 	\subsubsection{Backward Pass}
 		To derive the backward pass equations, we utilize the groundwork done in~\cite{deisenrothProbabilisticPerspectiveGaussian2011} which concludes that the smoother is given as
 		\begin{align*}
-			\hat{\vec{s}}_{t - 1 \subgiven T} & = \hat{\vec{s}}_{t - 1 \subgiven t - 1} + \mat{J}_{t - 1} (\hat{\vec{s}}_{t \subgiven T} - \hat{\vec{s}}_{t \subgiven t - 1}) \\
+			\hat{\vec{s}}_{t - 1 \subgiven T}^{(n)} & = \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} + \mat{J}_{t - 1} \Big(\hat{\vec{s}}_{t \subgiven T}^{(n)} - \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big) \\
 			\mat{V}_{t - 1 \subgiven T}       & = \mat{V}_{t - 1 \subgiven t - 1} + \mat{J}_{t - 1} (\mat{V}_{t \subgiven T} - \mat{V}_{t \subgiven t - 1}) \mat{J}_{t - 1}^T
 		\end{align*}
 		with
 		\begin{align}
-			\mat{J}_{t - 1} &\coloneqq \mat{V}_{t - 1, t \subgiven t - 1} \mat{V}_{t \subgiven t - 1}^{-1}  \nonumber \\
-			\mat{V}_{t - 1, t \subgiven t - 1} &\coloneqq \Cov_{\vec{s}_{t - 1}, \vec{s}_t}[\vec{s}_{t - 1}, \vec{s}_t \given \vec{y}_{1:t - 1}]  \label{eq:smootherPriorCrossCov}
+			\mat{J}_{t - 1} &\coloneqq \mat{V}_{t \subgiven t - 1}^{-1}  \nonumber \\
+			\mat{V}_{t - 1, t \subgiven t - 1} &\coloneqq \frac{1}{N} \sum_{n = 0}^{N} \Cov_{\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:smootherPriorCrossCov}
 		\end{align}
 		Like for the filter, we can easily evaluate the cross-covariance matrix \( \mat{V}_{t - 1, t \subgiven t - 1} \) by exploiting the linearity of the expectation:
 		\begin{align*}
 			\mat{V}_{t - 1, t \subgiven t - 1}
-				&= \Cov_{\vec{s}_{t - 1}, \vec{s}_t}[\vec{s}_{t - 1}, \vec{s}_t \given \vec{y}_{1:t - 1}] \\
-				&= \E_{\vec{s}_{t - 1}, \vec{s}_t}[\vec{s}_{t - 1} \vec{s}_t^T \given \vec{y}_{1:t - 1}] - \E_{\vec{s}_{t - 1}}[\vec{s}_{t - 1} \given \vec{y}_{1:t - 1}] \big( \E_{\vec{s}_t}[\vec{s}_t \given \vec{y}_{1:t - 1}] \big)^T \\
-				&\oversetfootnotemark{=} \E_{\vec{s}_{t - 1}}[\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T \given \vec{y}_{1:t - 1}] - \hat{\vec{s}}_{t - 1 \subgiven t - 1} \hat{\vec{s}}_{t \subgiven t - 1}^T \\
-				&= \E_{\vec{s}_{t - 1}}[\vec{s}_{t - 1} \vec{s}_{t - 1}^T \given \vec{y}_{1:t - 1}] \mat{A}^T - \hat{\vec{s}}_{t - 1 \subgiven t - 1} \hat{\vec{s}}_{t \subgiven t - 1}^T \\
-				&= \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T - \hat{\vec{s}}_{t - 1 \subgiven t - 1} \hat{\vec{s}}_{t \subgiven t - 1}^T
+				&= \frac{1}{N} \sum_{n = 0}^{N} \Cov_{\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
+				&= \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] - \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \bigg( \E_{\vec{s}_t^{(n)}}\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \bigg)^T \\
+				&\oversetfootnotemark{=} \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \big(\vec{s}_{t - 1}^{(n)}\Big)^T \mat{A}^T \bigggiven \vec{y}_{1:t - 1}\bigg] - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
+				&= \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\Big] \mat{A}^T - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
+				&= \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T
 		\end{align*}
-		\footnotetext{Due to the independence and zero mean of the noise, it disappears in the expectation: \( \E_{\vec{s}_{t - 1}, \vec{s}_t}[\vec{s}_{t - 1} \vec{s}_t^T \given \vec{y}_{1:t - 1}] = \E_{\vec{s}_{t - 1}, \vec{w}_t}[\vec{s}_{t - 1} \big(\vec{s}_{t - 1}^T \mat{A}^T + \vec{w}_t^T\big) \given \vec{y}_{1:t - 1}] = \E_{\vec{s}_{t - 1}, \vec{w}_t}[\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T + \vec{s}_{t - 1} \vec{w}_t^T \given \vec{y}_{1:t - 1}] = \E_{\vec{s}_{t - 1}, \vec{w}_t}[\vec{s}_{t - 1} \vec{s}_{t - 1}^T \mat{A}^T \given \vec{y}_{1:t - 1}] \)}
+		\footnotetext{
+			Due to the independence and zero mean of the noise, it disappears in the expectation:
+			\( \E_{\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \big(\vec{s}_t^{(n)}\big)^T \Biggiven \vec{y}_{1:t - 1}\Big]
+					= \E_{\vec{s}_{t - 1}^{(n)}, \vec{w}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Big(\!\big(\vec{s}_{t - 1}^{(n)}\big)^T \mat{A}^T + \big(\vec{w}_t^{(n)}\big)^T\Big) \Biggiven \vec{y}_{1:t - 1}\Big]
+					= \E_{\vec{s}_{t - 1}^{(n)}, \vec{w}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \big(\vec{s}_{t - 1}^{(n)}\big)^T \mat{A}^T + \vec{s}_{t - 1}^{(n)} \big(\vec{w}_t^{(n)}\big)^T \Biggiven \vec{y}_{1:t - 1}\Big]
+					= \E_{\vec{s}_{t - 1}^{(n)}, \vec{w}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \big(\vec{s}_{t - 1}^{(n)}\big)^T \mat{A}^T \Biggiven \vec{y}_{1:t - 1}\Big] \)
+		}
 		This completes the derivation of the backward pass equations.
 		
 		For completeness, we summarize all of them here:
 		\begin{align}
-			\mat{V}_{t - 1, t \subgiven t - 1} & = \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T - \hat{\vec{s}}_{t - 1 \subgiven t - 1} \hat{\vec{s}}_{t \subgiven t - 1}^T  \nonumber \\
-			\mat{J}_{t - 1}                    & = \mat{V}_{t - 1, t \subgiven t - 1} \mat{V}_{t \subgiven t - 1}^{-1}  \nonumber \\
-			\hat{\vec{s}}_{t - 1 \subgiven T}  & = \hat{\vec{s}}_{t - 1 \subgiven t - 1} + \mat{J}_{t - 1} (\hat{\vec{s}}_{t \subgiven T} - \hat{\vec{s}}_{t \subgiven t - 1})  \label{eq:posteriorMean} \\
-			\mat{V}_{t - 1 \subgiven T}        & = \mat{V}_{t - 1 \subgiven t - 1} + \mat{J}_{t - 1} (\mat{V}_{t \subgiven T} - \mat{V}_{t \subgiven t - 1}) \mat{J}_{t - 1}^T  \label{eq:posteriorCov}
+			\mat{V}_{t - 1, t \subgiven t - 1} &= \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T  \nonumber \\
+			\mat{J}_{t - 1} &= \mat{V}_{t - 1, t \subgiven t - 1} \mat{V}_{t \subgiven t - 1}^{-1}  \nonumber \\
+			\hat{\vec{s}}_{t - 1 \subgiven T}^{(n)} &= \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} + \mat{J}_{t - 1} \Big(\hat{\vec{s}}_{t \subgiven T}^{(n)} - \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)  \label{eq:posteriorMean} \\
+			\mat{V}_{t - 1 \subgiven T} &= \mat{V}_{t - 1 \subgiven t - 1} + \mat{J}_{t - 1} (\mat{V}_{t \subgiven T} - \mat{V}_{t \subgiven t - 1}) \mat{J}_{t - 1}^T  \label{eq:posteriorCov}
 		\end{align}
 		According to~\cite{minkaBayesianLinearRegression1999}, the self- and cross-correlations are given as
 		\begin{align*}
-			\mat{P}_t &= \mat{V}_{t \subgiven T} + \hat{\vec{s}}_{t \subgiven T} \hat{\vec{s}}_{t \subgiven T} \\
-			\mat{P}_{t, t - 1} &= \mat{J}_{t - 1} \mat{V}_{t \subgiven T} + \hat{\vec{s}}_{t \subgiven T} \hat{\vec{s}}_{t - 1 \subgiven T}
+			\mat{P}_t &= \mat{V}_{t \subgiven T} + \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven T}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven T}^{(n)}\Big)^T \\
+			\mat{P}_{t, t - 1} &= \mat{J}_{t - 1} \mat{V}_{t \subgiven T} + \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven T}^{(n)} \Big(\hat{\vec{s}}_{t - 1 \subgiven T}^{(n)}\Big)^T
 		\end{align*}
 		
 		That wraps up the derivation of the E- and M-step of the EM-algorithm for partially linear dynamical Gaussian systems.
 	% end
 % end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
