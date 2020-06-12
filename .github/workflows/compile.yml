@@ -13,7 +13,7 @@ jobs:
       - name: LaTeX
         uses: dante-ev/latex-action@v0.2.0
         with:
-          root_file: thesis/thesis.tex
+          root_file: thesis.tex
           working_directory: thesis
-          compiler: lualatex
+          args: -lualatex -latexoption=-file-line-error -latexoption=-interaction=nonstopmode
           #extra_system_packages:
