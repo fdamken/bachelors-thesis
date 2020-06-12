@@ -1,4 +1,4 @@
-name: CI
+name: LaTeX Compilation
 on:
   push:
     branches: [ master ]
