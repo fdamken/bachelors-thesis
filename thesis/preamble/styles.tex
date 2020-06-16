@@ -54,8 +54,10 @@
 \renewcommand{\arraystretch}{1.5}
 \parindent0pt
 
-% Allow page breaks inside of equations.
-%\allowdisplaybreaks
+% Definitions, Theorems and Lemmata.
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
 
 % Do not include subsections and lower in TOC.
 \setcounter{tocdepth}{1}
