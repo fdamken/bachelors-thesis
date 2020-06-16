@@ -377,7 +377,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		If we restrict the previous generalization of the nonlinear measurement function \( \vec{g}_{\vec{\theta}} : \R^k \to \R^p \) to a linear function \( \vec{g}(\vec{s}) = \mat{C} \vec{s} \) where \( \vec{\theta} = \{ \mat{C} \} \), we can show that the approximations for \( \hat{\vec{g}}_t^{(n)} \), \( \mat{G}_t^{(n)} \), \( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \), \( \mat{S}_{t \subgiven t - 1} \) and \( \mat{K}_{t \subgiven t - 1} \), given in equations~\eqref{eq:lgsCubatureG},~\eqref{eq:lgsCubatureGG},~\eqref{eq:cubatureY},~\eqref{eq:cubatureS} and~\eqref{eq:cubatureK} are exact, \ac{ie} they match the real expectation/covariance value.
 		
 		\begin{lemma}
-			For any matrix \( \mat{A} \in \R^{n \times n} \), there exists exactly one skew-symmetric matrix \( \mat{B} \in \R^{n \times n} \) such that \( \mat{A}^T = \mat{A} + B \) holds.
+			For any matrix \( \mat{A} \in \R^{n \times n} \), there exists exactly one skew-symmetric matrix \( \mat{B} \in \R^{n \times n} \) such that \( \mat{A}^T = \mat{A} + \mat{B} \) holds.
 		\end{lemma}
 		\begin{proof}
 			Let \( \mat{A} \in \R^{n \times n} \) be any matrix. It then holds that
