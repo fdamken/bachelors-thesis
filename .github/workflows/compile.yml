@@ -10,10 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: LaTeX
+      - name: Compile LaTeX
         uses: dante-ev/latex-action@v0.2.0
         with:
           root_file: thesis.tex
           working_directory: thesis
-          args: -f -lualatex -latexoption=-file-line-error -latexoption=-interaction=nonstopmode
-          #extra_system_packages:
+          args: -lualatex -latexoption=-file-line-error -latexoption=-interaction=nonstopmode
+      - name: Upload Compiled Thesis
+        uses: actions/upload-artifact@v2
+        with:
+          name: Full Text PDF
+          path: thesis/thesis.pdf
