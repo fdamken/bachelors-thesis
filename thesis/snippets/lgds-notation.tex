@@ -4,27 +4,31 @@
 
 \begin{table}[ht]
 	\centering
-	\begin{tabular}{l|cc}
-		\textbf{Element / Definition} & \textbf{Ghahramani}~\cite{ghahramaniParameterEstimationLinear1996} & \textbf{Minka}~\cite{minkaHiddenMarkovModels1999} \\ \hline
-		Time                         & \( t \)                         & \( t \)                 \\
-		Last Timestep                & \( T \)                         & \( T \)                 \\
-		State                        & \( \vec{x}_t \)                 & \( \vec{s}_t \)         \\
-		Observations                 & \( \vec{y}_t \)                 & \( \vec{x}_t \)         \\
-		State Dynamics Matrix        & \( \mat{A} \)                   & \( \mat{A} \)           \\
-		State Noise Covariance       & \( \mat{Q} \)                   & \( \mat{\Gamma} \)      \\
-		Observation Matrix           & \( \mat{C} \)                   & \( \mat{C} \)           \\
-		Observation Noise Covariance & \( \mat{R} \)                   & \( \mat{\Sigma} \)      \\
+	\begin{tabular}{l|ccc}
+		\textbf{Element / Definition} & \textbf{Ghahramani}~\cite{ghahramaniParameterEstimationLinear1996} & \textbf{Minka}~\cite{minkaHiddenMarkovModels1999} & \textbf{This Thesis} \\ \hline
+		Time                         & \( t \)                         & \( t \)                 & \( t \)                                                    \\
+		Last Timestep                & \( T \)                         & \( T \)                 & \( T \)                                                    \\
+		State                        & \( \vec{x}_t \)                 & \( \vec{s}_t \)         & \( \vec{s}_t \)                                            \\
+		Observations                 & \( \vec{y}_t \)                 & \( \vec{x}_t \)         & \( \vec{y}_t \)                                            \\
+		State Dynamics Matrix        & \( \mat{A} \)                   & \( \mat{A} \)           & \( \mat{A} \)                                              \\
+		State Noise Covariance       & \( \mat{Q} \)                   & \( \mat{\Gamma} \)      & \( \mat{Q} \)                                              \\
+		Observation Matrix           & \( \mat{C} \)                   & \( \mat{C} \)           & \( \mat{C} \)                                              \\
+		Observation Noise Covariance & \( \mat{R} \)                   & \( \mat{\Sigma} \)      & \( \mat{R} \)                                              \\
 		Full Sequence \( \big( \vec{x}_1, \vec{x}_2, \cdots, \vec{x}_T \big) \)
-		                             & \( \{ \vec{x} \} \)             & \( \vec{x}_{1:T} \)     \\
+		                             & \( \{ \vec{x} \} \)             & \( \vec{x}_{1:T} \)     & \( \vec{x}_{1:T} \)                                        \\
 		Subsequence \( \big( \vec{x}_{t_0}, \vec{x}_{t_0 + 1}, \cdots, \vec{x}_{t_1} \big) \)
-		                             & \( \{ \vec{x} \}_{t_0}^{t_1} \) & \( \vec{x}_{t_0:t_1} \) \\
-		Expected Log Likelihood      & \( Q \)                         & \( Q \)                 \\
-		Expected State \( \E{\vec{x}_t \biggiven \{ \vec{y} \}} \)
-		                             & \( \hat{\vec{x}}_t \)           & \( \mat{\vec{m}}_t \)   \\
-		Self-Correlation \( \E{\vec{x}_t \vec{x}_t^T \biggiven \{ \vec{y} \}} \)
-		                             & \( \mat{P}_t \)                 & -                       \\
-		Cross-Correlation \( \E{\vec{x}_t \vec{x}_{t-1}^T \biggiven \{ \vec{y} \}} \)
-		                             & \( \mat{P}_{t, t - 1} \)        & -
+		                             & \( \{ \vec{x} \}_{t_0}^{t_1} \) & \( \vec{x}_{t_0:t_1} \) & \( \vec{x}_{t_0:t_1} \)                                    \\
+		Expected Log Likelihood      & \( Q \)                         & \( Q \)                 & \( Q \)                                                    \\
+		Prior State \( \E\big[ \vec{x}_t \biggiven \{ \vec{y} \}_1^{t - 1} \big] \)
+		                             & \( \vec{x}_t^{t - 1} \)         & -                       & \( \hat{\vec{s}}_{t \subgiven t - 1} \)                    \\
+		Posterior State \( \E\big[ \vec{x}_t \biggiven \{ \vec{y} \}_1^t \big] \)
+		                             & \( \vec{x}_t^t \)               & \( \vec{m}_t \)         & \( \hat{\vec{s}}_{t \subgiven t} \)                        \\
+		Smoothed State \( \E\big[\vec{x}_t \biggiven \{ \vec{y} \}_1^T\big] \)
+		                             & \( \hat{\vec{x}}_t \)           & \( \hat{\vec{m}}_t \)   & \( \hat{\vec{s}}_t \), \( \hat{\vec{s}}_{t \subgiven T} \) \\
+		Self-Correlation \( \E\big[\vec{x}_t \vec{x}_t^T \biggiven \{ \vec{y} \}\big] \)
+		                             & \( \mat{P}_t \)                 & -                       & \( \mat{P}_t \)                                            \\
+		Cross-Correlation \( \E\big[\vec{x}_t \vec{x}_{t-1}^T \biggiven \{ \vec{y} \}\big] \)
+		                             & \( \mat{P}_{t, t - 1} \)        & -                       & \( \mat{P}_{t, t - 1} \)
 	\end{tabular}
 	\caption{Notations used for linear Gaussian dynamical systems.}
 \end{table}
