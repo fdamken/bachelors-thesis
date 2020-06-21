@@ -1,5 +1,32 @@
 % Tikz-diagrams for not cluttering the text.
 
+\newcommand{\tikzHarmonicOscillator}{
+	\begin{tikzpicture}
+		\node [draw, rectangle] (m) at (0, 3) {\(m\)};
+		\draw [thick] (-1.5, 5) -- (1.5, 5);
+		\fill [pattern = north east lines] (-1.5, 5) rectangle (1.5, 5.2);
+		\draw [decoration = { aspect = 0.3, segment length = 2mm, amplitude = 3mm, coil }, decorate] (0, 5) -- node[left, xshift = -0.4cm]{\(k\)} (m);
+		
+		\coordinate (xA) at (1, 4.5);
+		\coordinate (xB) at (1, 3.5);
+		\draw [->] (xA) -- node[right]{\(x\)} (xB);
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzSimplePendulum}{
+	\begin{tikzpicture}[rotate = 180]
+		\node [draw, circle, fill, minimum width = 0.5cm] (C) at (0, 0) {};
+		\node [draw, circle] (mass) at (120:3cm) {\(m\)};
+		\coordinate (A) at (90:3cm);
+		\draw (C) -- node[right]{\(L\)} (mass);
+		\draw [dashed] (C) -- (A);
+		\draw pic [draw, "$\varphi$", angle radius = 1.5cm] {angle=A--C--mass};
+		
+		\draw [->] (0.5, 1) -- node[right]{\(g\)} (0.5, 2);
+	\end{tikzpicture}
+}
+
+
 \newcommand{\tikzHiddenMarkovModel}{
 	\begin{tikzpicture}[xscale=3.0,yscale=1.8,every node/.style={scale=1.2}]
 		% States.

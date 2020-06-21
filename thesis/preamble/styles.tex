@@ -19,6 +19,10 @@
 
 % Style definitions.
 
+% Description-list styling.
+\SetLabelAlign{parright}{\parbox[t]{\labelwidth}{\raggedleft#1}}
+\setlist[description]{style = multiline, leftmargin = 4cm, align = parright}
+
 \MakeOuterQuote{"}
 
 % Captions should be centered.
@@ -28,6 +32,7 @@
 \renewcommand{\vec}[1]{\boldsymbol{\mathrm{#1}}}
 \newcommand{\mat}[1]{\boldsymbol{\mathrm{#1}}}
 % Shorthands.
+\renewcommand{\C}{\mathbb{C}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\normal}{\mathcal{N}}
@@ -70,6 +75,7 @@
 % Penalties.
 
 % TikZ-related stuff.
+\tikzset{> = { Latex[length = 2mm] }}
 
 
 

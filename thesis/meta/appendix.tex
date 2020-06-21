@@ -1,3 +1,45 @@
-\chapter{Example Appendix}
-	Here goes some lengthy figures or similar\dots
+\chapter{Invent some nice chapter title} \todo{Chapter title.}
+	\section{Solution of the Harmonic Oscillator}
+		\label{app:harmonicOscillatorSolution}
+	
+		To solve the differential motion equation
+		\begin{align*}
+			m\ddot{x} = -kx
+		\end{align*}
+		of the harmonic oscillator given in~\autoref{subsec:harmonicOscillator}, we use the solution approach
+		\begin{align*}
+			x(t) = c e^{\lambda t} \qquad \dot{x}(t) = \lambda c e^{\lambda t} \qquad \ddot{x}(t) = \lambda^2 c e^{\lambda t}
+		\end{align*}
+		and insert it into the differential equation:
+		\begin{align*}
+			m\ddot{x} = -kx \quad\implies\quad
+			m \lambda^2 c e^{\lambda t} = -k c e^{\lambda t} \quad\iff\quad
+			m \lambda^2 = -k \quad\iff\quad
+			\lambda = \pm \sqrt{-\frac{k}{m}}
+		\end{align*}
+		As both \(k\) and \(m\) are defined to be positive, we get the complex solutions:
+		\begin{align*}
+			x_1(t) = e^{i t \sqrt{k / m}} \qquad x_2(t) = e^{-i t \sqrt{k / m}}
+		\end{align*}
+		Due to the superposition principle, also \( x_1 + x_2 \) and \( x_1 - x_2 \) are solutions. Hence, we get two real solutions by using Euler's identity \( e^{\varphi i} = \cos(\varphi) + i \sin(\varphi) \):
+		\begin{align*}
+			x_1 + x_2
+				&= e^{i t \sqrt{k / m}} + e^{-i t \sqrt{k / m}} \\
+				&= \cos\Big(t \sqrt{k / m}\Big) + i \sin\Big(t \sqrt{k / m}\Big) + \cos\Big(t \sqrt{k / m}\Big) - i \sin\Big(t \sqrt{k / m}\Big) \\
+				&= 2 \cos\Big(t \sqrt{k / m}\Big) \\
+			x_1 - x_2
+				&= e^{i \sqrt{k / m} t} - e^{-i t \sqrt{k / m}} \\
+				&= \cos\Big(t \sqrt{k / m}\Big) i \sin\Big(t \sqrt{k / m}\Big) - \cos\Big(t \sqrt{k / m}\Big) + i \sin\Big(t \sqrt{k / m}\Big) \\
+				&=  2i \sin\Big(t \sqrt{k / m}\Big)
+		\end{align*}
+		This yields the following general solution:
+		\begin{align*}
+			x(t) = c_1 \cos\Big(t \sqrt{k / m}\Big) + c_2 \sin\Big(t \sqrt{k / m}\Big),\quad c_1, c_2 \in \C
+		\end{align*}
+		As both Sine and Cosine are Sinusoidal, different \( c_1 \neq c_2 \) only lead to a phase shift. Thus we can also write the solution as
+		\begin{align*}
+			x(t) = A \cos\Big(t \sqrt{k / m} + \varphi\Big)
+		\end{align*}
+		with the amplitude \(A\) and the phase \(\varphi\).
+	% end
 % end
