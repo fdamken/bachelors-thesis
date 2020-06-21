@@ -25,8 +25,8 @@
 
 
 \begin{document}
-	% No page numbering for preamble.
-	\pagenumbering{gobble}
+	% Alph page numbering for preamble.
+	\pagenumbering{Alph}
 
 	\Metadata{
 		title = Learning Stochastic Nonlinear Dynamical Systems With the Koopman Operator,
@@ -56,7 +56,7 @@
 	\affidavit
 
 	% Roman page numbering for toc and glossaries.
-	\pagenumbering{roman}
+	\pagenumbering{Roman}
 
 	\tableofcontents
 
@@ -91,10 +91,7 @@
 	\bibliography{literature/lit}
 	\nocite{*}
 
-	% Alph page numbering for content.
 	\cleardoublepage
-	\pagenumbering{alph}
-
 	\appendix
 	\include{meta/appendix}
 	\chapter{Snippets}
