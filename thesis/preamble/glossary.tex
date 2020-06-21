@@ -11,32 +11,32 @@
 % Operators.
 \newglossary[opg]{operator}{opi}{opo}{List of Operators}
 \newglossaryentry{expectation}{
-	sort        = { expectation value },
-	name        = { \ensuremath{\E} },
-	symbol      = { \ensuremath{\E}[\cdot] },
-	description = { the expectation value },
-	type        = operator
+	sort		= { expectation value },
+	name		= { \ensuremath{\E} },
+	symbol		= { \ensuremath{\E}[\cdot] },
+	description	= { the expectation value },
+	type		= operator
 }
 \newglossaryentry{covariance}{
-	sort        = { covariance },
-	name        = { \ensuremath{\Cov} },
-	symbol      = { \ensuremath{\Cov}[\cdot] },
-	description = { the covariance },
-	type        = operator
+	sort		= { covariance },
+	name		= { \ensuremath{\Cov} },
+	symbol		= { \ensuremath{\Cov}[\cdot] },
+	description	= { the covariance },
+	type		= operator
 }
 \newglossaryentry{ln}{
-	sort        = { natural logarithm },
-	name        = { \ensuremath{\ln} },
-	symbol      = { \ensuremath{\ln(\cdot)} },
-	description = { the natural logarithm },
-	type        = operator
+	sort		= { natural logarithm },
+	name		= { \ensuremath{\ln} },
+	symbol		= { \ensuremath{\ln(\cdot)} },
+	description	= { the natural logarithm },
+	type		= operator
 }
 \newglossaryentry{trace}{
-	sort        = { linalg trace },
-	name        = { \ensuremath{\tr} },
-	symbol      = { \ensuremath{\tr(\cdot)} },
-	description = { the trace of a matrix },
-	type        = operator
+	sort		= { linalg trace },
+	name		= { \ensuremath{\tr} },
+	symbol		= { \ensuremath{\tr(\cdot)} },
+	description	= { the trace of a matrix },
+	type		= operator
 }
 
 % TODO: Other:
@@ -45,12 +45,17 @@
 % Symbols.
 \newglossary[syg]{symbol}{sys}{syo}{List of Symbols}
 \newglossaryentry{theta}{
-  sort        = { parameters theta },
-  name        = { \ensuremath{\vec{\theta}} },
-  description = { vector of parameters from a probability distribution },
-  type        = symbol
+	sort		= { parameters theta },
+	name		= { \ensuremath{\vec{\theta}} },
+	description	= { vector of parameters from a probability distribution },
+	type		= symbol
+}
+\newglossaryentry{gaussian}{
+	sort		= { distribution gaussian },
+	name		= { \ensuremath{\mathcal{N}(\vec{\mu}, \mat{\Sigma})} },
+	description	= { multivariate normal probability distribution with mean \(\vec{\mu}\) and covariance \(\mat{\Sigma}\) },
+	type		= symbol
 }
 
 
-% Create the gloassaries.
 \makeglossaries

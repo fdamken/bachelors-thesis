@@ -31,6 +31,10 @@
 *.cb
 *.cb2
 .*.lb
+*.opg
+*.opi
+*.syg
+*.sys
 
 ## Intermediate documents:
 *.dvi

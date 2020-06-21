@@ -82,7 +82,7 @@
 	\renewenvironment{theglossary}%
 		{\begin{longtable}{L{0.15\textwidth}L{0.8\textwidth}R{0\textwidth}}}%
 		{\end{longtable}}%
-	\renewcommand*{\glossaryheader}{\bf{\entryname} & \bf{\descriptionname} & \\}
+	\renewcommand*{\glossaryheader}{\textbf{\entryname} & \textbf{\descriptionname} & \\}
 	\renewcommand*{\glossaryentryfield}[5]{\glsentryitem{##1}\glstarget{##1}{##2} & ##3 \\}
 }
 \newglossarystyle{iasThesisOperators}{
@@ -90,6 +90,6 @@
 	\renewenvironment{theglossary}
 		{\begin{longtable}{L{0.15\textwidth}L{0.55\textwidth}L{0.25\textwidth}}}%
 		{\end{longtable}}%
-	\renewcommand*{\glossaryheader}{\bf{\entryname} & \bf{\descriptionname} & \bf{Operator} \\}
+	\renewcommand*{\glossaryheader}{\textbf{\entryname} & \textbf{\descriptionname} & \textbf{Operator} \\}
 	\renewcommand*{\glossaryentryfield}[5]{\glsentryitem{##1}\glstarget{##1}{##2} & ##3 & ##4 \\}
 }
