@@ -30,7 +30,7 @@
 		
 		In all of the following, we assume to have explicit, autonomous, first order \acp{ode}. This is valid because we can transform every explicit higher order \ac{ode} into a system of first order \acp{ode} as well as we can introduce another "time state" which makes our \ac{ode} autonomous.
 		
-		The solution theory for linear \acp{ode} is highly evolved and solutions exist for nearly every possible \ac{ode}. But for nonlinear \acp{ode}, the world looks different. With the exception of some rare cases, nonlinear \acp{ode} are not tractable. Hence, we often need approximations for the nonlinear case. Some well-known approaches for these approximations are \ac{eg} \emph{small angle approximation} for Sines and Cosines. In small angle approximations, we Taylor-expand \( \sin \)/\( \cos \) and leave out all higher order terms:
+		The solution theory for linear \acp{ode} is highly evolved and solutions exist for nearly every possible \ac{ode}. But for nonlinear \acp{ode}, the world looks different. With the exception of some rare cases, nonlinear \acp{ode} are not tractable. Hence, we often need approximations for the nonlinear case. Some well-known approaches for these approximations are \ac{eg} \emph{small angle approximation} for Sines and Cosines. In small angle approximations, we Taylor-expand \( \sin \)/\( \cos \) at \( \varphi_a = 0 \) and cut all higher order terms:
 		\begin{gather*}
 			\sin(\varphi) = \varphi - \underbrace{\frac{\varphi^3}{3!} + \frac{\varphi^5}{5!} + \cdots}_\text{higher order terms} \approx \varphi \\
 			\cos(\varphi) = 1 - \underbrace{\frac{\varphi^2}{2!} + \frac{\varphi^4}{4!} - \frac{\varphi^6}{6!} + \cdots}_\text{higher order terms} \approx 1
@@ -85,29 +85,50 @@
 			\begin{figure}
 				\centering
 				\tikzSimplePendulum
-				\caption{Illustration of a simple pendulum with mass \(m\) and displacement \(\varphi\) that is only affected by gravity and no other external force. The mass is in equilibrium if \( \varphi = 0 \).}
+				\caption{Illustration of an inverse pendulum with mass \(m\) and displacement \(\varphi\) that is only affected by gravity and no other external force. The mass is in equilibrium for both \( \varphi = 0 \) and \( \varphi = \pi \), where the former is an unstable equilibrium.}
 				\label{fig:simplePendulum}
 			\end{figure}
 		
-			The \emph{simple pendulum} described the dynamical system of a mass \(m\) that is attached to a rigid pole of length \(L\) which can freely swing around a suspension point (see~\autoref{fig:simplePendulum}). The motion of the pendulum is described by the \ac{ode}
+			The \emph{inverse pendulum} described the dynamical system of a mass \(m\) that is attached to a rigid pole of length \(L\) which can freely swing around a suspension point (see~\autoref{fig:simplePendulum}). The pendulum stands upright if \( \varphi = 0 \) and its equation of motion is described by the \ac{ode}
 			\begin{align*}
-				\ddot{\varphi} = -\frac{g}{L} \sin(\varphi)
+				\ddot{\varphi} = \frac{g}{L} \sin(\varphi)
 			\end{align*}
-			where \(g\), \(L\), \(\varphi\) and \(\ddot{\varphi}\) describe the gravity acceleration, pole length, displacement and acceleration of the mass, respectively. Note that if \( \varphi = 0 \), the mass is in equilibrium and no force is acting on it.
+			where \(g\), \(L\), \(\varphi\) and \(\ddot{\varphi}\) describe the gravity acceleration, pole length, displacement and acceleration of the mass, respectively. Note that if \( \varphi = 0 \), the mass is in an unstable equilibrium and no force is acting on it.
 			
 			In comparison to the harmonic oscillator (\autoref{subsec:harmonicOscillator}), this differential equation is nonlinear. And, even for the case with unit gravity acceleration \( g = 1 \) and unit pole length \( L = 1\), where the \ac{ode} looks really simple
-			\begin{align*}
-				\ddot{\varphi} = -\sin(\varphi)
-			\end{align*}
+			\begin{align}
+				\ddot{\varphi} = \sin(\varphi)  \label{eq:inversePendulum}
+			\end{align}
 			it is not tractable analytically (\ac{ie} there exists no solution in closed form).
 			
-			Still, we can apply the small angle approximation introduced before (in this case, \( \sin(\varphi) \approx \varphi \)) which yields the \ac{ode} for a simple harmonic oscillator (see~\eqref{eq:harmonicOscillator}) with spring damping \( k = 1 \):
+			Still, we can apply the small angle approximation introduced before (in this case, \( \sin(\varphi) \approx \varphi \)) which yields the simple equation
+			\begin{align}
+				\ddot{\varphi} \approx \varphi  \label{eq:linearizedInversePendulum}
+			\end{align}
+			which is solved by
 			\begin{align*}
-				\ddot{\varphi} \approx -\varphi
+				\varphi(t) = \frac{1}{2} e^{-t} \big(\varphi_0 + e^{2t} \varphi_0 - \dot{\varphi}_0 + e^{2t} \dot{\varphi}_0\big)
 			\end{align*}
-			While this approximation forecasts movements around \( \varphi \approx 0 \) quite well\todo{be more scientific}, it fails for displacement far from zero.
+			where \(\varphi_0\) and \(\dot{\varphi}_0\) are the initial displacement and velocity, respectively.
 			
-			While this approximation works quite well for control problems like the cart pole, this approximation is only valid in a small region around \( \varphi \approx 0 \), where the system has a 
+			However, this small angle approximation can only forecast small displacements \( \varphi \ll \pi/2 \). And, as the equilibrium at \( \varphi = 0 \) is unstable, the approximation becomes worst and worst as time goes on because the pendulum falls down. This behavior is shown in~\autoref{fig:inversePendulumApprox}.
+			
+			\begin{figure}
+				\centering
+				\begin{subfigure}[t]{0.5\linewidth}
+					\centering
+					\includegraphics[width = \linewidth]{figures/introduction/generated/pendulum-motion-solutions}
+					\caption{Trajectories of two solution strategies to the inverse pendulum, where the blue is a numerical solution of the actual motion of equation (solved using the Radau~IIA method~\cite[72]{hairerSolvingOrdinaryDifferential1996}) and the orange one is the analytically computed solution linearized \ac{ode}. The latter is linearized using small angle approximation. The dotted gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
+				\end{subfigure}%
+				~
+				\begin{subfigure}[t]{0.5\linewidth}
+					\centering
+					\includegraphics[width = \linewidth]{figures/introduction/generated/pendulum-motion-difference}
+					\caption{Differences between the small angle approximation and the numerical solution of the \ac{ode}  The dotted gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
+				\end{subfigure}
+				\caption{Comparison of a numerical solution to the \ac{ode} of the inverse pendulum given in\eqref{eq:inversePendulum} and the analytical solution of the linearized \ac{ode} given in\eqref{eq:linearizedInversePendulum}. A tolerance value of \( \varepsilon = 10^{-3} \) is used to show when the both solutions diverge from each other.}
+				\label{fig:inversePendulumApprox}
+			\end{figure}
 		% end
 	% end
 % end

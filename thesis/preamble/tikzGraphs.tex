@@ -14,15 +14,15 @@
 }
 
 \newcommand{\tikzSimplePendulum}{
-	\begin{tikzpicture}[rotate = 180]
+	\begin{tikzpicture}
 		\node [draw, circle, fill, minimum width = 0.5cm] (C) at (0, 0) {};
 		\node [draw, circle] (mass) at (120:3cm) {\(m\)};
 		\coordinate (A) at (90:3cm);
-		\draw (C) -- node[right]{\(L\)} (mass);
+		\draw (C) -- node[left]{\(L\)} (mass);
 		\draw [dashed] (C) -- (A);
 		\draw pic [draw, "$\varphi$", angle radius = 1.5cm] {angle=A--C--mass};
 		
-		\draw [->] (0.5, 1) -- node[right]{\(g\)} (0.5, 2);
+		\draw [<-] (0.5, 1) -- node[right]{\(g\)} (0.5, 2);
 	\end{tikzpicture}
 }
 
