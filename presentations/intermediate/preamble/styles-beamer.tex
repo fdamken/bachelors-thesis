@@ -1,0 +1,13 @@
+% To add the outline to every section, add \AtBeginSection{\sectionslide} to the preamble.
+\newcommand{\sectionslide}{
+	\begin{frame}{\insertsectionhead \\ {\small Outline}}
+		\tableofcontents[currentsection]
+	\end{frame}
+}
+
+% To add the outline to every section, add \AtBeginSubsection{\subsectionslide} to the preamble.
+\newcommand{\subsectionslide}{
+	\begin{frame}{\insertsubsectionhead \\ {\small Outline}}
+		\tableofcontents[currentsection, currentsubsection]
+	\end{frame}
+}
