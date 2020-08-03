@@ -1,22 +1,24 @@
-name: LaTeX Compilation
+name: Compile Thesis
 on:
   push:
     branches: [ master ]
+    paths: [ 'thesis/**' ]
   pull_request:
     branches: [ master ]
+    paths: [ 'thesis/**' ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Compile LaTeX
+      - name: Compile Document
         uses: dante-ev/latex-action@v0.2.0
         with:
           root_file: thesis.tex
           working_directory: thesis
           args: -lualatex -latexoption=-file-line-error -latexoption=-interaction=nonstopmode
-      - name: Upload Compiled Thesis
+      - name: Upload Compiled Document
         uses: actions/upload-artifact@v2
         with:
           name: Full Text PDF
