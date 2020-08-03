@@ -621,9 +621,12 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/osx,git,vim,linux,macos,latex,python,windows,sublimetext,pycharm+all
 
 
+*.opo
+*.syo
+*.xmpdata
+*.len
+
 texmf/
-thesis.opo
 thesis.pdf
-thesis.syo
-thesis.xmpdata
+presentation.pdf
 
