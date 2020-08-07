@@ -1,36 +1,28 @@
-\makeatletter
-
-% Make LOF a section.
-\renewcommand\listoffigures{
-	\section*{\listfigurename}
-	\@mkboth{\MakeUppercase\listfigurename}{\MakeUppercase\listfigurename}
-	\@starttoc{lof}
-}
-% Make LOT a section.
-\renewcommand\listoftables{
-	\section*{\listtablename}
-	\@mkboth{\MakeUppercase\listtablename}{\MakeUppercase\listtablename}
-	\@starttoc{lot}
+% To add the outline to every section, add \AtBeginSection{\sectionslide} to the preamble.
+\newcommand{\sectionslide}{
+	\begin{frame}{\insertsectionhead \\ {\small Outline}}
+		\tableofcontents[currentsection]
+	\end{frame}
 }
 
-\makeatother
-
+% To add the outline to every section, add \AtBeginSubsection{\subsectionslide} to the preamble.
+\newcommand{\subsectionslide}{
+	\begin{frame}{\insertsubsectionhead \\ {\small Outline}}
+		\tableofcontents[currentsection, currentsubsection]
+	\end{frame}
+}
 
 
 % Style definitions.
 
-% Description-list styling.
-\SetLabelAlign{parright}{\parbox[t]{\labelwidth}{\raggedleft#1}}
-\setlist[description]{style = multiline, leftmargin = 4cm, align = parright}
-
 \MakeOuterQuote{"}
 
-% Captions should be centered.
-\captionsetup{justification=centering}
+% Do not print "Figure:" in beamer legends.
+\captionsetup{labelformat=empty}
 
 % Matrix/Vector notation.
-\renewcommand{\vec}[1]{\boldsymbol{\mathrm{#1}}}
-\newcommand{\mat}[1]{\boldsymbol{\mathrm{#1}}}
+\renewcommand{\vec}[1]{\bm{#1}}
+\newcommand{\mat}[1]{\bm{#1}}
 % Shorthands.
 \renewcommand{\C}{\mathbb{C}}
 \newcommand{\R}{\mathbb{R}}
@@ -48,54 +40,8 @@
 % Math operators.
 \DeclareMathOperator{\Cov}{Cov}
 
-\newcommand{\oversetfootnotemark}[1]{\stepcounter{footnote} \overset{\mathclap{(\thefootnote)}}{#1}}
-\let\realfootnote\footnote
-\let\realfootnotetext\footnotetext
-\renewcommand{\footnote}[1]{\realfootnote{\, #1}}
-\renewcommand{\footnotetext}[1]{\realfootnotetext{\, #1}}
-\newcommand{\doublefootnotetext}[2]{\addtocounter{footnote}{-1} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2}}
-\newcommand{\triplefootnotetext}[3]{\addtocounter{footnote}{-2} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2} \stepcounter{footnote} \footnotetext{#3}}
-
 \renewcommand{\arraystretch}{1.5}
 \parindent0pt
 
-% Definitions, Theorems and Lemmata.
-
-
-
-
-% Do not include subsections and lower in TOC.
-\setcounter{tocdepth}{1}
-
-% BibTeX.
-\renewcommand{\bibname}{References}
-%\bibliographystyle{ieeetr}
-\bibliographystyle{alpha}
-
-% Penalties.
-
 % TikZ-related stuff.
 \tikzset{> = { Latex[length = 2mm] }}
-
-
-
-% Glossary styles.
-\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newglossarystyle{iasThesisGeneral}{
-	\glossarystyle{super3colheader}%
-	\renewenvironment{theglossary}%
-		{\begin{longtable}{L{0.15\textwidth}L{0.8\textwidth}R{0\textwidth}}}%
-		{\end{longtable}}%
-	\renewcommand*{\glossaryheader}{\textbf{\entryname} & \textbf{\descriptionname} & \\}
-	\renewcommand*{\glossaryentryfield}[5]{\glsentryitem{##1}\glstarget{##1}{##2} & ##3 \\}
-}
-\newglossarystyle{iasThesisOperators}{
-	\glossarystyle{super3colheader}
-	\renewenvironment{theglossary}
-		{\begin{longtable}{L{0.15\textwidth}L{0.55\textwidth}L{0.25\textwidth}}}%
-		{\end{longtable}}%
-	\renewcommand*{\glossaryheader}{\textbf{\entryname} & \textbf{\descriptionname} & \textbf{Operator} \\}
-	\renewcommand*{\glossaryentryfield}[5]{\glsentryitem{##1}\glstarget{##1}{##2} & ##3 & ##4 \\}
-}

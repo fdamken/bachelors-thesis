@@ -13,7 +13,6 @@
 % Include preamble to not clutter this file.
 \input{preamble/packages}
 \input{preamble/styles}
-\input{preamble/styles-beamer}
 
 
 \title{Variational Autoenconders for Koopman Dynamical Systems}
@@ -32,9 +31,177 @@
 \begin{document}
 	\maketitle
 
-	\begin{frame}{Outline}
-		\tableofcontents
+	\begin{frame}{The Koopman Operator}
+		For a \emph{nonlinear} dynamical system
+		\begin{align*}
+			\vec{s}_{t + 1} = \vec{F}(\vec{s}_{t})
+		\end{align*}
+		with \emph{nonlinear} measurements (and \emph{embedding})
+		\begin{align*}
+			\vec{y}_t = \vec{g}(\vec{s}_t)
+		\end{align*}
+		the Koopman operator advances these measurements forward in time \emph{linearly}:
+		\begin{align*}
+			\vec{g}(\vec{s}_{t + 1}) = \mathcal{K} \vec{g}(\vec{s}_t)
+			\quad\iff\quad
+			\vec{y}_{t + 1} = \mathcal{K} \vec{y}_t
+		\end{align*}
+
+		This is possible for every nonlinear dynamical system! And globalizes linearly! But the embedding \(\vec{g}\) is typically infinite-dimensional\dots
 	\end{frame}
 
-	% TODO: Add content here.
+	\begin{frame}{Deterministic Koopman Operator}
+		\begin{figure}
+			\begin{tikzpicture}[->, state/.style = { draw, circle, minimum height = 1cm, minimum width = 1cm }, observation/.style = { draw, circle, minimum height = 1cm, minimum width = 1cm }]
+				\node [state] (s1) {\(\vec{s}_{\,\mathclap{\,1}}\)};
+				\node [state, right = 1 of s1] (s2) {\(\vec{s}_{\,\mathclap{\,2}}\)};
+				\node [state, right = 1 of s2] (s3) {\(\vec{s}_{\,\mathclap{\,3}}\)};
+				\node [minimum height = 1cm, right = 1 of s3] (sD) {\(\cdots\)};
+				\node [state, right = 1 of sD] (sT) {\(\vec{s}_{\,\mathclap{\,T}}\)};
+
+				\node [observation, below = 1 of s1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+				\node [observation, below = 1 of s2] (y2) {\(\vec{y}_{\,\mathclap{\,2}}\)};
+				\node [observation, below = 1 of s3] (y3) {\(\vec{y}_{\,\mathclap{\,3}}\)};
+				\node [minimum height = 1cm, below = 1 of sD] (yD) {\(\cdots\)};
+				\node [observation, below = 1 of sT] (yT) {\(\vec{y}_{\,\mathclap{\,T}}\)};
+
+				\draw (s1) -- node[above]{\(\vec{F}\)} (s2);
+				\draw (s2) -- node[above]{\(\vec{F}\)} (s3);
+				\draw (s3) -- node[above]{\(\vec{F}\)} (sD);
+				\draw (sD) -- node[above]{\(\vec{F}\)} (sT);
+
+				\draw (y1) -- node[below]{\(\mathcal{K}\)} (y2);
+				\draw (y2) -- node[below]{\(\mathcal{K}\)} (y3);
+				\draw (y3) -- node[below]{\(\mathcal{K}\)} (yD);
+				\draw (yD) -- node[below]{\(\mathcal{K}\)} (yT);
+
+				\draw (s1) to[bend right = 15] node[left]{\(\vec{g}\)} (y1);
+				\draw (s2) to[bend right = 15] node[left]{\(\vec{g}\)} (y2);
+				\draw (s3) to[bend right = 15] node[left]{\(\vec{g}\)} (y3);
+				\draw (sT) to[bend right = 15] node[left]{\(\vec{g}\)} (yT);
+
+				\draw [dashed] (y1) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (s1);
+				\draw [dashed] (y2) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (s2);
+				\draw [dashed] (y3) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (s3);
+				\draw [dashed] (yT) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (sT);
+			\end{tikzpicture}
+			\caption{Adopted from Brunton et al. "Koopman Invariant Subspaces and Finite Linear Representations of Nonlinear Dynamical Systems for Control".}
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{Hidden Markov Models}
+		\begin{figure}
+			\begin{tikzpicture}[->, state/.style = { draw, circle, minimum height = 1cm, minimum width = 1cm }, observation/.style = { draw, circle, minimum height = 1cm, minimum width = 1cm }]
+				\node [state] (s1) {\(\vec{s}_{\,\mathclap{\,1}}\)};
+				\node [state, right = 1 of s1] (s2) {\(\vec{s}_{\,\mathclap{\,2}}\)};
+				\node [state, right = 1 of s2] (s3) {\(\vec{s}_{\,\mathclap{\,3}}\)};
+				\node [minimum height = 1cm, right = 1 of s3] (sD) {\(\cdots\)};
+				\node [state, right = 1 of sD] (sT) {\(\vec{s}_{\,\mathclap{\,T}}\)};
+
+				\node [observation, below = 1 of s1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+				\node [observation, below = 1 of s2] (y2) {\(\vec{y}_{\,\mathclap{\,2}}\)};
+				\node [observation, below = 1 of s3] (y3) {\(\vec{y}_{\,\mathclap{\,3}}\)};
+				\node [observation, below = 1 of sT] (yT) {\(\vec{y}_{\,\mathclap{\,T}}\)};
+
+				\draw (s1) -- (s2);
+				\draw (s2) -- (s3);
+				\draw (s3) -- (sD);
+				\draw (sD) -- (sT);
+
+				\draw (s1) to[bend right = 15] (y1);
+				\draw (s2) to[bend right = 15] (y2);
+				\draw (s3) to[bend right = 15] (y3);
+				\draw (sT) to[bend right = 15] (yT);
+
+				\draw [dashed] (y1) to[bend right = 15] (s1);
+				\draw [dashed] (y2) to[bend right = 15] (s2);
+				\draw [dashed] (y3) to[bend right = 15] (s3);
+				\draw [dashed] (yT) to[bend right = 15] (sT);
+			\end{tikzpicture}
+		\end{figure}
+
+		\begin{equation*}
+			\begin{aligned}
+				\vec{s}_{t + 1} &= \eqmakebox[a][l]{\( \mat{A} \vec{s}_t + \vec{v}, \)}\quad \eqmakebox[b][r]{\( \vec{v} \)} \sim \normal(\vec{0}, \mat{Q}) \\
+				\vec{y}_t &= \eqmakebox[a][l]{\( \vec{g}_{\vec{\theta}}(\vec{s}_t) + \vec{w}, \)}\quad \eqmakebox[b][r]{\( \vec{w} \)} \sim \normal(\vec{0}, \mat{R})
+			\end{aligned}
+			\qquad\iff\qquad
+			\begin{aligned}
+				\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
+				\vec{y}_t &\sim \normal(\vec{g}_{\vec{\theta}}(\vec{s}_t), \mat{R})
+			\end{aligned}
+		\end{equation*}
+	\end{frame}
+
+	\begin{frame}{Expectation Maximization}
+		Goal: Estimate all of the following:
+		\begin{itemize}
+			\item Latent dynamics matrix \( \mat{A} \).
+			\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (i.e. the parameters \( \vec{\theta} \)).
+			\item Noise covariances \(\mat{Q}\), \(\mat{R}\).
+		\end{itemize}
+
+		We employ an EM-algorithm to do that!
+		\begin{description}[leftmargin = 2cm]
+			\item[E-Step] Calculate the expected latents and correlations using filtering/smoothing.
+			\item[M-Step] Maximize the expected log-likelihood \( \E\big[\! \ln p(\vec{s}_{1:T}, \vec{y}_{1:T}) \given \vec{y}_{1:T} \big] \).
+		\end{description}
+		\begin{alertblock}{Core Problem}
+			Some expectations cannot be evaluated in closed form for a nonlinear \( \vec{g}_{\vec{\theta}}(\cdot) \)!
+		\end{alertblock}
+	\end{frame}
+
+	\begin{frame}{The Expected Log-Likelihood}
+		Markov property yields complete log-likelihood:
+		\begin{align*}
+			\ln p(\vec{s}_{1:T}, \vec{y}_{1:T}) = \ln p(\vec{s}_1) + \sum_{t = 2}^{T} \ln p(\vec{s}_{t + 1} \given \vec{s}_t) + \sum_{t = 1}^{T} \ln p(\vec{y}_t \given \vec{s}_t)
+		\end{align*}
+		Expectation \( \E\big[\! \ln p(\vec{s}_{1:T}, \vec{y}_{1:T}) \given \vec{y}_{1:T} \big] \) is based on five other expectations:
+		\begin{align*}
+			\hat{\vec{s}}_t \coloneqq \E\big[ \vec{s}_t \biggiven \vec{y}_{1:T} \big]
+			\qquad
+			\mat{P}_t \coloneqq \E\big[ \vec{s}_t \vec{s}_t^T \biggiven \vec{y}_{1:T} \big]
+			\qquad
+			\mat{P}_{t, t - 1} \coloneqq \E\big[ \vec{s}_t \vec{s}_{t - 1}^T \biggiven \vec{y}_{1:T} \big]
+		\end{align*}
+		\begin{align*}
+			\hat{\vec{g}}_t \coloneqq \E\big[ \vec{g}(\vec{s}_t) \biggiven \vec{y}_{1:T} \big]
+			\qquad
+			\mat{G}_t \coloneqq \E\big[ \vec{g}(\vec{s}_t) \, \vec{g}^T\!(\vec{s}_t) \biggiven \vec{y}_{1:T} \big]
+		\end{align*}
+	\end{frame}
+
+	\begin{frame}{Quadrature for High Dimensions: Cubature Rules \\ The Spherical-Radial Cubature Rule}
+		Approximation of an arbitrary Gaussian expectation:
+		\begin{align*}
+			\E_{\vec{x} \,\sim\, \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big]
+				&= \int_{\R^n} \! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \\
+				&\approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}\Big(\! \sqrt{\mat{\Sigma}} \vec{\xi}_i + \vec{\mu} \Big),\quad \vec{\xi}_i = \sqrt{n} [\vec{1}]_i
+		\end{align*}
+		\begin{itemize}
+			\item This finite sum can be evaluated!
+			\item Approximate Kalman filter and smoother complete the E-step.
+			\item Forward-/backward-pass setup.
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}{The M-Step: Maximizing the Likelihood}
+		\begin{itemize}
+			\item Latent dynamics matrix \(\mat{A}\) and covariances \(\mat{R}\) can be evaluated in closed form.
+			\item Not possible for the measurement function parameters \( \vec{\theta} \)!
+			\item[] \(\longrightarrow\) Use backpropagation! The gradients flow though the cubature rules.
+		\end{itemize}
+	\end{frame}
+
+	% Classical approach.
+	% Interpretation as markov process or hidden markov model.
+	% Probabilistic interpretation.
+	% Variational approach.
+	% EM algorithm.
+	% Maximization goal (log-likelihood).
+	% Computation via FilterinTaken fromg/Smoothing and SGD.
+
+%	\begin{frame}{Bibliography}
+%		\bibliography{literature/lit.bib}
+%	\end{frame}
 \end{document}
