@@ -25,7 +25,7 @@
 \logo*{\includegraphics{./img/iasLogo}}
 
 % TODO: Add title graphic here.
-\titlegraphic*{\includegraphics{example-image}}
+\titlegraphic*{\includegraphics{figures/damped-pendulum-motion}}
 
 
 \begin{document}
@@ -36,12 +36,13 @@
 			\item Control theory for linear systems is highly evolved.
 			\item But nonlinear systems are hard\dots
 			\item We need ways to linearize a nonlinear system!
-			\item "Classical" Linearization:
+			\item<2-> "Classical" Linearization:
 				\begin{itemize}
 					\item Use small angle approximation (e.g. for pendulum)?
 					\item Diverge fast with higher displacements\dots
 					\item Only linearize locally, not globally!
 				\end{itemize}
+			\item<3-> Koopman theory offers a way to dot that!
 		\end{itemize}
 	\end{frame}
 
@@ -151,42 +152,37 @@
 		Goal: Estimate all of the following:
 		\begin{itemize}
 			\item Latent dynamics matrix \( \mat{A} \).
-			\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (i.e. the parameters \( \vec{\theta} \)).
+			\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (i.e. the parameters \( \vec{\theta} \)). \\ Variational auto-encoder without an amortization network. % TODO: Introduce ELBO and compare.
 			\item Noise covariances \(\mat{Q}\), \(\mat{R}\).
 		\end{itemize}
 		We employ an EM-algorithm to do that!
 
-		\begin{alertblock}{Core Problem}
-			Some expectations cannot be evaluated in closed form for a nonlinear \( \vec{g}_{\vec{\theta}}(\cdot) \)!
-		\end{alertblock}
+		\onslide<2->{
+			\begin{alertblock}{Core Problem}
+				Some expectations cannot be evaluated in closed form for a nonlinear \( \vec{g}_{\vec{\theta}}(\cdot) \)!
+			\end{alertblock}
+		}
+
+		\onslide<3->{
+			\begin{itemize}
+				\item Use cubature rules for evaluating the intractable expectations.
+				\item No closed form solution for maximizing w.r.t. function parameters \( \vec{\theta} \)!
+				\item<4->[] \(\qquad\longrightarrow\quad\) Use backpropagation!
+			\end{itemize}
+		}
 	\end{frame}
 
-	\begin{frame}{Approach for Solving the Core Problem}
-		To evaluate the expectations, use cubature rules!
-
-		Namely the spherical-radial cubature rule:
-		\begin{align*}
-			\E_{\vec{x} \,\sim\, \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big] \approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}\Big(\! \sqrt{\mat{\Sigma}} \vec{\xi}_i + \vec{\mu} \Big),\quad \vec{\xi}_i = \sqrt{n} \cdot [\vec{1}]_i
-		\end{align*}
-	\end{frame}
-
-	\begin{frame}{The M-Step: Maximizing the Likelihood}
-		\begin{itemize}
-			\item Latent dynamics matrix \(\mat{A}\) and covariances \(\mat{R}\) can be evaluated in closed form.
-			\item Not possible for the measurement function parameters \( \vec{\theta} \)!
-			\item[] \(\qquad\longrightarrow\quad\) Use backpropagation!
-		\end{itemize}
-	\end{frame}
-
-	\section{Results}
-		\subsection{The Pendulum}
-			\begin{frame}{Results: Inverted Pendulum \\ Dynamical System}
-				Equation of movement:
+	\section{Results} % TODO: Introduce experiment with different latents.
+		\subsection{The Pendulum} % TODO: Merge plots and do train/test timesteps; transpose plots.
+			\begin{frame}{Results: Damped Inverted Pendulum \\ Dynamical System}
+				\vspace{-0.7cm}
 				\begin{align*}
-					\ddot{\varphi} = \sin(\varphi)
+					\ddot{\varphi} = \frac{g}{L} \sin(\varphi) - d \dot{\varphi}
+					\quad\longrightarrow\quad
+					\ddot{\varphi} = \sin(\varphi) - 0.1 \dot{\varphi}
 				\end{align*}
 
-				\begin{minipage}{0.49\textwidth}
+				\begin{minipage}{0.34\textwidth}
 					Observations:
 					\begin{itemize}
 						\item Displacement \tabto{2.5cm} \(\varphi\)
@@ -194,28 +190,29 @@
 					\end{itemize}
 					\begin{figure}
 						\centering
-						\includegraphics[width=0.7\textwidth]{example-image}
-						\caption{Plot of log-likelihood.} % TODO
+						\begin{tikzpicture}
+							\node [draw, circle, fill, minimum width = 0.5cm] (C) at (0, 0) {};
+							\node [draw, circle] (mass) at (120:3cm) {\(m\)};
+							\coordinate (A) at (90:3cm);
+							\draw (C) -- node[left]{\(L\)} (mass);
+							\draw [dashed] (C) -- (A);
+							\draw pic [draw, angle radius = 1.5cm] {angle=A--C--mass};
+							\node at (-0.27, 1.0) {\(\varphi\)};
+
+							\draw [<-] (0.5, 1) -- node[right]{\(g\)} (0.5, 2);
+						\end{tikzpicture}
 					\end{figure}
 				\end{minipage}
-				\begin{minipage}{0.49\textwidth}
+				\begin{minipage}{0.65\textwidth}
 					\begin{figure}
 						\centering
-						\includegraphics[width=\textwidth]{example-image}
-						\caption{Image of inverted pendulum.} % TODO
+						\onslide<2->{\includegraphics[width=\textwidth]{figures/results/pendulum/log-likelihood.pdf}}
 					\end{figure}
 				\end{minipage}
 			\end{frame}
 
-%			\begin{frame}{Results: Inverted Pendulum \\ Log-Likelihood}
-%				\vspace{-0.4cm}
-%				\begin{figure}
-%					\centering
-%					\includegraphics[height = 0.85\textheight]{figures/results/pendulum/log-likelihood}
-%				\end{figure}
-%			\end{frame}
-
-			\begin{frame}{Results: Inverted Pendulum \\ Rollout in Observation Space}
+			\begin{frame}{Results: Damped Inverted Pendulum \\ Rollout/Prediction in Observation Space, 10 Latents} % TODO: Change if no. of latents changes.
+				% TODO: Extend real data until end and use only the start for training.
 				\vspace{-0.4cm}
 				\begin{figure}
 					\centering
@@ -223,14 +220,40 @@
 				\end{figure}
 			\end{frame}
 
-			\begin{frame}{Results: Inverted Pendulum \\ Movement Prediction}
+			\begin{frame}{Results: Damped Inverted Pendulum \\ Different Sizes of Latent Dimension}
+				% TODO: Run experiment and real plot.
 				\vspace{-0.4cm}
 				\begin{figure}
 					\centering
-					\includegraphics[width = \textwidth]{figures/results/pendulum/predicted-observations.pdf}
+					\includegraphics[height = 0.8\textheight]{figures/fake/rmse}
 				\end{figure}
 			\end{frame}
 		% end
+	% end
+
+	\section{Related Work and Outlook}
+		\begin{frame}{Related Work}
+			\begin{itemize}
+				\item<+-> Lusch et al. "Deep Learning for Universal Linear Embeddings of Nonlinear Dynamics":
+					\begin{itemize}
+						\item Use an autoencoder approach with an encoder network.
+						\item No probabilistic interpretation.
+					\end{itemize}
+				\item<+-> Morton et al. "Deep Variational Koopman Models: Inferring Koopman Observations for Uncertainty-Aware Dynamics Modeling and Control":
+					\begin{itemize}
+						\item Utilize six different neural networks to perform variational inference.
+						\item We use only one!
+						\item And we expect to do at least as good.
+					\end{itemize}
+			\end{itemize}
+		\end{frame}
+
+		\begin{frame}{Hypothesis and Outlook}
+			\begin{itemize}
+				\item We go back to basic variational inference with the EM algorithm instead of using the ELBO.
+				\item Assuming we can do at least as good as Morton et al. with simpler network architectures.
+			\end{itemize}
+		\end{frame}
 	% end
 
 
@@ -240,6 +263,8 @@
 	\appendix
 
 	\section{Backup Slides} \sectionslide
+		% TODO: loc looks ugly
+
 		\subsection{Expectation Maximization}
 			\begin{frame}{Expectation Maximization}
 				\begin{itemize}
@@ -268,6 +293,18 @@
 					\qquad
 					\mat{G}_t \coloneqq \E\big[ \vec{g}(\vec{s}_t) \, \vec{g}^T\!(\vec{s}_t) \biggiven \vec{y}_{1:T} \big]
 				\end{align*}
+			\end{frame}
+		% end
+
+		\subsection{Cubature Rules}
+			\begin{frame}{Quadrature for High Dimensions: Cubature Rules \\ The Spherical-Radial Cubature Rule}
+				Approximation of an arbitrary Gaussian expectation:
+				\begin{align*}
+					\E_{\vec{x} \,\sim\, \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big]
+						&= \int_{\R^n} \! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \\
+						&\approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}\Big(\! \sqrt{\mat{\Sigma}} \vec{\xi}_i + \vec{\mu} \Big),\quad \vec{\xi}_i = \sqrt{n} [\vec{1}]_i
+				\end{align*}
+				This finite sum can be evaluated!
 			\end{frame}
 		% end
 	% end
