@@ -7,7 +7,7 @@
 	aspectratio=43,
 	color={accentcolor=1c},
 	logo=false,
-	colorframetitle=true,
+	colorframetitle=true
 ]{tudabeamer}
 
 % Include preamble to not clutter this file.
@@ -24,8 +24,7 @@
 
 \logo*{\includegraphics{./img/iasLogo}}
 
-% TODO: Add title graphic here.
-\titlegraphic*{\includegraphics{figures/damped-pendulum-motion}}
+\titlegraphic*{\includegraphics{figures/title}}
 
 \begin{document}
 	\maketitle
@@ -39,7 +38,7 @@
 				\begin{itemize}
 					\item Use small angle approximation (e.g. for pendulum)?
 					\item Diverge fast with higher displacements\dots
-					\item Only linearize locally, not globally!
+					\item Only linearize locally, not globally.
 				\end{itemize}
 			\item<3-> Koopman theory offers a way to do that!
 		\end{itemize}
@@ -61,7 +60,7 @@
 			\vec{y}_{t + 1} = \mathcal{K} \vec{y}_t
 		\end{align*}
 
-		This is possible for every nonlinear dynamical system! And globalizes linearly! But the embedding \(\vec{g}\) is typically infinite-dimensional\dots
+		This is possible for every nonlinear dynamical system. And globalizes linearly! But the embedding \(\vec{g}\) is typically infinite-dimensional\dots
 	\end{frame}
 
 	\begin{frame}{Koopman Dynamical System ("Deterministic")}
@@ -154,25 +153,31 @@
 			\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (i.e. the parameters \( \vec{\theta} \)). \\ Variational auto-encoder without an amortization network. % TODO: Introduce ELBO and compare.
 			\item Noise covariances \(\mat{Q}\), \(\mat{R}\).
 		\end{itemize}
-		We employ an EM-algorithm to do that!
+		We employ an EM-algorithm to do that.
 
 		\onslide<2->{
 			\begin{alertblock}{Core Problem}
-				Some expectations cannot be evaluated in closed form for a nonlinear \( \vec{g}_{\vec{\theta}}(\cdot) \)!
+				Some expectations cannot be evaluated in closed form for a nonlinear \( \vec{g}_{\vec{\theta}}(\cdot) \).
 			\end{alertblock}
 		}
 
 		\onslide<3->{
 			\begin{itemize}
 				\item Use cubature rules for evaluating the intractable expectations.
-				\item No closed form solution for maximizing w.r.t. function parameters \( \vec{\theta} \)!
-				\item<4->[] \(\qquad\longrightarrow\quad\) Use backpropagation!
+				\item No closed form solution for maximizing w.r.t. function parameters \( \vec{\theta} \).
+				\item<4->[] \(\qquad\longrightarrow\quad\) Use backpropagation and gradient descent!
 			\end{itemize}
 		}
 	\end{frame}
 
-	\section{Results} % TODO: Introduce experiment with different latents.
-		\subsection{The Pendulum} % TODO: Merge plots and do train/test timesteps; transpose plots.
+%	\begin{frame}{Relation to the Evidence Lower Bound (ELBO)}
+%		\begin{align*}
+%			\mathcal{L}_{\text{ELBO}}(\vec{\theta}, \vec{\phi}; \vec{x}) = \E_{q_{\vec{\phi}}(\vec{z} \subgiven \vec{x})} \big[\! \ln p_{\vec{\theta}}(\vec{x} \given \vec{z}) \big] - D_\mathrm{KL}\big( q_{\vec{\phi}}(\vec{z} \given \vec{x}) \,\Vert\, p_{\vec{\theta}}(\vec{z}) \big)
+%		\end{align*}
+%	\end{frame}
+
+	\section{Results}
+		\subsection{The Pendulum}
 			\begin{frame}{Results: Damped Inverted Pendulum \\ Dynamical System}
 				\vspace{-0.7cm}
 				\begin{align*}
@@ -205,26 +210,24 @@
 				\begin{minipage}{0.65\textwidth}
 					\begin{figure}
 						\centering
-						\onslide<2->{\includegraphics[width=\textwidth]{figures/results/pendulum/log-likelihood.pdf}}
+						\onslide<2->{\includegraphics[width=\textwidth]{figures/results/log-likelihood}}
 					\end{figure}
 				\end{minipage}
 			\end{frame}
 
-			\begin{frame}{Results: Damped Inverted Pendulum \\ Rollout/Prediction in Observation Space, 10 Latents} % TODO: Change if no. of latents changes.
-				% TODO: Extend real data until end and use only the start for training.
+			\begin{frame}{Results: Damped Inverted Pendulum \\ Rollout/Prediction in Observation Space, 10 Latents}
 				\vspace{-0.4cm}
 				\begin{figure}
 					\centering
-					\includegraphics[width = \textwidth]{figures/results/pendulum/rollout-observations.pdf}
+					\includegraphics[width = \textwidth]{figures/results/rollout-observations}
 				\end{figure}
 			\end{frame}
 
 			\begin{frame}{Results: Damped Inverted Pendulum \\ Different Sizes of Latent Dimension}
-				% TODO: Run experiment and real plot.
 				\vspace{-0.4cm}
 				\begin{figure}
 					\centering
-					\includegraphics[height = 0.8\textheight]{figures/fake/rmse}
+					\includegraphics[height = 0.8\textheight]{figures/results/latent-dimensions-experiment_mse}
 				\end{figure}
 			\end{frame}
 		% end
