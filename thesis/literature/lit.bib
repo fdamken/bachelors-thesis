@@ -40,6 +40,22 @@
   language = {en}
 }
 
+@article{beckerRecurrentKalmanNetworks2019,
+  title = {Recurrent {{Kalman Networks}}: {{Factorized Inference}} in {{High}}-{{Dimensional Deep Feature Spaces}}},
+  shorttitle = {Recurrent {{Kalman Networks}}},
+  author = {Becker, Philipp and Pandya, Harit and Gebhardt, Gregor and Zhao, Cheng and Taylor, James and Neumann, Gerhard},
+  year = {2019},
+  month = may,
+  abstract = {In order to integrate uncertainty estimates into deep time-series modelling, Kalman Filters (KFs) (Kalman et al., 1960) have been integrated with deep learning models, however, such approaches typically rely on approximate inference techniques such as variational inference which makes learning more complex and often less scalable due to approximation errors. We propose a new deep approach to Kalman filtering which can be learned directly in an end-to-end manner using backpropagation without additional approximations. Our approach uses a high-dimensional factorized latent state representation for which the Kalman updates simplify to scalar operations and thus avoids hard to backpropagate, computationally heavy and potentially unstable matrix inversions. Moreover, we use locally linear dynamic models to efficiently propagate the latent state to the next time step. The resulting network architecture, which we call Recurrent Kalman Network (RKN), can be used for any time-series data, similar to a LSTM (Hochreiter \& Schmidhuber, 1997) but uses an explicit representation of uncertainty. As shown by our experiments, the RKN obtains much more accurate uncertainty estimates than an LSTM or Gated Recurrent Units (GRUs) (Cho et al., 2014) while also showing a slightly improved prediction performance and outperforms various recent generative models on an image imputation task.},
+  archivePrefix = {arXiv},
+  eprint = {1905.07357},
+  eprinttype = {arxiv},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/383LD3ZE/Becker et al. - 2019 - Recurrent Kalman Networks Factorized Inference in.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/SRU9EZ2Y/1905.html},
+  journal = {arXiv:1905.07357 [cs, stat]},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
 @article{bellmanDynamicProgramming1966,
   title = {Dynamic {{Programming}}},
   author = {Bellman, Richard},
@@ -506,6 +522,22 @@ In any case, the mathematician sees hundreds and thousands of formidable new pro
   language = {en},
   school = {TU Darmstadt},
   type = {Master's {{Thesis}}}
+}
+
+@article{zhangSOLARDeepStructured2019,
+  title = {{{SOLAR}}: {{Deep Structured Representations}} for {{Model}}-{{Based Reinforcement Learning}}},
+  shorttitle = {{{SOLAR}}},
+  author = {Zhang, Marvin and Vikram, Sharad and Smith, Laura and Abbeel, Pieter and Johnson, Matthew J. and Levine, Sergey},
+  year = {2019},
+  month = jun,
+  abstract = {Model-based reinforcement learning (RL) has proven to be a data efficient approach for learning control tasks but is difficult to utilize in domains with complex observations such as images. In this paper, we present a method for learning representations that are suitable for iterative model-based policy improvement, even when the underlying dynamical system has complex dynamics and image observations, in that these representations are optimized for inferring simple dynamics and cost models given data from the current policy. This enables a model-based RL method based on the linear-quadratic regulator (LQR) to be used for systems with image observations. We evaluate our approach on a range of robotics tasks, including manipulation with a real-world robotic arm directly from images. We find that our method produces substantially better final performance than other model-based RL methods while being significantly more efficient than model-free RL.},
+  archivePrefix = {arXiv},
+  eprint = {1808.09105},
+  eprinttype = {arxiv},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/A94JVATH/Zhang et al. - 2019 - SOLAR Deep Structured Representations for Model-B.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/FI8F9TJK/1808.html},
+  journal = {arXiv:1808.09105 [cs, stat]},
+  keywords = {Computer Science - Machine Learning,Computer Science - Robotics,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
 }
 
 

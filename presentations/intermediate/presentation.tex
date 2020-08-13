@@ -150,7 +150,7 @@
 		Goal: Estimate all of the following:
 		\begin{itemize}
 			\item Latent dynamics matrix \( \mat{A} \).
-			\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (i.e. the parameters \( \vec{\theta} \)). \\ Variational auto-encoder without an amortization network. % TODO: Introduce ELBO and compare.
+			\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (i.e. the parameters \( \vec{\theta} \)). \\ Variational auto-encoder without an amortization network.
 			\item Noise covariances \(\mat{Q}\), \(\mat{R}\).
 		\end{itemize}
 		We employ an EM-algorithm to do that.
@@ -219,7 +219,7 @@
 				\vspace{-0.4cm}
 				\begin{figure}
 					\centering
-					\includegraphics[width = \textwidth]{figures/results/rollout-observations}
+					\includegraphics[height = 0.8\textheight]{figures/results/latent-dimensions-experiment_rollout}
 				\end{figure}
 			\end{frame}
 
@@ -247,13 +247,16 @@
 						\item We use only one!
 						\item And we expect to do at least as good.
 					\end{itemize}
+				\item<+-> Becker et al. "Recurrent Kalman Networks: Factorized Inference in High-Dimensional Deep Feature Spaces"
+				\item<+-> Zhang, Vikram et al. "SOLAR: Deep Structured Representations for Model-Based Reinforcement Learning"
 			\end{itemize}
 		\end{frame}
 
 		\begin{frame}{Hypothesis and Outlook}
 			\begin{itemize}
-				\item We go back to basic variational inference with the EM algorithm instead of using the ELBO.
-				\item Assuming we can do at least as good as Morton et al. with simpler network architectures.
+				\item Tackle the ELBO using approximate EM rather than stochastic variational inference.
+				\item Assume we can do at least as good as Morton et al. with simpler network architectures.
+				\item Perform control tasks on pendulum, cartpole, acrobot.
 			\end{itemize}
 		\end{frame}
 	% end
@@ -265,8 +268,6 @@
 	\appendix
 
 	\section{Backup Slides} \sectionslide
-		% TODO: loc looks ugly
-
 		\subsection{Expectation Maximization}
 			\begin{frame}{Expectation Maximization}
 				\begin{itemize}
