@@ -45,7 +45,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 				&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \\
 				&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)
 	\end{align*}
-	
+
 	To derive the M-step formulas, we need to maximize the \emph{expected} complete log-likelihood. Therefore, we will now derive the expected log-likelihood
 	\begin{equation*}
 		Q = \E\big[ p(\vec{s}_{1:T}, \vec{y}_{1:T}) \given \vec{y}_{1:T} \big]
@@ -62,7 +62,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		\mat{G}_t^{(n)}       & \coloneqq \E\bigg[\vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big(\vec{g}\Big(\vec{s}_t^{(n)}\Big)\Big)^T \bigggiven \vec{y}_{1:T}\bigg]    \label{eq:expectedMeasurementMat}
 	\end{align}
 	to be the expectations of the measurement function \( \vec{g}(\vec{s}_t) \). We will see that evaluating this expectation is not possible in a closed form and has to be approximated, but for now we will be deriving the expected complete log-likelihood dependent on the defined expectations.
-	
+
 	For simplicity, let
 	\begin{align*}
 		q_1 &\coloneqq -\frac{NT(k + p)}{2} \ln(2\pi) - \frac{N}{2} \ln \lvert \mat{V}_0 \rvert - \frac{N(T - 1)}{2} \ln \lvert \mat{Q} \rvert - \frac{NT}{2} \ln \lvert \mat{R} \rvert \\
@@ -71,7 +71,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		q_4 &\coloneqq -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}\Big(\vec{s}_t^{(n)}\Big) \Big)
 	\end{align*}
 	such that \( \ln p(\vec{s}_{1:T}, \vec{y}_{1:T}) = q_1 + q_2 + q_3 + q_4 \) and, with \(Q_1\), \(Q_2\), \(Q_3\) and \(Q_4\) being the corresponding expectations, \( Q = Q_1 + Q_2 + Q_3 + Q_4 \).
-	
+
 	We start with \(Q_1\):
 	\begin{equation*}
 		Q_1 = \E[q_1 \given \vec{y}_{1:T}] = -\frac{NT(k + p)}{2} \ln(2\pi) - \frac{N}{2} \ln \lvert \mat{V}_0 \rvert - \frac{N(T - 1)}{2} \ln \lvert \mat{Q} \rvert - \frac{NT}{2} \ln \lvert \mat{R} \rvert
@@ -117,7 +117,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 			&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \tr\!\bigg(\! \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T \mat{R}^{-1} - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} + \mat{G}_t^{(n)} \mat{R}^{-1} \!\bigg) \\
 			&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \tr\!\bigg(\! \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) - \tr\!\bigg(\! \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) - \tr\!\bigg(\! \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \mat{R}^{-1} \!\bigg) + \tr\!\Big( \mat{G}_t^{(n)} \mat{R}^{-1} \Big) \\
 	\end{align*}
-	
+
 	Putting it all together, the expected complete log-likelihood across all observation sequences is given as
 	\begin{align*}
 		Q
@@ -145,7 +145,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		\item initial state covariance \(\mat{V}_0\),
 	\end{itemize}
 	we have to take the derivatives \ac{wrt} to all the above parameters and set them to zero.
-	
+
 	To maximize \(Q\) \ac{wrt} all parameters, we have to take the derivatives \ac{wrt} the parameters and set them to zero.
 	\begin{itemize}
 		\item State dynamics matrix \(\mat{A}\):
@@ -158,7 +158,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		\implies && \mat{A}^\new &= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} & \label{eq:stateDynamicsMatrix}
 	\end{align}
 	\footnotetext{Covariance and correlation matrices (\( \mat{Q} \), \( \mat{R} \), \( \mat{P}_t \), \( \mat{P}_{t, t - 1} \)) are symmetric by definition.}
-	
+
 	\begin{itemize}
 		\item State noise covariance \(\mat{Q}\): \\ Instead of maximizing \ac{wrt} \(\mat{Q}\), we can also minimize \ac{wrt} \(\mat{Q}^{-1}\) which has the same effect.
 	\end{itemize}
@@ -190,7 +190,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		&&	&= N \mat{V}_0^{-1} \big( \hat{\vec{s}}_1 - \vec{m}_0 \big) \overset{!}{=} \vec{0} & \nonumber \\
 		\implies && \vec{m}_0^\new &= \hat{\vec{s}}_1 = \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_1^{(n)} & \label{eq:initialStateMean}
 	\end{align}
-	
+
 	\begin{itemize}
 		\item Initial state covariance \(\mat{V}_0\):
 	\end{itemize}
@@ -202,7 +202,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		&&	&= \frac{N}{2} \mat{V}_0 - \frac{N}{2} \mat{P}_1^T + \frac{N}{2} \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \overset{!}{=} \mat{0} & \nonumber \\
 		\implies && \mat{V}_0^\new &= \mat{P}_1^T - \hat{\vec{s}}_1 \hat{\vec{s}}_1^T & \label{eq:initialStateCovariance}
 	\end{align}
-	
+
 	\begin{itemize}
 		\item Measurement noise covariance \(\mat{R}\):
 	\end{itemize}
@@ -212,9 +212,9 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		&&	&= \frac{NT}{2} \mat{R} - \frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T \overset{!}{=} \mat{0} & \nonumber \\
 		\implies && \mat{R}^\new &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \hat{\vec{g}}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T - \vec{y}_t^{(n)} \Big(\hat{\vec{g}}_t^{(n)}\Big)^T + \Big(\mat{G}_t^{(n)}\Big)^T & \label{eq:measurementNoiseCovariance}
 	\end{align}
-	
+
 	The equations for the state dynamics matrix~\eqref{eq:stateDynamicsMatrix}, the state noise covariance~\eqref{eq:stateNoiseCovariance}, the initial state mean~\eqref{eq:initialStateMean} and the initial state covariance~\eqref{eq:initialStateCovariance} match exactly the equations given in~\cite{ghahramaniParameterEstimationLinear1996}. The equation for the measurement noise covariance~\eqref{eq:measurementNoiseCovariance} differs from the one given in~\cite{ghahramaniParameterEstimationLinear1996} as we are having nonlinear measurements and thus we cannot write the covariance in such a compact form.
-	
+
 	As said before, the expectations~\eqref{eq:expectedMeasurement} and~\eqref{eq:expectedMeasurementMat} are problematic as we cannot evaluate the integrals
 	\begin{align*}
 		\hat{\vec{g}}_t^{(n)} &= \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \dd{\vec{s}_{1:T}^{(n)}} \\
@@ -232,7 +232,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 			&\approx \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\Big(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\Big) \bigg(\!\vec{g}\Big(\!\sqrt{\mat{V}_t} \vec{\xi}_i + \hat{\vec{s}}_t^{(n)}\Big)\!\bigg)^T  \label{eq:lgsCubatureGG}
 	\end{align}
 	These approximations can be inserted into the closed-form calculation of \(\mat{R}\) given in equation~\eqref{eq:measurementNoiseCovariance} and can be easily differentiated \ac{wrt} \(\vec{\theta}\), \ac{eg} by using a neural network for approximating \(\vec{g}(\cdot)\) and an autograd engine like PyTorch~\cite{paszkePyTorchImperativeStyle2019}. Then we can use a numerical optimizer (\ac{eg} Adam~\cite{kingmaAdamMethodStochastic2017} or Adagrad~\cite{duchiAdaptiveSubgradientMethods2011}) and take one optimization step in each invocation of the M-step. That way we do not maximize \(Q\) in every M-step, but increase \(Q\) such that the convergence properties will still hold~\cite{moonExpectationmaximizationAlgorithm1996}.
-	
+
 	We are now able to perform the M-step with the closed-form maximizations given in equations~\eqref{eq:stateDynamicsMatrix},~\eqref{eq:stateNoiseCovariance},~\eqref{eq:initialStateMean},~\eqref{eq:initialStateCovariance} and~\eqref{eq:measurementNoiseCovariance} and using a numerical approach for the measurement parameters \(\vec{\theta}\) by applying cubature approximations given in~\eqref{eq:lgsCubatureG} and~\eqref{eq:lgsCubatureGG}. For completeness, we summarize all of them here:
 	\begin{align*}
 		\mat{A}^\new &= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} \\
@@ -258,16 +258,16 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 	\subsubsection{Forward Pass}
 		To derive the forward pass equations, we utilize the groundwork done in~\cite{deisenrothProbabilisticPerspectiveGaussian2011} which concludes that the filter is given as
 		\begin{align*}
-			\hat{\vec{s}}_{t \subgiven t}^{(n)} & = \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} + \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \Big(\vec{y}_t^{(n)} - \hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big) \\
-			\mat{V}_{t \subgiven t}       & = \mat{V}_{t \subgiven t - 1} - \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \mat{K}_{t \subgiven t - 1}^T
+			\hat{\vec{s}}_{t \subgiven t}^{(n)} & = \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} + \mat{K}_{t \subgiven t - 1} \Big(\vec{y}_t^{(n)} - \hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big) \\
+			\mat{V}_{t \subgiven t}       & = \mat{V}_{t \subgiven t - 1} - \mat{K}_{t \subgiven t - 1} \mat{S}_{t \subgiven t - 1} \mat{K}_{t \subgiven t - 1}^T
 		\end{align*}
-		with the expectations and covariances
+		with \( \mat{K}_{t \subgiven t - 1} = \mat{P}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \) and the expectations and covariances
 		\begin{align}
 			\hat{\vec{s}}_{t \subgiven t - 1}^{(n)} & \coloneqq \E_{\vec{s}_t^{(n)}}\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorState}                                                                     \\
 			\mat{V}_{t \subgiven t - 1}             & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}}\!\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorCovariance}                               \\
 			\hat{\vec{y}}_{t \subgiven t - 1}^{(n)} & \coloneqq \E_{\vec{y}_t^{(n)}}\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorMeas}                                                                      \\
 			\mat{S}_{t \subgiven t - 1}             & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{y}_t^{(n)}}\!\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorMeasCov}                                  \\
-			\mat{K}_{t \subgiven t - 1}             & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\!\Big[\vec{s}_t^{(n)}, \vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorKalman}
+			\mat{P}_{t \subgiven t - 1}             & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\!\Big[\vec{s}_t^{(n)}, \vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:filterPriorKalman}
 		\end{align}
 		which are priors for the state, state covariance, measurement, measurement covariance and cross-covariance, respectively. As in our case only the measurements are nonlinear, we can easily evaluate the prior state~\eqref{eq:filterPriorState} and the prior covariance~\eqref{eq:filterPriorCovariance} by exploiting the linearity of the expectation operator:
 		\begin{align*}
@@ -284,11 +284,12 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 				&= \mat{A} \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] \mat{A}^T + \mat{Q} \\
 				&= \mat{A} \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T + \mat{Q}
 		\end{align*}
-		
+
 		But we are using a nonlinear measurement function \( \vec{g}(\cdot) \). Hence, it is not possible to compute the integrals produced by the expectations/covariances~\eqref{eq:filterPriorMeas},~\eqref{eq:filterPriorMeasCov} and~\eqref{eq:filterPriorKalman}. As in the derivation of the M-step, we apply cubature methods to approximate the integrals:
 		\begin{align}
 			\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}
 				&= \E_{\vec{y}_t^{(n)}}\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \nonumber \\
+				&= \E_{\vec{s}_t^{(n)}, \vec{w}_t^{(n)}}\Big[\vec{g}\Big(\vec{s}_t^{(n)}\Big) + \vec{w}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \nonumber \\
 				&= \E_{\vec{s}_t^{(n)}}\Big[\vec{g}\Big(\vec{s}_t^{(n)}\Big) \Biggiven \vec{y}_{1:t - 1}\Big]  \nonumber \\
 				&= \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big) \dd{\vec{s}_t^{(n)}}  \nonumber \\
 				&= \int\! \vec{g}\Big(\vec{s}_t^{(n)}\Big) \,\normal\Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}, \mat{V}_{t \subgiven t - 1}\Big) \dd{\vec{s}_t^{(n)}}  \nonumber \\
@@ -304,7 +305,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 				&\approx \frac{1}{2kN} \sum_{n = 1}^{N} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \Big( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \Big)^T + \mat{R}  \label{eq:cubatureS}
 		\end{align}
 		\begin{align}
-			\mat{K}_{t \subgiven t - 1}
+			\mat{P}_{t \subgiven t - 1}
 				&= \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\!\Big[\vec{s}_t^{(n)}, \vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \nonumber \\
 				&= \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\bigg[\vec{s}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}^{(n)}\bigg] - \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}}\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \bigg(\E_{\vec{y}_t^{(n)}}\Big[\vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]\bigg)^T  \nonumber \\
 				&= \frac{1}{N} \sum_{n = 1}^{N} \E_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\bigg[\vec{s}_t^{(n)} \Big(\vec{y}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T  \nonumber \\
@@ -314,20 +315,21 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 				&\approx \frac{1}{2kN} \sum_{n = 1}^{N}  \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T  \label{eq:cubatureK}
 		\end{align}
 		This completes the derivation of the forward pass equations.
-		
+
 		For completeness, we summarize all of them here:
 		\begin{align*}
 			\hat{\vec{s}}_{t \subgiven t - 1}^{(n)} &= \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \\
 			\mat{V}_{t \subgiven t - 1} &= \mat{A} \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T + \mat{Q} \\
 			\hat{\vec{y}}_{t \subgiven t - 1}^{(n)} &= \frac{1}{2k} \sum_{i = 1}^{2k} \vec{g}\bigg(\! \sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \!\bigg) \\
 			\mat{S}_{t \subgiven t - 1} &= \frac{1}{2kN} \sum_{n = 1}^{N} \sum_{i = 1}^{2k} \vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \Big( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \Big)^T + \mat{R} \\
-			\mat{K}_{t \subgiven t - 1} &= \frac{1}{2kN} \sum_{n = 1}^{N}  \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
-			\hat{\vec{s}}_{t \subgiven t}^{(n)} &= \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} + \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \Big(\vec{y}_t^{(n)} - \hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big) \\
-			\mat{V}_{t \subgiven t} &= \mat{V}_{t \subgiven t - 1} - \mat{K}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \mat{K}_{t \subgiven t - 1}^T
+			\mat{P}_{t \subgiven t - 1} &= \frac{1}{2kN} \sum_{n = 1}^{N}  \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
+			\mat{K}_{t \subgiven t - 1} &= \mat{P}_{t \subgiven t - 1} (\mat{S}_{t \subgiven t - 1})^{-1} \\
+			\hat{\vec{s}}_{t \subgiven t}^{(n)} &= \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} + \mat{K}_{t \subgiven t - 1} \Big(\vec{y}_t^{(n)} - \hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big) \\
+			\mat{V}_{t \subgiven t} &= \mat{V}_{t \subgiven t - 1} - \mat{K}_{t \subgiven t - 1} \mat{S}_{t \subgiven t - 1} \mat{K}_{t \subgiven t - 1}^T
 		\end{align*}
 		The forward pass is initialized with \( \hat{\vec{s}}_{0 \subgiven 0}^{(n)} = \vec{m}_0 \) and \( \mat{V}_{0 \subgiven 0} = \mat{V}_0 \) for all \( n = 1, 2, \cdots, N \).
 	% end
-	
+
 	\subsubsection{Backward Pass}
 		To derive the backward pass equations, we utilize the groundwork done in~\cite{deisenrothProbabilisticPerspectiveGaussian2011} which concludes that the smoother is given as
 		\begin{align*}
@@ -356,7 +358,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 					= \E_{\vec{s}_{t - 1}^{(n)}, \vec{w}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \big(\vec{s}_{t - 1}^{(n)}\big)^T \mat{A}^T \Biggiven \vec{y}_{1:t - 1}\Big] \)
 		}
 		This completes the derivation of the backward pass equations.
-		
+
 		For completeness, we summarize all of them here:
 		\begin{align}
 			\mat{V}_{t - 1, t \subgiven t - 1} &= \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T  \nonumber \\
@@ -369,13 +371,13 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 			\mat{P}_t &= \mat{V}_{t \subgiven T} + \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven T}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven T}^{(n)}\Big)^T \\
 			\mat{P}_{t, t - 1} &= \mat{J}_{t - 1} \mat{V}_{t \subgiven T} + \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven T}^{(n)} \Big(\hat{\vec{s}}_{t - 1 \subgiven T}^{(n)}\Big)^T
 		\end{align*}
-		
+
 		That wraps up the derivation of the E- and M-step of the EM-algorithm for partially linear dynamical Gaussian systems.
 	% end
-	
+
 	\subsection{Exactness of the Cubature Rule for Linear Systems}
 		If we restrict the previous generalization of the nonlinear measurement function \( \vec{g}_{\vec{\theta}} : \R^k \to \R^p \) to a linear function \( \vec{g}(\vec{s}) = \mat{C} \vec{s} \) where \( \vec{\theta} = \{ \mat{C} \} \), we can show that the approximations for \( \hat{\vec{g}}_t^{(n)} \), \( \mat{G}_t^{(n)} \), \( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \), \( \mat{S}_{t \subgiven t - 1} \) and \( \mat{K}_{t \subgiven t - 1} \), given in equations~\eqref{eq:lgsCubatureG},~\eqref{eq:lgsCubatureGG},~\eqref{eq:cubatureY},~\eqref{eq:cubatureS} and~\eqref{eq:cubatureK} are exact, \ac{ie} they match the real expectation/covariance value.
-		
+
 		\begin{lemma}
 			For any matrix \( \mat{A} \in \R^{n \times n} \), there exists exactly one skew-symmetric matrix \( \mat{B} \in \R^{n \times n} \) such that \( \mat{A}^T = \mat{A} + \mat{B} \) holds.
 		\end{lemma}
@@ -390,7 +392,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 			\end{align*}
 			As \(\mat{B}\) is fully determined by \( \mat{B} = \mat{A}^T - \mat{A} \), it is also unique.
 		\end{proof}
-		
+
 		\begin{lemma}
 			Given a symmetric and positive-semidefinite matrix \( \mat{A} \in \R^{n \times n} \), its corresponding principal square root \( \sqrt{\mat{A}} \) which is also positive-semidefinite with \( \mat{A} = \sqrt{\mat{A}} \sqrt{\mat{A}} \) is also symmetric.
 		\end{lemma}
@@ -404,7 +406,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 			\end{align*}
 			This equation can only hold if \(\mat{B}\) zeros out: \( \mat{B} = \mat{0} \). Hence, \( \sqrt{\mat{A}} \) must be symmetric.
 		\end{proof}
-	
+
 		\begin{theorem}
 			The spherical-radial cubature approximations for, \( \hat{\vec{g}}_t^{(n)} \), \( \mat{G}_t^{(n)} \), \( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \), \( \mat{S}_{t \subgiven t - 1} \) and \( \mat{K}_{t \subgiven t - 1} \) are exact (\ac{ie} they equal the analytical result) if the measurement function is linear.
 		\end{theorem}
@@ -458,7 +460,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 					&= \mat{V}_{t \subgiven t - 1} \mat{C}^T
 			\end{align*}
 			These match exactly the well-known Kalman filter equations.
-			
+
 			We now plug the measurement function \( \vec{g}(\vec{s}) = \mat{C} \vec{s} \) into the various cubature rules:
 			\begin{itemize}
 				\item Expected measurement \( \hat{\vec{g}}_t^{(n)} \):
