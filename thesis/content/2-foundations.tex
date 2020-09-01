@@ -1,7 +1,7 @@
 \chapter{Foundations}
 	\label{c:foundations}
 	\IMRADlabel{methods}
-	
+
 	\section{Dynamical Systems}
 		A \emph{dynamical system}~\cite{birkhoffDynamicalSystems1927} is a (physical) system that evolves over time \(t\) and is completely defined by the values of \(n\) real variables
 		\begin{align*}
@@ -27,16 +27,16 @@
 			\item[Autonomous] If \(\vec{F}\) explicitly is independent of \(t\) (\ac{ie} \( \pdv{\vec{F}}{t} = \vec{0} \)), the \ac{ode} is called \emph{autonomous}.
 			\item[Homogenity] If no term  of \(\vec{F}\) is independent of the state or its derivatives, the \ac{ode} is called \emph{homogeneous}. For any homogeneous \ac{ode} one of its solutions is the trivial solution \( \vec{x} \equiv \vec{0} \).
 		\end{description}
-		
+
 		In all of the following, we assume to have explicit, autonomous, first order \acp{ode}. This is valid because we can transform every explicit higher order \ac{ode} into a system of first order \acp{ode} as well as we can introduce another "time state" which makes our \ac{ode} autonomous.
-		
+
 		The solution theory for linear \acp{ode} is highly evolved and solutions exist for nearly every possible \ac{ode}. But for nonlinear \acp{ode}, the world looks different. With the exception of some rare cases, nonlinear \acp{ode} are not tractable. Hence, we often need approximations for the nonlinear case. Some well-known approaches for these approximations are \ac{eg} \emph{small angle approximation} for Sines and Cosines. In small angle approximations, we Taylor-expand \( \sin \)/\( \cos \) at \( \varphi_a = 0 \) and cut all higher order terms:
 		\begin{gather*}
 			\sin(\varphi) = \varphi - \underbrace{\frac{\varphi^3}{3!} + \frac{\varphi^5}{5!} + \cdots}_\text{higher order terms} \approx \varphi \\
 			\cos(\varphi) = 1 - \underbrace{\frac{\varphi^2}{2!} + \frac{\varphi^4}{4!} - \frac{\varphi^6}{6!} + \cdots}_\text{higher order terms} \approx 1
 		\end{gather*}
 		This approach is illustrated in~\autoref{fig:smallAngleApproximation}.
-		
+
 		\begin{figure}
 			\centering
 			\begin{subfigure}[t]{0.5\linewidth}
@@ -53,54 +53,54 @@
 			\caption{Visualization of the small angle approximation (given is orange) of the basic trigonometric functions Sine and Cosine (given in blue). It is clear that the approximation is only valid in a small region around zero (\( \varphi \approx 0 \)).}
 			\label{fig:smallAngleApproximation}
 		\end{figure}
-	
+
 		We now look at two examples of dynamical systems, one which is linear and one that is not.
-		
+
 		\subsection{Harmonic Oscillator}
 			\label{subsec:harmonicOscillator}
-		
+
 			\begin{figure}
 				\centering
 				\tikzHarmonicOscillator
 				\caption{Illustration of a simple harmonic oscillator with mass \(m\), spring stiffness \(k\) and position \(x\) that is not affected by any external force like gravity. The mass is in equilibrium if \( x = 0 \).}
 				\label{fig:simpleHarmonicOscillator}
 			\end{figure}
-	
+
 			The \emph{simple harmonic oscillator} describes the dynamical system of a mass \(m\) that is attached to a spring that is following Hooke's Law with stiffness \(k\) (see~\autoref{fig:simpleHarmonicOscillator}). This harmonic oscillator is described by the \ac{ode}
 			\begin{align}
 				m\ddot{x} = -kx \quad\iff\quad \ddot{x} = -\frac{k}{m} x  \label{eq:harmonicOscillator}
 			\end{align}
 			where \(x\) and \(\ddot{x}\) are the position and acceleration of the mass, respectively. Note that if \( x = 0 \), the mass is in equilibrium and no force is acting on it.
-			
+
 			By using basic results in the solution theory of linear \acp{ode}, we see that the general solution is given as
 			\begin{align*}
 				x(t) = A \cos\Big(t \sqrt{k / m} + \varphi\Big)
 			\end{align*}
 			with the amplitude \(A\) and the phase \(\varphi\) (see~\autoref{app:harmonicOscillatorSolution} for the derivation of the solution). As neither gravity nor damping or other external forces are involved in the dynamical system, the motion continues forever with a non-changing amplitude.
 		% end
-		
+
 		\subsection{Simple Pendulum}
 			\label{subsec:simplePendulum}
-			
+
 			\begin{figure}
 				\centering
 				\tikzSimplePendulum
 				\caption{Illustration of an inverse pendulum with mass \(m\) and displacement \(\varphi\) that is only affected by gravity and no other external force. The mass is in equilibrium for both \( \varphi = 0 \) and \( \varphi = \pi \), where the former is an unstable equilibrium.}
 				\label{fig:simplePendulum}
 			\end{figure}
-		
+
 			The \emph{inverse pendulum} described the dynamical system of a mass \(m\) that is attached to a rigid pole of length \(L\) which can freely swing around a suspension point (see~\autoref{fig:simplePendulum}). The pendulum stands upright if \( \varphi = 0 \) and its equation of motion is described by the \ac{ode}
 			\begin{align*}
 				\ddot{\varphi} = \frac{g}{L} \sin(\varphi)
 			\end{align*}
 			where \(g\), \(L\), \(\varphi\) and \(\ddot{\varphi}\) describe the gravity acceleration, pole length, displacement and acceleration of the mass, respectively. Note that if \( \varphi = 0 \), the mass is in an unstable equilibrium and no force is acting on it.
-			
+
 			In comparison to the harmonic oscillator (\autoref{subsec:harmonicOscillator}), this differential equation is nonlinear. And, even for the case with unit gravity acceleration \( g = 1 \) and unit pole length \( L = 1\), where the \ac{ode} looks really simple
 			\begin{align}
 				\ddot{\varphi} = \sin(\varphi)  \label{eq:inversePendulum}
 			\end{align}
 			it is not tractable analytically (\ac{ie} there exists no solution in closed form).
-			
+
 			Still, we can apply the small angle approximation introduced before (in this case, \( \sin(\varphi) \approx \varphi \)) which yields the simple equation
 			\begin{align}
 				\ddot{\varphi} \approx \varphi  \label{eq:linearizedInversePendulum}
@@ -110,9 +110,9 @@
 				\varphi(t) = \frac{1}{2} e^{-t} \big(\varphi_0 + e^{2t} \varphi_0 - \dot{\varphi}_0 + e^{2t} \dot{\varphi}_0\big)
 			\end{align*}
 			where \(\varphi_0\) and \(\dot{\varphi}_0\) are the initial displacement and velocity, respectively.
-			
+
 			However, this small angle approximation can only forecast small displacements \( \varphi \ll \pi/2 \). And, as the equilibrium at \( \varphi = 0 \) is unstable, the approximation becomes worst and worst as time goes on because the pendulum falls down. This behavior is shown in~\autoref{fig:inversePendulumApprox}.
-			
+
 			\begin{figure}
 				\centering
 				\begin{subfigure}[t]{0.5\linewidth}

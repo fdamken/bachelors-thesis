@@ -15,6 +15,22 @@
   number = {6}
 }
 
+@article{bartoNeuronlikeAdaptiveElements1983,
+  title = {Neuronlike Adaptive Elements That Can Solve Difficult Learning Control Problems},
+  author = {Barto, Andrew G. and Sutton, Richard S. and Anderson, Charles W.},
+  year = {1983},
+  month = sep,
+  volume = {SMC-13},
+  pages = {834--846},
+  issn = {2168-2909},
+  doi = {10.1109/TSMC.1983.6313077},
+  abstract = {It is shown how a system consisting of two neuronlike adaptive elements can solve a difficult learning control problem. The task is to balance a pole that is hinged to a movable cart by applying forces to the cart's base. It is argued that the learning problems faced by adaptive elements that are components of adaptive networks are at least as difficult as this version of the pole-balancing problem. The learning system consists of a single associative search element (ASE) and a single adaptive critic element (ACE). In the course of learning to balance the pole, the ASE constructs associations between input and output by searching under the influence of reinforcement feedback, and the ACE constructs a more informative evaluation function than reinforcement feedback alone can provide. The differences between this approach and other attempts to solve problems using neurolike elements are discussed, as is the relation of this work to classical and instrumental conditioning in animal learning studies and its possible implications for research in the neurosciences.},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/EZKXPZ9K/Barto et al. - 1983 - Neuronlike adaptive elements that can solve diffic.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/9U5EUL8W/6313077.html},
+  journal = {IEEE Transactions on Systems, Man, and Cybernetics},
+  keywords = {adaptive control,adaptive critic element,Adaptive systems,animal learning studies,associative search element,Biological neural networks,learning control problem,learning systems,movable cart,neural nets,neuronlike adaptive elements,Neurons,Pattern recognition,Problem-solving,Supervised learning,Training},
+  number = {5}
+}
+
 @article{baumMaximizationTechniqueOccurring1970,
   title = {A {{Maximization Technique Occurring}} in the {{Statistical Analysis}} of {{Probabilistic Functions}} of {{Markov Chains}}},
   author = {Baum, Leonard E. and Petrie, Ted and Soules, George and Weiss, Norman},
@@ -26,6 +42,23 @@
   file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/3IZ55TRL/Baum et al. - 1970 - A Maximization Technique Occurring in the Statisti.pdf},
   journal = {The Annals of Mathematical Statistics},
   number = {1}
+}
+
+@phdthesis{bealVariationalAlgorithmsApproximate2003,
+  title = {Variational {{Algorithms}} for {{Approximate Bayesian Inference}}},
+  author = {Beal, Matthew J.},
+  year = {2003},
+  month = may,
+  address = {{London}},
+  abstract = {The Bayesian framework for machine learning allows for the incorporation of prior knowledge in a coherent way, avoids overfitting problems, and provides a principled basis for selecting between alternative models. Unfortunately the computations required are usually intractable. This thesis presents a unified variational Bayesian (VB) framework which approximates these computations in models with latent variables using a lower bound on the marginal likelihood.
+
+Chapter 1 presents background material on Bayesian inference, graphical models, and propagation algorithms. Chapter 2 forms the theoretical core of the thesis, generalising the expectation-maximisation (EM) algorithm for learning maximum likelihood parameters to the VB EM algorithm which integrates over model parameters. The algorithm is then specialised to the large family of conjugate-exponential (CE) graphical models, and several theorems are presented to pave the road for automated VB derivation procedures in both directed and undirected graphs (Bayesian and Markov networks, respectively).
+
+Chapters 3-5 derive and apply the VB EM algorithm to three commonly-used and important models: mixtures of factor analysers, linear dynamical systems, and hidden Markov models. It is shown how model selection tasks such as determining the dimensionality, cardinality, or number of variables are possible using VB approximations. Also explored are methods for combining sampling procedures with variational approximations, to estimate the tightness of VB bounds and to obtain more effective sampling algorithms. Chapter 6 applies VB learning to a long-standing problem of scoring discrete-variable directed acyclic graphs, and compares the performance to annealed importance sampling amongst other methods. Throughout, the VB approximation is compared to other methods including sampling, Cheeseman-Stutz, and asymptotic approximations such as BIC. The thesis concludes with a discussion of evolving directions for model selection including infinite models and alternative approximations to the marginal likelihood.},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/9WBWXIVY/Beal - 2003 - Variational Algorithms for Approximate Bayesian In.pdf},
+  language = {en},
+  school = {University of Cambridge},
+  type = {{{PhD}}. {{Thesis}}}
 }
 
 @techreport{bealVariationalKalmanSmoother2000,
@@ -155,21 +188,6 @@ In any case, the mathematician sees hundreds and thousands of formidable new pro
   number = {1}
 }
 
-@article{doerschTutorialVariationalAutoencoders2016,
-  title = {Tutorial on {{Variational Autoencoders}}},
-  author = {Doersch, Carl},
-  year = {2016},
-  month = aug,
-  abstract = {In just three years, Variational Autoencoders (VAEs) have emerged as one of the most popular approaches to unsupervised learning of complicated distributions. VAEs are appealing because they are built on top of standard function approximators (neural networks), and can be trained with stochastic gradient descent. VAEs have already shown promise in generating many kinds of complicated data, including handwritten digits, faces, house numbers, CIFAR images, physical models of scenes, segmentation, and predicting the future from static images. This tutorial introduces the intuitions behind VAEs, explains the mathematics behind them, and describes some empirical behavior. No prior knowledge of variational Bayesian methods is assumed.},
-  archivePrefix = {arXiv},
-  eprint = {1606.05908},
-  eprinttype = {arxiv},
-  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/F4N3MJ8B/Doersch - 2016 - Tutorial on Variational Autoencoders.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/WBAC9J3J/1606.html},
-  journal = {arXiv:1606.05908 [cs, stat]},
-  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
-  primaryClass = {cs, stat}
-}
-
 @article{duchiAdaptiveSubgradientMethods2011,
   title = {Adaptive {{Subgradient Methods}} for {{Online Learning}} and {{Stochastic Optimization}}},
   author = {Duchi, John and Hazan, Elad and Singer, Yoram},
@@ -264,6 +282,23 @@ In any case, the mathematician sees hundreds and thousands of formidable new pro
   journal = {IEEE Transactions on Automatic Control},
   keywords = {Bayesian methods,Cost function,Filtering,filtering theory,Filters,Gaussian distribution,Gaussian distributions,Gaussian filters,Gaussian processes,Indium tin oxide,Kalman filter,Kalman filters,nonlinear filtering,probability density,Sonar navigation,Testing},
   number = {5}
+}
+
+@article{jensenFonctionsConvexesInegalites1906,
+  title = {{Sur les fonctions convexes et les in\'egalit\'es entre les valeurs moyennes}},
+  author = {Jensen, J. L. W. V.},
+  year = {1906},
+  volume = {30},
+  pages = {175--193},
+  publisher = {{Institut Mittag-Leffler}},
+  issn = {0001-5962, 1871-2509},
+  doi = {10.1007/BF02418571},
+  abstract = {Project Euclid - mathematics and statistics online},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/4G6N6HBP/Jensen - 1906 - Sur les fonctions convexes et les inégalités entre.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/5MWXFHEI/1485887155.html},
+  journal = {Acta Mathematica},
+  language = {FR},
+  mrnumber = {MR1555027},
+  zmnumber = {0087.27403}
 }
 
 @article{kaiserDatadrivenDiscoveryKoopman2020a,
@@ -448,6 +483,7 @@ In any case, the mathematician sees hundreds and thousands of formidable new pro
   publisher = {{American Institute of Aeronautics and Astronautics}},
   issn = {0001-1452},
   doi = {10.2514/3.3166},
+  annotation = {\_eprint: https://doi.org/10.2514/3.3166},
   file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/FJPDZRFJ/RAUCH et al. - 1965 - Maximum likelihood estimates of linear dynamic sys.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/UBE6VQV3/3.html},
   journal = {AIAA Journal},
   number = {8}
@@ -492,6 +528,7 @@ In any case, the mathematician sees hundreds and thousands of formidable new pro
   issn = {1467-9892},
   doi = {10.1111/j.1467-9892.1982.tb00349.x},
   abstract = {Abstract. An approach to smoothing and forecasting for time series with missing observations is proposed. For an underlying state-space model, the EM algorithm is used in conjunction with the conventional Kalman smoothed estimators to derive a simple recursive procedure for estimating the parameters by maximum likelihood. An example is given which involves smoothing and forecasting an economic series using the maximum likelihood estimators for the parameters.},
+  annotation = {\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1467-9892.1982.tb00349.x},
   file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/IC35UB4V/j.1467-9892.1982.tb00349.html},
   journal = {Journal of Time Series Analysis},
   keywords = {EM algorithm,forecasting,Kalman filter,maximum likelihood,Missing data},
