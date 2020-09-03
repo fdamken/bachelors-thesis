@@ -6,7 +6,7 @@
 		\draw [thick] (-1.5, 5) -- (1.5, 5);
 		\fill [pattern = north east lines] (-1.5, 5) rectangle (1.5, 5.2);
 		\draw [decoration = { aspect = 0.3, segment length = 2mm, amplitude = 3mm, coil }, decorate] (0, 5) -- node[left, xshift = -0.4cm]{\(k\)} (m);
-		
+
 		\coordinate (xA) at (1, 4.5);
 		\coordinate (xB) at (1, 3.5);
 		\draw [->] (xA) -- node[right]{\(x\)} (xB);
@@ -21,90 +21,93 @@
 		\draw (C) -- node[left]{\(L\)} (mass);
 		\draw [dashed] (C) -- (A);
 		\draw pic [draw, "$\varphi$", angle radius = 1.5cm] {angle=A--C--mass};
-		
+
 		\draw [<-] (0.5, 1) -- node[right]{\(g\)} (0.5, 2);
 	\end{tikzpicture}
 }
 
+\newcommand{\tikzKoopmanOperator}{
+	\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
+		\node [state]                  (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+		\node [state, right = 1 of y1] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+		\node [state, right = 1 of y2] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+		\node [minimum width = 1cm, minimum height = 1cm, right = 1 of y3] (yD) {\(\cdots\)};
+		\node [state, right = 1 of yD] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+		\node [state, below = 1 of y1] (x1) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,1}}\)}};
+		\node [state, below = 1 of y2] (x2) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,2}}\)}};
+		\node [state, below = 1 of y3] (x3) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,3}}\)}};
+		\node [minimum width = 1cm, minimum height = 1cm, below = 1 of yD] (xD) {\(\cdots\)};
+		\node [state, below = 1 of yT] (xT) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,T}}\)}};
+
+		\draw (y1) -- node[above]{\(\mathcal{K}\)} (y2);
+		\draw (y2) -- node[above]{\(\mathcal{K}\)} (y3);
+		\draw (y3) -- node[above]{\(\mathcal{K}\)} (yD);
+		\draw (yD) -- node[above]{\(\mathcal{K}\)} (yT);
+
+		\draw (x1) -- node[below]{\(\vec{F}\)} (x2);
+		\draw (x2) -- node[below]{\(\vec{F}\)} (x3);
+		\draw (x3) -- node[below]{\(\vec{F}\)} (xD);
+		\draw (xD) -- node[below]{\(\vec{F}\)} (xT);
+
+		\draw (y1) to[bend right = 15] node[left]{\(\vec{g}\)} (x1);
+		\draw (y2) to[bend right = 15] node[left]{\(\vec{g}\)} (x2);
+		\draw (y3) to[bend right = 15] node[left]{\(\vec{g}\)} (x3);
+		\draw (yT) to[bend right = 15] node[left]{\(\vec{g}\)} (xT);
+
+		\draw [dashed] (x1) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (y1);
+		\draw [dashed] (x2) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (y2);
+		\draw [dashed] (x3) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (y3);
+		\draw [dashed] (xT) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (yT);
+	\end{tikzpicture}
+}
 
 \newcommand{\tikzHiddenMarkovModel}{
-	\begin{tikzpicture}[xscale=3.0,yscale=1.8,every node/.style={scale=1.2}]
-		% States.
-			\node[state] (q1) at (0,1.5) {$h_1$}
-				edge [loop above] node[left=0.1]  {} ();
-			\node[state] (q2) at (2,1.5) {$h_2$}
-				edge [leftedge]   node[auto,swap] {} (q1)
-				edge [rightedge]  node[auto,swap] {} (q1)
-				edge [loop above] node[right=0.1] {} ();
-		% Initial distribution.
-		\node[mstate] (init) at (1,3) {$\gls{pi}$}
-			edge [->,thick] node[left=0.1, near start] {} (q1)
-			edge [->,thick] node[right=0.1,near start] {} (q2);
-		% Observations.
-		\node[observation] (v1) at (0,0) {$v_1$}
-			edge [lightedge]       node[left=0.1]                  {} (q1)
-			edge [lightedge_right] node[below=0.1,very near start] {} (q2);
-		\node[observation] (v2) at (2,0) {$v_2$}
-			edge [lightedge_left] node[below=0.1,very near start]  {} (q1)
-			edge [lightedge]      node[auto,swap]                  {} (q2);
+	\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
+		\node [state]                  (s1) {\raisebox{-5pt}{\(s_{\,\mathclap{\,1}}\)}};
+		\node [state, right = 1 of s1] (s2) {\raisebox{-5pt}{\(s_{\,\mathclap{\,2}}\)}};
+		\node [state, right = 1 of s2] (s3) {\raisebox{-5pt}{\(s_{\,\mathclap{\,3}}\)}};
+		\node [minimum width = 1cm, minimum height = 1cm, right = 1 of s3] (sD) {\(\cdots\)};
+		\node [state, right = 1 of sD] (sT) {\raisebox{-5pt}{\(s_{\,\mathclap{\,T}}\)}};
+
+		\node [state, below = 1 of s1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+		\node [state, below = 1 of s2] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+		\node [state, below = 1 of s3] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+		\node [state, below = 1 of sT] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+		\draw (s1) -- (s2);
+		\draw (s2) -- (s3);
+		\draw (s3) -- (sD);
+		\draw (sD) -- (sT);
+
+		\draw (s1) -- (y1);
+		\draw (s2) -- (y2);
+		\draw (s3) -- (y3);
+		\draw (sT) -- (yT);
 	\end{tikzpicture}
 }
 
-\newcommand{\tikzTrellisDiagramOfHiddenMarkovModel}{
-	\begin{tikzpicture}[xscale=1.2,yscale=1.2]
-		% text
-		\node[pstate] (MP) at (-2,2) {\acl{MP}:};
-		\node[pstate] (OB) at (-2,0) {Observations:};
-		% states
-		\node[state] (X0) at (0,2) {$h_0$};
-		\node[state] (X1) at (2,2) {$h_1$}
-			edge [medge] node[above] {$T$} (X0);
-		\node[state] (X2) at (4,2) {$h_2$}
-			edge [medge] node[above] {$T$} (X1);
-		\node[pstate] (Xn) at (6,2) {\ldots}
-			edge [medge] node[above] {$T$} (X2);
-		\node[state] (XEND) at (8,2) {$h_t$}
-			edge [medge] node[above] {$T$} (Xn);
-		% tr line
-		\draw[dotted] (-1,1) --(9,1);
-		% observations
-		\node[state] (O0) at (0,0) {$x_0$}
-			edge [pedge] node[left, near end] {$O$} (X0);
-		\node[state] (O1) at (2,0) {$x_1$}
-			edge [pedge] node[left, near end] {$O$} (X1);
-		\node[state] (O2) at (4,0) {$x_2$}
-			edge [pedge] node[left, near end] {$O$} (X2);
-		\node[pstate] (On) at (6,0) {\ldots};
-		\node[state] (OEND) at (8,0) {$x_t$}
-			edge [pedge] node[left, near end] {$O$} (XEND);
-		\draw [->] (2,-0.8) -- (6,-0.8);
-		% time direction
-		\node at (4,-1) {time $t$};
-	\end{tikzpicture}
-}
+\newcommand{\tikzLinearGaussianDynamicalSystem}{
+	\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
+		\node [state]                  (x1) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,1}}\)}};
+		\node [state, right = 1 of x1] (x2) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,2}}\)}};
+		\node [state, right = 1 of x2] (x3) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,3}}\)}};
+		\node [minimum width = 1cm, minimum height = 1cm, right = 1 of x3] (xD) {\(\cdots\)};
+		\node [state, right = 1 of xD] (xT) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,T}}\)}};
 
-\newcommand{\tikzHiddenMarkovModelExample}{
-	\begin{tikzpicture}[xscale=3.0,yscale=2.0,every node/.style={scale=1.2}]
-		% States.
-		\node[state] (q1) at (0,1.5) {$h_0$}
-			edge [loop above] node[left=0.1] {0.7} ();
-		\node[state] (q2) at (2,1.5) {$h_1$}
-		edge [leftedge]   node[auto,swap] {0.3} (q1)
-			edge [rightedge]  node[auto,swap] {0.4} (q1)
-			edge [loop above] node[right=0.1] {0.6} ();
-		% Initial distribution.
-		\node[mstate] (init) at (1,3) {$\cvec{\pi}$}
-			edge [->, thick] node[left=0.1, near start] {0.6} (q1)
-			edge [->, thick] node[right=0.1,near start] {0.4} (q2);
-		% Observations.
-		\node[observation] (v1) at (-0.5,0) {$v_0$}
-			edge [lightedge]       node[left=0.1]                  {0.1} (q1)
-			edge [lightedge_right] node[below=0.1,very near start] {0.7} (q2);
-		\node[observation] (v2) at (1,-0.3) {$v_1$}
-			edge [lightedge_left]  node[below=0.1,very near start] {0.4} (q1)
-			edge [lightedge_right] node[below=0.1,very near start] {0.2} (q2);
-		\node[observation] (v3) at (2.5,0) {$v_2$}
-			edge [lightedge_left] node[below=0.1,very near start]  {0.5} (q1)
-			edge [lightedge]      node[auto,swap]                  {0.1} (q2);
+		\node [state, below = 1 of x1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+		\node [state, below = 1 of x2] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+		\node [state, below = 1 of x3] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+		\node [state, below = 1 of xT] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+		\draw (x1) -- node[above]{\(\mat{A}\)} (x2);
+		\draw (x2) -- node[above]{\(\mat{A}\)} (x3);
+		\draw (x3) -- node[above]{\(\mat{A}\)} (xD);
+		\draw (xD) -- node[above]{\(\mat{A}\)} (xT);
+
+		\draw (x1) -- node[left]{\(\mat{C}\)} (y1);
+		\draw (x2) -- node[left]{\(\mat{C}\)} (y2);
+		\draw (x3) -- node[left]{\(\mat{C}\)} (y3);
+		\draw (xT) -- node[left]{\(\mat{C}\)} (yT);
 	\end{tikzpicture}
 }

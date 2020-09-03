@@ -56,7 +56,7 @@
 
 		We now look at two examples of dynamical systems, one which is linear and one that is not.
 
-		\subsection{Harmonic Oscillator}
+		\paragraph{Harmonic Oscillator}
 			\label{subsec:harmonicOscillator}
 
 			\begin{figure}
@@ -79,7 +79,7 @@
 			with the amplitude \(A\) and the phase \(\varphi\) (see~\autoref{app:harmonicOscillatorSolution} for the derivation of the solution). As neither gravity nor damping or other external forces are involved in the dynamical system, the motion continues forever with a non-changing amplitude.
 		% end
 
-		\subsection{Simple Pendulum}
+		\paragraph{Simple Pendulum}
 			\label{subsec:simplePendulum}
 
 			\begin{figure}
@@ -130,5 +130,127 @@
 				\label{fig:inversePendulumApprox}
 			\end{figure}
 		% end
+
+		\paragraph{Discrete-Time Dynamical Systems}
+			In comparison to continuous-time dynamical systems described by \acp{ode}, discrete-time systems are described by a \emph{dynamics function} \( \vec{F} : \R^n \to \R^n \) advancing all states forward in time:
+			\begin{align*}
+				\vec{x}_{t + 1} = \vec{F}(\vec{x}_t)
+			\end{align*}
+			But we should note that, while seeming more restrictive, discrete-time dynamical systems are more general that continuous-time systems as we can discretize every continuous-time system
+			\begin{align*}
+				\dot{\vec{x}} = \vec{f}(\vec{x})
+			\end{align*}
+			as a discrete-time dynamical system
+			\begin{align*}
+				\vec{x}_{t + 1} = \vec{F}(\vec{x}_t)
+			\end{align*}
+			using the state dynamics function
+			\begin{align*}
+				\vec{F}\big(\vec{x}(t_0)\big) = \vec{x}(t_0 + \Delta_t) = \vec{x}(t_0) + \int_{t_0}^{t_0 + \Delta_t} \! \vec{f}\big(\vec{x}(\tau)\big) \dd{\tau}
+			\end{align*}
+			where \( \Delta_t \) is called the \emph{discretization interval} and \( \vec{x}_k = \vec{x}(k \Delta_t) \). Note that, from the Nyquist-Shannon sampling theorem, we now for band-limited functions that the sampling rate \( f_s = 1/\Delta_t \) has to be greater than two times the maximum frequency of the original function~\cite{shannonCommunicationPresenceNoise1949}, \ac{ie} \( f_s = 1/\Delta_t > 2 f \).
+		% end
+
+		\subsection{Koopman Dynamical Systems and the Koopman Operator}
+			As we have seen, classical linearization approaches like the small angle approximation are only valid in a narrow section around the linearization point. While this works well for simple control tasks such as swinging up and balancing an inverted pendulum~\cite{bugejaNonlinearSwingupStabilizing2003}, it does not work out for predicting future trajectories of the system. % TODO: Citation needed.
+
+			Consider a first-order, autonomous dynamical system
+			\begin{align*}
+				\dot{\vec{x}} = \vec{f}(\vec{x}),\quad \vec{f} : \R^n \to \R^n
+			\end{align*}
+			and observables ("measurements") \( \vec{g} : \R^n \to \R^m \). The Koopman operator \( \mathcal{K} \), an infinite-dimensional linear operator, acts on them as follows:
+			\begin{align*}
+				\mathcal{K} \vec{g} = \vec{g} \circ \vec{F} \quad\iff\quad \mathcal{K} \vec{g}(\vec{x}_t) = \vec{g}\big(\vec{F}(\vec{x}_t)\big) = \vec{g}(\vec{x}_{t + 1})
+			\end{align*}
+			In other words, the the Koopman operator advances our observables \(\vec{g}\) linearly forward in time. This behavior is illustrated in~\autoref{fig:koopmanOperatorBrunton}.
+
+			The Koopman operator can also be formulated for time-continuous systems~\cite{abrahamManifoldsTensorAnalysis2012}:
+			\begin{align*}
+				\dv{t} \vec{g} = \mathcal{K} \vec{g}
+			\end{align*}
+
+			% TODO: Further explain Koopman theory after reading the corresponding sections in the Abraham book.
+
+			\begin{figure}
+				\centering
+				\tikzKoopmanOperator
+				\caption{Illustration of a Koopman dynamical system where time flows from left to right. The top row shows the linear embedding with the Koopman operator \( \mathcal{K} \) to transition from \(\vec{y}_t\) to \(\vec{y}_{t + 1}\). The bottom row shows the nonlinear dynamics produced by the dynamics function \(\vec{F}\). The measurement function \(\vec{g}\) allows transitioning between the two representations of the system state where \(\vec{g}^{-1}\) describes an "inverse" measurement function to recover the original nonlinear state from the linear embedding. We would like to find such a function. Adopted from~\cite{bruntonKoopmanInvariantSubspaces2016}.}
+				\label{fig:koopmanOperatorBrunton}
+			\end{figure}
+		% end
+	% end
+
+	\section{Hidden Markov Models and Linear Gaussian Dynamical Systems}
+		\subsection{Hidden Markov Models}
+			\label{subsec:hiddenMarkovModel}
+
+			\acp{hmm} are simple Bayesian networks described by a non-observable (\emph{hidden}) Markov chain. This non-observable discrete chain can be indirectly observed with measurements that are emitted by every state. One of the key features of a Markov chain is that a state does only depend on the previous state, but not on the second previous, third previous, and so on, states. That is, knowing only the previous state is sufficient and no more information can be gathered by knowing every other state before. This is described by the state transition distribution
+			\begin{align*}
+				s_{k + 1} \sim p(s_{k + 1} \given s_k)
+			\end{align*}
+			being only dependent on the previous state \(s_k\). Analogous, a measurement \(\vec{y}_k\) of a state \(s_k\) is only dependent on that specific state:
+			\begin{align*}
+				\vec{y}_k \sim p(\vec{y}_k \given s_k)
+			\end{align*}
+			These assumptions are called the \emph{Markov property} and a system fulfilling this property is called \emph{Markovian}. These conditional distributions can be written in a graphical model as shown in~\autoref{fig:hiddenMarkovModel}. Note that, in general, no assumption has to be made on the "type" of state/observation (\ac{ie} whether it is a scalar, a vector or something completely different). Also, no assumption is made on the specific transition distributions, \acp{hmm} can also be used to model deterministic transitions using a Dirac delta distribution.
+
+			\begin{figure}
+				\centering
+				\tikzHiddenMarkovModel
+				\caption{Illustration of a completely general Hidden Markov Model with states \(s_k\) and emissions/observations \(\vec{y}_k\).}
+				\label{fig:hiddenMarkovModel}
+			\end{figure}
+		% end
+
+		\subsection{Linear Gaussian Dynamical Systems}
+			A general time-discrete linear system is described by a state transition
+			\begin{align*}
+				\vec{x}_{t + 1} = \mat{A} \vec{x}_t
+			\end{align*}
+			with a dynamics matrix \(\mat{A}\). Using purely additive Gaussian zero-mean noise \( \vec{\epsilon} \sim \normal(\vec{0}, \mat{Q}) \) with covariance matrix \( \mat{\Sigma} \), the state transition becomes probabilistic:
+			\begin{align*}
+				\vec{x}_{t + 1} = \mat{A} \vec{x}_t + \vec{\epsilon} \quad\iff\quad \vec{x}_{t + 1} \sim \normal(\mat{A} \vec{x}_t, \mat{Q})
+			\end{align*}
+			With analogous defined measurements,
+			\begin{align*}
+				\vec{y}_t \sim \normal(\mat{C} \vec{x}_t, \mat{R})
+			\end{align*}
+			the dynamical system becomes a \ac{lgds}, which is very similar to the \ac{hmm} described in~\autoref{subsec:hiddenMarkovModel}. It can also be represented using a graphical model as shown in~\autoref{fig:lgds}. In fact, a \ac{lgds} is kind of a \ac{hmm}, except the states are not discrete but continuous.
+
+			\begin{figure}
+				\centering
+				\tikzLinearGaussianDynamicalSystem
+				\caption{Illustration of a Linear Gaussian Dynamical System with states \(\vec{x}_t\) and observations \(\vec{y}_t\). Solid arrows represent probabilistic dependency, where the matrix \(\mat{A}\) is the dynamics matrix indicating that the mean transitions linearly, so do the observations with the observation matrix \(\mat{C}\).}
+				\label{fig:lgds}
+			\end{figure}
+		% end
+
+		\subsection{Inference}
+			% TODO: Stopped here.
+		% end
+	% end
+
+	\section{The Expectation-Maximization Algorithm}
+		The \ac{em} algorithm can be used for tackling the following optimization problem: Assuming some model with latent (hidden) states \(\vec{x}\), observations \(\vec{y}\) and model parameters \(\vec{\theta}\), we want to maximize the likelihood \( p(\vec{y} \given \vec{\theta}) \) \ac{wrt} the latent states \(\vec{x}\) and the parameters \(\vec{\theta}\). However, the marginal distribution
+		\begin{align*}
+			p(\vec{y} \given \vec{\theta}) = \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
+		\end{align*}
+		is generally intractable. As usual on maximum likelihood approaches, it is useful to not maximize the likelihood directly, but to maximize the log-likelihood
+		\begin{align*}
+			\mathcal{L}(\vec{\theta}) \coloneqq \log p(\vec{y} \given \vec{\theta}) = \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
+		\end{align*}
+		instead. This yields the same maximum as the logarithm is strictly increasing. By introducing an auxiliary probability distribution \( q(\vec{x}) \) over the latent variables, we can rewrite the marginal and find a lower bound on \(\mathcal{L}\) by using Jensen's inequality~\cite{jensenFonctionsConvexesInegalites1906}:
+		\begin{align*}
+			\mathcal{L}(\vec{\theta})
+				&= \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} \\
+				&= \log \int\! q(\vec{x}) \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x})} \dd{\vec{x}} \\
+				&\geq \int\! q(\vec{x}) \log \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x})} \dd{\vec{x}} \\
+				&= \int\! q(\vec{x}) \log \frac{p(\vec{y} \given \vec{x}, \vec{\theta}) p(\vec{x} \given \vec{\theta})}{q(\vec{x})} \dd{\vec{x}} \\
+				&= \int\! q(\vec{x}) \log p(\vec{y} \given \vec{x}, \vec{\theta}) + \int\! q(\vec{x}) \log \frac{p(\vec{x} \given \vec{\theta})}{q(\vec{x})} \dd{\vec{x}} \\
+				&= \E_{q(\vec{x})}\big[ \log p(\vec{y} \given \vec{x}, \vec{\theta}) \big] - \KL{q(\vec{x})}{p(\vec{x} \given \vec{\theta})}
+		\end{align*}
+	% end
+
+	\section{Variational Auto-Encoders and the Evidence Lower Bound}
 	% end
 % end
