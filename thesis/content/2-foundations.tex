@@ -240,13 +240,13 @@
 			\mathcal{L}(\vec{\theta}) \coloneqq \log p(\vec{y} \given \vec{\theta}) = \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
 		\end{align*}
 		instead. This yields the same maximum as the logarithm is strictly increasing. By introducing an auxiliary probability distribution \( q(\vec{x} \given \vec{y}) \) over the latent variables, we can rewrite the marginal and find a lower bound on \(\mathcal{L}\) by using Jensen's inequality~\cite{jensenFonctionsConvexesInegalites1906}:
-		\begin{align*}
+		\begin{align}
 			\mathcal{L}(\vec{\theta})
-				&= \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} \\
-				&= \log \int\! q(\vec{x} \given \vec{y}) \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y})} \dd{\vec{x}} \\
-				&\geq \int\! q(\vec{x} \given \vec{y}) \log \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y})} \dd{\vec{x}} \\
-				&= \int\! q(\vec{x} \given \vec{y}) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} - \int\! q(\vec{x} \given \vec{y}) \log q(\vec{x} \given \vec{y}) \dd{\vec{x}} \eqqcolon \mathcal{L}_\mathrm{EM}[q, \vec{\theta}]
-		\end{align*}
+				&= \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}  \nonumber \\
+				&= \log \int\! q(\vec{x} \given \vec{y}) \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y})} \dd{\vec{x}}  \nonumber \\
+				&\geq \int\! q(\vec{x} \given \vec{y}) \log \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y})} \dd{\vec{x}}  \nonumber \\
+				&= \int\! q(\vec{x} \given \vec{y}) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} - \int\! q(\vec{x} \given \vec{y}) \log q(\vec{x} \given \vec{y}) \dd{\vec{x}} \eqqcolon \mathcal{L}_\mathrm{EM}[q, \vec{\theta}]  \label{eq:emLowerBound}
+		\end{align}
 		This draws a lower bound \( \mathcal{L}_\mathrm{EM}[q, \vec{\theta}] \) on the log-likelihood \( \mathcal{L}(\vec{\theta}) \) we can maximize instead, maximizing the log-likelihood simultaneously. Note that this lower bound is in fact a functional of the distribution \( q(\vec{x} \given \vec{y}) \).
 
 		The \ac{em} algorithm now iteratively maximizes the lower bound and thus indirectly maximizes the original objective, the likelihood \( p(\vec{y} \given \vec{\theta}) \). The E and M step are as follows:
@@ -277,7 +277,7 @@
 				&= \arg\max_{\vec{\theta}} \int\! p\big(\vec{x} \biggiven \vec{y}, \vec{\theta}^{(n)}\big) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} \\
 				&= \arg\max_{\vec{\theta}}\, \E_{p\big(\vec{x} \given \vec{y}, \vec{\theta}^{(n)}\big)}[\log p(\vec{x}, \vec{y} \given \vec{\theta})]
 		\end{align*}
-		The quantity to optimize, \( \E[\log p(\vec{x}, \vec{y} \given \vec{\theta})] \), is also called the \emph{expected complete log-likelihood} as it involves both the observables and the latent variables.
+		The quantity to optimize, \( Q(\vec{\theta}) \coloneqq \E[\log p(\vec{x}, \vec{y} \given \vec{\theta})] \), is also called the \emph{expected complete log-likelihood} as it involves both the observables and the latent variables.
 
 		As shown in~\cite{bealVariationalAlgorithmsApproximate2003}, the lower bound turns into an equality after the E-step. Hence we are guaranteed to always rise the log-likelihood after each \ac{em} iteration if we do not already have the optimal auxiliary distribution and parameters. If this would be the case, both the E- and the M-step would not change anything, so our log-likelihood is monotonically increasing. Also we might not want to calculate the whole distribution in the E-step, but we might want to restrict out computations to sufficient statistics that cover our whole distribution. This procedure may include constraining our auxiliary distribution to some kind of parametric family, \ac{eg} a Gaussian. The procedure for the \ac{em} algorithm is analogous, but the lower bound does not turn into an equality after the E-step, see~\cite[49-51]{bealVariationalAlgorithmsApproximate2003} for more details.
 
@@ -319,5 +319,41 @@
 			\caption{Illustration of a Variational Auto-Encoder with the amortization network on the left and the decoder network on the right. Notice that the green-ish neurons in the middle are not "real", deterministic, neurons, but represent the sampling section of the \ac{vae} where the reparametrization takes place. The input and output size (on the left and right, respectively) are the same as we want to reconstruct out original data from the smaller latent state in the middle.}
 			\label{fig:vae}
 		\end{figure}
+
+		\subsubsection{Connection between EM and VAEs}
+			As we have seen, the log-likelihood
+			\begin{align*}
+				\mathcal{L}(\vec{\theta}) = \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
+			\end{align*}
+			gives rise to a lower bound \( \mathcal{L}_\mathrm{EM} \)~\eqref{eq:emLowerBound} and the \ac{elbo} \( \mathcal{L}_\mathrm{ELBO} \)~\eqref{eq:elbo}:
+			\begin{align*}
+				\mathcal{L}_\mathrm{EM}
+					&= \int\! q(\vec{x} \given \vec{y}) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} - \int\! q(\vec{x} \given \vec{y}) \log q(\vec{x} \given \vec{y}) \dd{\vec{x}}
+			\end{align*}
+			\begin{align*}
+				\mathcal{L}_\mathrm{ELBO}
+					&= -\KL{q(\vec{x} \given \vec{y}, \vec{\phi})}{p(\vec{y} \given \vec{x}, \vec{\theta})} + \E_{q(\vec{x} \given \vec{y}, \vec{\phi})}[p(\vec{y} \given \vec{x}, \vec{\theta})] \eqqcolon \mathcal{L}_\mathrm{ELBO}(\vec{\theta}, \vec{\psi})
+			\end{align*}
+			The lower bounds look quite different, but they are in fact equivalent,
+			\begin{align*}
+				\mathcal{L}_\mathrm{EM} = \mathcal{L}_\mathrm{ELBO}
+			\end{align*}
+			as the whole difference is just that the \ac{elbo} uses a factorization \( p(\vec{x}, \vec{y} \given \vec{\theta}) = p(\vec{y} \given \vec{x}, \vec{\theta}) p(\vec{x} \given \vec{\theta}) \) and the \ac{em} lower bound does not.
+
+			The maximization procedures differ in the following way:
+			\begin{itemize}
+				\item In the \ac{em} algorithm, we separately maximize the components of the lower bound, firstly finding the next auxiliary distribution \(q\) and then maximizing the lower bound \ac{wrt} the parameters.
+				\item In \acp{vae}, we use an amortization network to model the auxiliary distribution \(q\) in a parameterized way. Then we maximize the lower bound \ac{wrt} to both the variational and the generate parameters at once.
+			\end{itemize}
+			An obvious advantage of the \ac{em} algorithm is that we are guaranteed to always rise our lower bound and we will never get worse. But the great catch of the \ac{em} algorithm comes when evaluating the expected complete log-likelihood
+			\begin{align*}
+				Q(\vec{\theta}) = \int\! p\big(\vec{x} \given \vec{y}, \vec{\theta}^{(n)}\big) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{\theta}}
+			\end{align*}
+			to maximize it \ac{wrt} \(\vec{\theta}\): This expectation may not be tractable and thus we may not find update equations for \(\vec{\theta}\). \acp{vae} circumvent this issue by approximating the posterior and performing Monte Carlo sampling of the approximate posterior~\cite{kingmaAutoEncodingVariationalBayes2014}.
+
+			% TODO: Highlight disadvantages of VAEs. If they are so great, why not use them instead of EM? Also, is "always rise out lower bound" really an advantage? Doesn't a regular SGD do the same thing?
+
+			In the next section we will take a look at alternative methods for approximating Gaussian expectations like \(Q\) of the analytic integral is not tractable. That way we can still use an \ac{em} algorithm instead of a \ac{vae} for approximate inference.
+		% end
 	% end
 % end
