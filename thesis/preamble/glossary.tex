@@ -1,62 +1,70 @@
 % Acronyms.
-\newacronym{iid}{i.i.d.}{independently and identically distributed}
-\newacronym[shortplural = {LGDSs}, longplural = {Linear Gaussian Dynamical Systems}]{lgds}{LGDS}{Linear Gaussian Dynamical System}
-\newacronym{wrt}{w.r.t.}{with respect to}
-\newacronym{rts}{RTS}{Rauch-Tung-Striebel}
-\newacronym{ie}{i.e.}{that is}
+% Common-language acronyms.
 \newacronym{eg}{e.g.}{for example}
+\newacronym{ie}{i.e.}{that is}
+\newacronym{iid}{i.i.d.}{independently and identically distributed}
+\newacronym{wrt}{w.r.t.}{with respect to}
+% 2 letters without plural.
 \newacronym{em}{EM}{Expectation-Maximization}
+\newacronym{kl}{KL}{Kullback-Leibler}
+% 3 letters without plural.
+\newacronym{rts}{RTS}{Rauch-Tung-Striebel}
+% 3 letters with plural.
+\newacronym[shortplural = {HMMs}, longplural = {Hidden Markov Models}]{hmm}{HMM}{Hidden Markov Model}
+\newacronym[shortplural = {LQGs}, longplural = {Linear Quadratic Gaussian}]{lqg}{LQG}{Linear Quadratic Gaussian}
+\newacronym[shortplural = {LQRs}, longplural = {Linear Quadratic Regulators}]{lqr}{LQR}{Linear Quadratic Regulator}
 \newacronym[shortplural = {ODEs}, longplural = {Ordinal Differential Equations}]{ode}{ODE}{Ordinary Differential Equation}
 \newacronym[shortplural = {PDEs}, longplural = {Partial Differential Equations}]{pde}{PDE}{Partial Differential Equation}
-\newacronym[shortplural = {HMMs}, longplural = {Hidden Markov Models}]{hmm}{HMM}{Hidden Markov Model}
-\newacronym[shortplural = {KLs}, longplural = {Kullback-Leibler Divergences}]{kl}{KL}{Kullback-Leibler Divergence}
+\newacronym[shortplural = {VAEs}, longplural = {Variational Auto-Encoders}]{vae}{VAE}{Variational Auto-Encoder}
+% 4 letterd without plural.
+\newacronym{aevb}{AEVB}{Auto-Encoding Variational Bayes}
+% 4 letters with plural.
+\newacronym[shortplural = {ELBOs}, longplural = {Evidence Lower Bounds}]{elbo}{ELBO}{Evidence Lower Bound}
+\newacronym[shortplural = {LGDSs}, longplural = {Linear Gaussian Dynamical Systems}]{lgds}{LGDS}{Linear Gaussian Dynamical System}
 
 % Operators.
 \newglossary[opg]{operator}{opi}{opo}{List of Operators}
 \newglossaryentry{expectation}{
 	sort		= { expectation value },
 	name		= { \ensuremath{\E} },
-	symbol		= { \ensuremath{\E}[\cdot] },
-	description	= { the expectation value },
+	symbol		= { \ensuremath{\E[\cdot]} },
+	description	= { Expectation value. },
 	type		= operator
 }
 \newglossaryentry{covariance}{
 	sort		= { covariance },
 	name		= { \ensuremath{\Cov} },
-	symbol		= { \ensuremath{\Cov}[\cdot] },
-	description	= { the covariance },
+	symbol		= { \ensuremath{\Cov[\cdot]} },
+	description	= { Covariance. },
 	type		= operator
 }
-\newglossaryentry{ln}{
-	sort		= { natural logarithm },
-	name		= { \ensuremath{\ln} },
-	symbol		= { \ensuremath{\ln(\cdot)} },
-	description	= { the natural logarithm },
+\newglossaryentry{log}{
+	sort		= { logarithm },
+	name		= { \ensuremath{\log_k} },
+	symbol		= { \ensuremath{\log_k(\cdot)} },
+	description	= { Logarithm of base \ensuremath{k}. If no base is given, the natural logarithm. },
 	type		= operator
 }
 \newglossaryentry{trace}{
 	sort		= { linalg trace },
 	name		= { \ensuremath{\tr} },
 	symbol		= { \ensuremath{\tr(\cdot)} },
-	description	= { the trace of a matrix },
+	description	= { Trace of a matrix. },
 	type		= operator
 }
-
-% TODO: Other:
-%  - Gaussian distribution
 
 % Symbols.
 \newglossary[syg]{symbol}{sys}{syo}{List of Symbols}
 \newglossaryentry{theta}{
 	sort		= { parameters theta },
 	name		= { \ensuremath{\vec{\theta}} },
-	description	= { vector of parameters from a probability distribution },
+	description	= { Vector of parameters from a probability distribution, a modal or similar. },
 	type		= symbol
 }
 \newglossaryentry{gaussian}{
 	sort		= { distribution gaussian },
 	name		= { \ensuremath{\mathcal{N}(\vec{\mu}, \mat{\Sigma})} },
-	description	= { multivariate normal probability distribution with mean \(\vec{\mu}\) and covariance \(\mat{\Sigma}\) },
+	description	= { Multivariate normal probability distribution with mean \(\vec{\mu}\) and covariance \(\mat{\Sigma}\). },
 	type		= symbol
 }
 
