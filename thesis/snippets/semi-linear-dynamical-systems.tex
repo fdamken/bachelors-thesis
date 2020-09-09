@@ -347,8 +347,10 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 				&= \frac{1}{N} \sum_{n = 0}^{N} \Cov_{\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \\
 				&= \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] - \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \bigg( \E_{\vec{s}_t^{(n)}}\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \bigg)^T \\
 				&\oversetfootnotemark{=} \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \big(\vec{s}_{t - 1}^{(n)}\Big)^T \mat{A}^T \bigggiven \vec{y}_{1:t - 1}\bigg] - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
-				&= \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\Big] \mat{A}^T - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
-				&= \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T
+				&= \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] \mat{A}^T - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big( \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big)^T \mat{A}^T \\
+				&= \Bigg(\! \frac{1}{N} \sum_{n = 0}^{N} \E_{\vec{s}_{t - 1}^{(n)}}\bigg[\vec{s}_{t - 1}^{(n)} \Big(\vec{s}_{t - 1}^{(n)}\Big)^T \bigggiven \vec{y}_{1:t - 1}\bigg] - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big( \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big)^T \Bigg) \mat{A}^T \\
+				&= \Bigg(\! \frac{1}{N} \sum_{n = 0}^{N} \Cov_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)}\Big] \Bigg) \mat{A}^T \\
+				&= \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T
 		\end{align*}
 		\footnotetext{
 			Due to the independence and zero mean of the noise, it disappears in the expectation:
@@ -361,7 +363,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 
 		For completeness, we summarize all of them here:
 		\begin{align}
-			\mat{V}_{t - 1, t \subgiven t - 1} &= \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T - \frac{1}{N} \sum_{n = 0}^{N} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T  \nonumber \\
+			\mat{V}_{t - 1, t \subgiven t - 1} &= \mat{V}_{t - 1 \subgiven t - 1} \mat{A}^T  \nonumber \\
 			\mat{J}_{t - 1} &= \mat{V}_{t - 1, t \subgiven t - 1} \mat{V}_{t \subgiven t - 1}^{-1}  \nonumber \\
 			\hat{\vec{s}}_{t - 1 \subgiven T}^{(n)} &= \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} + \mat{J}_{t - 1} \Big(\hat{\vec{s}}_{t \subgiven T}^{(n)} - \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)  \label{eq:posteriorMean} \\
 			\mat{V}_{t - 1 \subgiven T} &= \mat{V}_{t - 1 \subgiven t - 1} + \mat{J}_{t - 1} (\mat{V}_{t \subgiven T} - \mat{V}_{t \subgiven t - 1}) \mat{J}_{t - 1}^T  \label{eq:posteriorCov}
@@ -450,10 +452,10 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 					&= \mat{C} \mat{V}_{t \subgiven t - 1} \mat{C}^T + \mat{R}
 			\end{align*}
 			\begin{itemize}
-				\item Prior measurement-state covariance \( \mat{K}_{t \subgiven t - 1} = \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\!\Big[\vec{s}_t^{(n)}, \vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \):
+				\item Prior measurement-state covariance \( \mat{P}_{t \subgiven t - 1} = \frac{1}{N} \sum_{n = 1}^{N} \Cov_{\vec{s}_t^{(n)}, \vec{y}_t^{(n)}}\!\Big[\vec{s}_t^{(n)}, \vec{y}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \):
 			\end{itemize}
 			\begin{align*}
-				\mat{K}_{t \subgiven t - 1}
+				\mat{P}_{t \subgiven t - 1}
 					&= \frac{1}{N} \sum_{n = 1}^{N} \int\! \vec{s}_t^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T \mat{C}^T p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big) \dd{\vec{s}_t^{(n)}} - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{y}}_{t \subgiven t - 1}^{(n)}\Big)^T \\
 					&= \frac{1}{N} \sum_{n = 1}^{N} \Bigg(\! \int\! \vec{s}_t^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big) \dd{\vec{s}_t^{(n)}} \!\Bigg) \mat{C}^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T \mat{C}^T \\
 					&= \Bigg(\! \frac{1}{N} \sum_{n = 1}^{N} \int\! \underbrace{\vec{s}_t^{(n)} \Big(\vec{s}_t^{(n)}\Big)^T p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big) \dd{\vec{s}_t^{(n)}} - \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T}_{=\, \Cov_{\vec{s}_t^{(n)}}\!\big[\vec{s}_t^{(n)} \biggiven \vec{y}_{1:t - 1}\big]} \!\Bigg) \mat{C}^T \\
@@ -510,10 +512,10 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 					&= \mat{C} \mat{V}_{t \subgiven t - 1} \mat{C}^T + \mat{R}
 			\end{align*}
 			\begin{itemize}
-				\item Prior measurement-state covariance \( \mat{K}_{t \subgiven t - 1} \):
+				\item Prior measurement-state covariance \( \mat{P}_{t \subgiven t - 1} \):
 			\end{itemize}
 			\begin{align*}
-				\mat{K}_{t \subgiven t - 1}
+				\mat{P}_{t \subgiven t - 1}
 					&\approx \frac{1}{2kN} \sum_{n = 1}^{N} \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\vec{g}\bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)\!\bigg)^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \Big)^T \\
 					&= \frac{1}{2kN} \sum_{n = 1}^{N} \sum_{i = 1}^{2k} \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg) \bigg(\!\sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\!\bigg)^T \mat{C}^T - \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \Big)^T \\
 					&= \frac{1}{2kN} \sum_{n = 1}^{N} \sum_{i = 1}^{2k} \sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i \vec{\xi}_i^T \sqrt{\mat{V}_{t \subgiven t - 1}}^T \mat{C}^T + \frac{1}{2kN} \cancel{\sum_{n = 1}^{N} \sum_{i = 1}^{2k} \sqrt{\mat{V}_{t \subgiven t - 1}} \vec{\xi}_i \Big(\hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big)^T \mat{C}^T} \\
