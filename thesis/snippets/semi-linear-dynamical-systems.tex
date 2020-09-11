@@ -1,4 +1,5 @@
 \section{Linear Dynamical Systems with Nonlinear Measurements}
+\label{subsec:slds}
 
 Our idea is to replace the linear measurements \( \vec{y}_t \) in an \ac{lgds}
 \begin{align*}
@@ -527,6 +528,63 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 			\end{align*}
 			All these equations match exactly the analytic equations we derived before. Thus, the cubature rule is exact iff \(\vec{g}(\cdot)\) is a linear function.
 		\end{proof}
+	% end
+
+	\subsection{Extension for Control}
+		To further extend our algorithm derived in~\autoref{subsec:slds} to support control inputs \( \vec{u}_{1:T - 1}^{(n)} \) for each observation sequence, we extend our state transition as follows:
+		\begin{align*}
+			\vec{s}_{t + 1} = \mat{A} \vec{s}_t + \mat{B} \vec{u}_t + \vec{w}_t,\quad \vec{w}_t \sim \normal(\vec{0}, \mat{Q})
+			\qquad\iff\qquad
+			\vec{s}_{t + 1} \sim \normal(\mat{A} \vec{s}_t + \mat{B} \vec{u}_t,\, \mat{Q})
+		\end{align*}
+		We also want to learn the control dynamics matrix \(\mat{B}\). To implement this, we have to adjust the following parts of the M-step:
+		\begin{itemize}
+			\item The likelihood part \(q_3\).
+			\item The corresponding expected likelihood part \(Q_3\).
+			\item Update equations for \(\mat{A}\) and \(Q\).
+			\item And obviously derive the update equation for \(\mat{B}\).
+		\end{itemize}
+
+		With \( \mat{C} \coloneqq \begin{bmatrix} \mat{A} & \mat{B} \end{bmatrix} \) and \( \vec{x}_t^{(n)} \coloneqq \begin{bmatrix} \vec{s}_t^{(n)} \\ \vec{u}_t^{(n)} \end{bmatrix} \), the third log-likelihood part is:
+		\begin{align*}
+			q_3
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big) \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)
+		\end{align*}
+		We used an auxiliary matrix \( \mat{C} \) to treat both the state dynamics and the control matrix at the same time because otherwise we would get circular M-step equations. To formulate the expected log-likelihood, let:
+		\begin{align*}
+			\mat{M}_t^{(n)} &\coloneqq \E\Big[ \vec{s}_t^{(n)} \vec{x}_{t - 1}^{(n), T} \Biggiven \vec{y}_{1:T} \Big] = \E\bigg[ \begin{bmatrix} \vec{s}_t^{(n)} \vec{s}_{t - 1}^{(n), T} & \vec{s}_t^{(n)} \vec{u}_{t - 1}^{(n), T} \end{bmatrix} \bigggiven \vec{y}_{1:T} \bigg] = \begin{bmatrix} \mat{P}_{t, t - 1}^{(n)} & \hat{\vec{s}}_t \vec{u}_{t - 1}^{(n), T} \end{bmatrix} \\
+			\mat{W}_t^{(n)} &\coloneqq \E\Big[ \vec{x}_t^{(n)} \vec{x}_t^{(n), T} \Biggiven \vec{y}_{1:T} \Big] = \E\Bigg[ \begin{bmatrix} \vec{s}_t^{(n)} \vec{s}_t^{(n), T} & \vec{s}_t^{(n)} \vec{u}_t^{(n), T} \\ \vec{u}_t^{(n)} \vec{s}_t^{(n), T} & \vec{u}_t^{(n)} \vec{u}_t^{(n), T} \end{bmatrix} \Bigggiven \vec{y}_{1:T} \Bigg] = \begin{bmatrix} \mat{P}_t^{(n)} & \hat{\vec{s}}_t^{(n)} \vec{u}_t^{(n), T} \\ \vec{u}_t^{(n)} \hat{\vec{s}}_t^{(n), T} & \vec{u}_t^{(n)} \vec{u}_t^{(n), T} \end{bmatrix}
+		\end{align*}
+		The corresponding expected log-likelihood is then given as:
+		\begin{align*}
+			Q_3
+				&= \E[q_3 \given \vec{y}_{1:T}] \\
+				&= \E\Bigg[ -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \!\Bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \mat{Q}^{-1} \!\bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \Big(\vec{s}_t^{(n), T} - \vec{x}_{t - 1}^{(n), T} \mat{C}^T\Big) \mat{Q}^{-1} \!\bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big( \vec{s}_t^{(n)} \vec{s}_t^{(n), T} - \vec{s}_t^{(n)} \vec{x}_{t - 1}^{(n), T} \mat{C}^T - \mat{C} \vec{x}_{t - 1}^{(n)} \vec{s}_t^{(n), T} + \mat{C} \vec{x}_{t - 1}^{(n)} \vec{x}_{t - 1}^{(n), T} \mat{C}^T \Big) \mat{Q}^{-1} \!\bigg) \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} - \mat{M}_t^{(n)} \mat{C}^T \mat{Q}^{-1} - \mat{C} \mat{M}_t^{(n), T} \mat{Q}^{-1} + \mat{C} \mat{W}_{t - 1}^{(n)} \mat{C}^T \mat{Q}^{-1} \Big) \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} \Big) - \tr\Big( \mat{M}_t^{(n)} \mat{C}^T \mat{Q}^{-1} \Big) - \tr\Big( \mat{C} \mat{M}_t^{(n), T} \mat{Q}^{-1} \Big) + \tr\Big( \mat{C} \mat{W}_{t - 1}^{(n)} \mat{C}^T \mat{Q}^{-1} \Big)
+		\end{align*}
+		We can now maximize this expected log-likelihood \ac{wrt} \(\mat{C}\) to get the new estimates for the state dynamics matrix \(\mat{A}\) and the control matrix \(\mat{B}\) at once:
+		\begin{align*}
+			&& \pdv{Q}{\mat{C}}
+				&= \pdv{Q_1}{\mat{C}} + \pdv{Q_2}{\mat{C}} + \pdv{Q_3}{\mat{C}} + \pdv{Q_4}{\mat{C}} = \pdv{Q_3}{\mat{C}} & \\
+			&&	&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} -\mat{Q}^{-1} \mat{M}_t^{(n)} - \mat{Q}^{-T} \mat{M}_t^{(n)} + \mat{Q}^{-T} \mat{C} \mat{W}_{t - 1}^{(n), T} + \mat{Q}^{-1} \mat{C} \mat{W}_{t - 1}^{(n)} & \\
+			&&	&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} -2\mat{Q}^{-1} \mat{M}_t^{(n)} + \mat{Q}^{-1} \mat{C} \Big( \mat{W}_{t - 1}^{(n), T} + \mat{W}_{t - 1}^{(n)} \Big) & \\
+			\implies && \mat{C}^\new &= 2 \Bigg(\! \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{M}_t^{(n)} \!\Bigg) \Bigg(\! \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{W}_{t - 1}^{(n)} + \mat{W}_{t - 1}^{(n), T} \!\Bigg)^{-1} &
+		\end{align*}
+		We now derive the remaining state dynamics noise covariance \(\mat{Q}\):
+		\begin{align*}
+			&& \pdv{Q}{\mat{Q}^{-1}}
+				&= \pdv{Q_1}{\mat{Q}^{-1}} + \pdv{Q_2}{\mat{Q}^{-1}} + \pdv{Q_3}{\mat{Q}^{-1}} + \pdv{Q_4}{\mat{Q}^{-1}} = \pdv{Q_1}{\mat{Q}^{-1}} + \pdv{Q_3}{\mat{Q}^{-1}} & \\
+			&&	&= \frac{N (T - 1)}{2} \mat{Q} - \frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{P}_t^{(n), T} - \mat{C} \mat{M}_t^{(n), T} - \mat{M}_t^{(n)} \mat{C}^T + \mat{C} \mat{W}_{t - 1}^{(n), T} \mat{C}^T & \\
+			\implies && \mat{Q}^\new &= \frac{1}{N (T - 1)} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{P}_t^{(n), T} - \mat{C} \mat{M}_t^{(n), T} - \mat{M}_t^{(n)} \mat{C}^T + \mat{C} \mat{W}_{t - 1}^{(n), T} \mat{C}^T &
+		\end{align*}
+		This concludes the derivation of the M-step for the case with control inputs.
 	% end
 % end
 
