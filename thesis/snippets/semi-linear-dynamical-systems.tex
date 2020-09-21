@@ -542,88 +542,46 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 			\item And obviously derive the update equation for \(\mat{B}\).
 		\end{itemize}
 
-		The third log-likelihood part is given as:
+		With \( \mat{C} \coloneqq \begin{bmatrix} \mat{A} & \mat{B} \end{bmatrix} \) and \( \vec{x}_t^{(n)} \coloneqq \begin{bmatrix} \vec{s}_t^{(n)} \\ \vec{u}_t^{(n)} \end{bmatrix} \), the third log-likelihood part is:
 		\begin{align*}
-			q_3 &= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big)
+			q_3
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big) \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)
 		\end{align*}
-		Using the trace trick as before we can evaluate the expected log-likelihood:
+		We used an auxiliary matrix \( \mat{C} \) to treat both the state dynamics and the control matrix at the same time because otherwise we would get circular M-step equations. To formulate the expected log-likelihood, let:
+		\begin{align*}
+			\mat{M}_t^{(n)} &\coloneqq \E\Big[ \vec{s}_t^{(n)} \vec{x}_{t - 1}^{(n), T} \Biggiven \vec{y}_{1:T} \Big] = \E\bigg[ \begin{bmatrix} \vec{s}_t^{(n)} \vec{s}_{t - 1}^{(n), T} & \vec{s}_t^{(n)} \vec{u}_{t - 1}^{(n), T} \end{bmatrix} \bigggiven \vec{y}_{1:T} \bigg] = \begin{bmatrix} \mat{P}_{t, t - 1}^{(n)} & \hat{\vec{s}}_t \vec{u}_{t - 1}^{(n), T} \end{bmatrix} \\
+			\mat{W}_t^{(n)} &\coloneqq \E\Big[ \vec{x}_t^{(n)} \vec{x}_t^{(n), T} \Biggiven \vec{y}_{1:T} \Big] = \E\Bigg[ \begin{bmatrix} \vec{s}_t^{(n)} \vec{s}_t^{(n), T} & \vec{s}_t^{(n)} \vec{u}_t^{(n), T} \\ \vec{u}_t^{(n)} \vec{s}_t^{(n), T} & \vec{u}_t^{(n)} \vec{u}_t^{(n), T} \end{bmatrix} \Bigggiven \vec{y}_{1:T} \Bigg] = \begin{bmatrix} \mat{P}_t^{(n)} & \hat{\vec{s}}_t^{(n)} \vec{u}_t^{(n), T} \\ \vec{u}_t^{(n)} \hat{\vec{s}}_t^{(n), T} & \vec{u}_t^{(n)} \vec{u}_t^{(n), T} \end{bmatrix}
+		\end{align*}
+		The corresponding expected log-likelihood is then given as:
 		\begin{align*}
 			Q_3
 				&= \E[q_3 \given \vec{y}_{1:T}] \\
-				&= \E\Bigg[ -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big) \Bigggiven \vec{y}_{1:T} \Bigg] \\
-				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big) \Bigggiven \vec{y}_{1:T} \Bigg] \\
-				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big) \!\bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
-				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big) \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \!\bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
-				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)}\Big) \Big(\vec{s}_t^{(n), T} - \vec{s}_{t - 1}^{(n), T} \mat{A}^T - \vec{u}_{t - 1}^{(n), T} \mat{B}^T\Big) \mat{Q}^{-1} \!\bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
-				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} \vec{s}_t^{(n), T} - \vec{s}_t^{(n)} \vec{s}_{t - 1}^{(n), T} \mat{A}^T - \vec{s}_t^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T - \mat{A} \vec{s}_{t - 1}^{(n)} \vec{s}_t^{(n), T} + \mat{A} \vec{s}_{t - 1}^{(n)} \vec{s}_{t - 1}^{(n), T} \mat{A}^T \\
-					&\qquad\qquad + \mat{A} \vec{s}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T - \mat{B} \vec{u}_{t - 1}^{(n)} \vec{s}_t^{(n), T} + \mat{B} \vec{u}_{t - 1}^{(n)} \vec{s}_{t - 1}^{(n), T} \mat{A}^T + \mat{B} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T\Big) \mat{Q}^{-1} \!\bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
-				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} - \mat{P}_{t, t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} - \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T \mat{Q}^{-1} - \mat{A} \underbrace{\mat{P}_{t - 1, t}^{(n)}}_{= \mat{P}_{t, t - 1}^{(n)}} \mat{Q}^{-1} + \mat{A} \mat{P}_{t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} \\
-					&\qquad\qquad + \mat{A} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T \mat{Q}^{-1} - \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_t^{(n), T} \mat{Q}^{-1} + \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} \mat{A}^T \mat{Q}^{-1} + \mat{B} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T \mat{Q}^{-1} \Big) \\
-				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{P}_{t, t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t, t - 1}^{(n)} \mat{Q}^{-1} \Big) \\
-					&\qquad\qquad + \tr\!\Big( \mat{A} \mat{P}_{t - 1}^{(n)} \mat{A}^T \mat{Q}^{-1} \Big) + \tr\!\Big( \mat{A} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_t^{(n), T} \mat{Q}^{-1} \Big) \\
-					&\qquad\qquad + \tr\!\Big( \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} \mat{A}^T \mat{Q}^{-1} \Big) + \tr\!\Big( \mat{B} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T \mat{Q}^{-1} \Big) \\
+				&= \E\Bigg[ -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big)^T \mat{Q}^{-1} \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \!\Bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \mat{Q}^{-1} \!\bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big(\vec{s}_t^{(n)} - \mat{C} \vec{x}_{t - 1}^{(n)}\Big) \Big(\vec{s}_t^{(n), T} - \vec{x}_{t - 1}^{(n), T} \mat{C}^T\Big) \mat{Q}^{-1} \!\bigg) \Bigggiven \vec{y}_{1:T} \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \E\Bigg[ \tr\!\bigg(\! \Big( \vec{s}_t^{(n)} \vec{s}_t^{(n), T} - \vec{s}_t^{(n)} \vec{x}_{t - 1}^{(n), T} \mat{C}^T - \mat{C} \vec{x}_{t - 1}^{(n)} \vec{s}_t^{(n), T} + \mat{C} \vec{x}_{t - 1}^{(n)} \vec{x}_{t - 1}^{(n), T} \mat{C}^T \Big) \mat{Q}^{-1} \!\bigg) \Bigg] \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} - \mat{M}_t^{(n)} \mat{C}^T \mat{Q}^{-1} - \mat{C} \mat{M}_t^{(n), T} \mat{Q}^{-1} + \mat{C} \mat{W}_{t - 1}^{(n)} \mat{C}^T \mat{Q}^{-1} \Big) \\
+				&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \tr\Big( \mat{P}_t^{(n)} \mat{Q}^{-1} \Big) - \tr\Big( \mat{M}_t^{(n)} \mat{C}^T \mat{Q}^{-1} \Big) - \tr\Big( \mat{C} \mat{M}_t^{(n), T} \mat{Q}^{-1} \Big) + \tr\Big( \mat{C} \mat{W}_{t - 1}^{(n)} \mat{C}^T \mat{Q}^{-1} \Big)
 		\end{align*}
-		By taking the derivatives of \(Q_3\) \ac{wrt} \(\mat{A}\) and \(\mat{B}\) and setting them to zero, we get two dependent update equations for \(\mat{A}\) and \(\mat{B}\):
+		We can now maximize this expected log-likelihood \ac{wrt} \(\mat{C}\) to get the new estimates for the state dynamics matrix \(\mat{A}\) and the control matrix \(\mat{B}\) at once:
 		\begin{align*}
-			&& \pdv{Q}{\mat{A}}
-				&= \pdv{Q_1}{\mat{A}} + \pdv{Q_2}{\mat{A}} + \pdv{Q_3}{\mat{A}} + \pdv{Q_4}{\mat{A}} = \pdv{Q_3}{\mat{A}} & \\
-			&&	&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} - \mat{Q}^{-1} \mat{P}_{t, t - 1}^{(n)} - \mat{Q}^{-T} \mat{P}_{t, t - 1}^{(n), T} + \mat{Q}^{-T} \mat{A} \mat{P}_{t - 1}^{(n), T} + \mat{Q}^{-1} \mat{A} \mat{P}_{t - 1}^{(n)} & \\
-				&&&\qquad\qquad + \mat{Q}^{-T} \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} + \mat{Q}^{-1} \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} & \\
-			&&	&= -\sum_{n = 1}^{N} \sum_{t = 2}^{T} - \mat{Q}^{-1} \mat{P}_{t, t - 1}^{(n)} + \mat{Q}^{-1} \mat{A} \mat{P}_{t - 1}^{(n)} + \mat{Q}^{-1} \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} \overset{!}{=} \mat{0} & \\
-			\implies && \mat{A}^\new &= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} \mat{B} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} &
+			&& \pdv{Q}{\mat{C}}
+				&= \pdv{Q_1}{\mat{C}} + \pdv{Q_2}{\mat{C}} + \pdv{Q_3}{\mat{C}} + \pdv{Q_4}{\mat{C}} = \pdv{Q_3}{\mat{C}} & \\
+			&&	&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} -\mat{Q}^{-1} \mat{M}_t^{(n)} - \mat{Q}^{-T} \mat{M}_t^{(n)} + \mat{Q}^{-T} \mat{C} \mat{W}_{t - 1}^{(n), T} + \mat{Q}^{-1} \mat{C} \mat{W}_{t - 1}^{(n)} & \\
+			&&	&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} -2\mat{Q}^{-1} \mat{M}_t^{(n)} + \mat{Q}^{-1} \mat{C} \Big( \mat{W}_{t - 1}^{(n), T} + \mat{W}_{t - 1}^{(n)} \Big) & \\
+			\implies && \mat{C}^\new &= 2 \Bigg(\! \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{M}_t^{(n)} \!\Bigg) \Bigg(\! \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{W}_{t - 1}^{(n)} + \mat{W}_{t - 1}^{(n), T} \!\Bigg)^{-1} &
 		\end{align*}
-		And for \(\mat{B}\):
-		\begin{align*}
-			&& \pdv{Q}{\mat{B}}
-				&= \pdv{Q_1}{\mat{B}} + \pdv{Q_2}{\mat{B}} + \pdv{Q_3}{\mat{B}} + \pdv{Q_4}{\mat{B}} = \pdv{Q_3}{\mat{B}} & \\
-			&&	&= -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} - \mat{Q}^{-1} \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T} + \mat{Q}^{-1} \mat{A} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} - \mat{Q}^{-T} \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T} + \mat{Q}^{-T} \mat{A} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} & \\
-				&&&\qquad\qquad + \mat{Q}^{-T} \mat{B} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} + \mat{Q}^{-1} \mat{B} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} & \\
-			&&	&= -\sum_{n = 1}^{N} \sum_{t = 2}^{T} -\mat{Q}^{-1} \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T} + \mat{Q}^{-1} \mat{A} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} + \mat{Q}^{-1} \mat{B} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} & \\
-			\implies && \mat{B}^\new &= \Bigg(\! \sum_{n = 1}^{N} \sum_{t = 2}^{T} \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T} - \mat{A} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \!\Bigg) \Bigg(\! \sum_{n = 1}^{N} \sum_{t = 2}^{T} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \!\Bigg)^{-1} &
-		\end{align*}
-		By plugging in \( \mat{B}^\new \) into the formula for \( \mat{A}^\new \) and rearranging the matrices we find the update equation for \( \mat{A} \) that is independent from the other variables. For brevity, let
-		\begin{align*}
-			\mat{U} &\coloneqq \sum_{n = 1}^{N} \sum_{t = 2}^{T} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \\
-			\mat{M} &\coloneqq \sum_{n = 1}^{N} \sum_{t = 2}^{T} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \\
-			\mat{W} &\coloneqq \sum_{n = 1}^{N} \sum_{t = 2}^{T} \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T}
-		\end{align*}
-		to keep the derivations nice and clean:
-		\begin{align*}
-			&& \mat{A}^\new
-				&= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} \mat{B} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} & \\
-			&&	&= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} \mat{B} \mat{M}^T \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} & \\
-			\implies&& \mat{A}
-				&= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} (\mat{W} - \mat{A} \mat{M}) \mat{U}^{-1} \mat{M}^T \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} & \\
-			\iff&& \mat{A} \sum_{t = 2}^{T} \mat{P}_{t - 1}
-				&= \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} (\mat{W} - \mat{A} \mat{M}) \mat{U}^{-1} \mat{M}^T & \\
-			&&	&= \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} \big( \mat{W} \mat{U}^{-1} \mat{M}^T - \mat{A} \mat{M} \mat{U}^{-1} \mat{M}^T \big) & \\
-			&&	&= \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} \mat{W} \mat{U}^{-1} \mat{M}^T + \frac{1}{N} \mat{A} \mat{M} \mat{U}^{-1} \mat{M}^T & \\
-			\iff&& \mat{A} \sum_{t = 2}^{T} \mat{P}_{t - 1} - \frac{1}{N} \mat{A} \mat{M} \mat{U}^{-1} \mat{M}^T
-				&= \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} \mat{W} \mat{U}^{-1} \mat{M}^T & \\
-			\iff&& \mat{A} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} - \frac{1}{N} \mat{M} \mat{U}^{-1} \mat{M}^T \!\Bigg)
-				&= \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} \mat{W} \mat{U}^{-1} \mat{M}^T & \\
-			\implies&& \mat{A}^\new
-				&= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} - \frac{1}{N} \mat{W} \mat{U}^{-1} \mat{M}^T \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} - \frac{1}{N} \mat{M} \mat{U}^{-1} \mat{M}^T \!\Bigg)^{-1} &
-		\end{align*}
-		The equation for \(\mat{B}\) is as simple as:
-		\begin{align*}
-			\mat{B}^\new = \big( \mat{W} - \mat{A}^\new \mat{M} \big) \mat{U}^{-1}
-		\end{align*}
-
 		We now derive the remaining state dynamics noise covariance \(\mat{Q}\):
 		\begin{align*}
 			&& \pdv{Q}{\mat{Q}^{-1}}
 				&= \pdv{Q_1}{\mat{Q}^{-1}} + \pdv{Q_2}{\mat{Q}^{-1}} + \pdv{Q_3}{\mat{Q}^{-1}} + \pdv{Q_4}{\mat{Q}^{-1}} = \pdv{Q_1}{\mat{Q}^{-1}} + \pdv{Q_3}{\mat{Q}^{-1}} & \\
-			&&	&= \frac{N (T - 1)}{2} \mat{Q} - \frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{P}_t^{(n), T} - \mat{A} \mat{P}_{t, t - 1}^{(n), T} - \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_t^{(n), T} - \mat{P}_{t, t - 1}^{(n), T} \mat{A}^T + \mat{A} \mat{P}_{t - 1}^{(n), T} \mat{A}^T & \\
-				&&&\qquad\qquad + \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} \mat{A}^T - \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T + \mat{A} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T + \mat{B} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T & \\
-			&&	&= \frac{N (T - 1)}{2} \mat{Q} - \frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{P}_t^{(n)} - \mat{A} \mat{P}_{t, t - 1}^{(n)} - \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_t^{(n), T} - \mat{P}_{t, t - 1}^{(n)} \mat{A}^T + \mat{A} \mat{P}_{t - 1}^{(n)} \mat{A}^T & \\
-				&&&\qquad\qquad + \mat{B} \vec{u}_{t - 1}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} \mat{A}^T - \hat{\vec{s}}_t^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T + \mat{A} \hat{\vec{s}}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T + \mat{B} \vec{u}_{t - 1}^{(n)} \vec{u}_{t - 1}^{(n), T} \mat{B}^T & \\
-			&&	&= \frac{N (T - 1)}{2} \mat{Q} - \frac{1}{2} \sum_{t = 2}^{T} \mat{P}_t - \mat{A} \mat{P}_{t, t - 1} - \mat{P}_{t, t - 1} \mat{A}^T + \mat{A} \mat{P}_{t - 1} \mat{A}^T & \\
-				&&&\qquad\qquad + \frac{1}{2} \big( \mat{B} \mat{W}^T - \mat{B} \mat{M}^T \mat{A}^T + \mat{W} \mat{B}^T + \mat{A} \mat{M} \mat{B}^T + \mat{B} \mat{U} \mat{B}^T \big) \overset{!}{=} \mat{0} & \\
-			\implies && \mat{Q}^\new &= \frac{1}{N (T - 1)} \Bigg(\! - \mat{B}^\new \mat{W}^T + \mat{B}^\new \mat{M}^T \mat{A}^{\new, T} - \mat{W} \mat{B}^{\new, T} - \mat{A}^\new \mat{M} \mat{B}^{\new, T} - \mat{B}^\new \mat{U} \mat{B}^{\new, T} \\
-				&&&\qquad\qquad + \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \mat{P}_{t, t - 1} - \mat{P}_{t, t - 1} \mat{A}^{\new, T} + \mat{A}^\new \mat{P}_{t - 1} \mat{A}^{\new, T} \!\Bigg) &
+			&&	&= \frac{N (T - 1)}{2} \mat{Q} - \frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{P}_t^{(n), T} - \mat{C} \mat{M}_t^{(n), T} - \mat{M}_t^{(n)} \mat{C}^T + \mat{C} \mat{W}_{t - 1}^{(n), T} \mat{C}^T & \\
+			&&	&= \frac{N (T - 1)}{2} \mat{Q} - \frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{P}_t^{(n)} - \mat{C} \mat{M}_t^{(n), T} - \mat{M}_t^{(n)} \mat{C}^T + \mat{C} \mat{W}_{t - 1}^{(n)} \mat{C}^T & \\
+			\implies && \mat{Q}^\new &= \frac{1}{N (T - 1)} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \mat{P}_t^{(n)} - \mat{C} \mat{M}_t^{(n), T} - \mat{M}_t^{(n)} \mat{C}^T + \mat{C} \mat{W}_{t - 1}^{(n)} \mat{C}^T &
 		\end{align*}
-
 		This concludes the derivation of the M-step for the case with control inputs.
 
 		We now have to adjust equation~\eqref{eq:filterPriorState} for the E-step forward pass and equation~\eqref{eq:smootherPriorCrossCov} for the backward pass according to the new state transition \( \vec{s}_{t + 1} = \mat{A} \vec{s}_t + \mat{B} \vec{u}_t \):
@@ -647,7 +605,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 				&= \E_{\vec{s}_{t - 1}^{(n)}, \vec{w}_{t - 1}^{(n)}}\bigg[ \vec{s}_{t - 1}^{(n)} \Big( \mat{A} \vec{s}_{t - 1}^{(n)} + \mat{B} \vec{u}_{t - 1}^{(n)} + \vec{w}_t^{(n)} \Big)^T \bigggiven \vec{y}_{1:t - 1} \bigg] - \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \hat{\vec{s}}_{t \subgiven t - 1}^{(n), T} \\
 				&= \E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \vec{s}_{t - 1}^{(n), T} \Biggiven \vec{y}_{1:t - 1}\Big] \mat{A}^T + \E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \vec{u}_{t - 1}^{(n), T} \mat{B}^T - \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \Big( \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} + \mat{B} \vec{u}_{t - 1}^{(n)} \Big)^T \\
 				&= \bigg( \E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \vec{s}_{t - 1}^{(n), T} \Biggiven \vec{y}_{1:t - 1}\Big] - \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n), T} \bigg) \mat{A}^T \\
-					&\qquad\qquad + \cancel{\E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \vec{u}_{t - 1}^{(n), T} \mat{B}^T} - \cancel{\E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \vec{u}_{t - 1}^{(n), T} \mat{B}^T} \\
+				&\qquad\qquad + \cancel{\E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \vec{u}_{t - 1}^{(n), T} \mat{B}^T} - \cancel{\E_{\vec{s}_{t - 1}^{(n)}}\Big[\vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big] \vec{u}_{t - 1}^{(n), T} \mat{B}^T} \\
 				&= \Cov_{\vec{s}_{t - 1}^{(n)}}\Big( \vec{s}_{t - 1}^{(n)} \Biggiven \vec{y}_{1:t - 1} \Big) \mat{A}^T \\
 				&= \mat{V}_{t - 1 \subgiven t - 1}^{(n)} \mat{A}^T
 		\end{align*}
