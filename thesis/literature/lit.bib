@@ -11,6 +11,20 @@
   language = {en}
 }
 
+@inproceedings{andersonCommunicationAvoidingQRDecomposition2011a,
+  title = {Communication-{{Avoiding QR Decomposition}} for {{GPUs}}},
+  booktitle = {2011 {{IEEE International Parallel Distributed Processing Symposium}}},
+  author = {Anderson, Michael and Ballard, Grey and Demmel, James and Keutzer, Kurt},
+  year = {2011},
+  month = may,
+  pages = {48--58},
+  issn = {1530-2075},
+  doi = {10.1109/IPDPS.2011.15},
+  abstract = {We describe an implementation of the Communication-Avoiding QR (CAQR) factorization that runs entirely on a single graphics processor (GPU). We show that the reduction in memory traffic provided by CAQR allows us to outperform existing parallel GPU implementations of QR for a large class of tall-skinny matrices. Other GPU implementations of QR handle panel factorizations by either sending the work to a general-purpose processor or using entirely bandwidth-bound operations, incurring data transfer overheads. In contrast, our QR is done entirely on the GPU using compute-bound kernels, meaning performance is good regardless of the width of the matrix. As a result, we outperform CULA, a parallel linear algebra library for GPUs by up to 17x for tall-skinny matrices and Intel's Math Kernel Library (MKL) by up to 12x. We also discuss stationary video background subtraction as a motivating application. We apply a recent statistical approach, which requires many iterations of computing the singular value decomposition of a tall-skinny matrix. Using CAQR as a first step to getting the singular value decomposition, we are able to get the answer 3x faster than if we use a traditional bandwidth-bound GPU QR factorization tuned specifically for that matrix size, and 30x faster than if we use Intel's Math Kernel Library (MKL) singular value decomposition routine on a multicore CPU.},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/TWHMT39R/Anderson et al. - 2011 - Communication-Avoiding QR Decomposition for GPUs.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/SHP5S74T/6012824.html},
+  keywords = {bandwidth-bound operations,communication-avoiding QR decomposition,communication-avoiding QR factorization,compute-bound kernels,computer graphic equipment,coprocessors,CULA parallel linear algebra library,data transfer overheads,general-purpose processor,GPU,graphics processing unit,Graphics processing unit,Instruction sets,Intel math kernel library,Kernel,Libraries,Matrix decomposition,principal component analysis,QR handle panel factorization,singular value decomposition,statistical approach,tall-skinny matrix,Vegetation,video background subtraction,video signal processing}
+}
+
 @article{arasaratnamCubatureKalmanFilters2009,
   title = {Cubature {{Kalman Filters}}},
   author = {Arasaratnam, Ienkaran and Haykin, Simon},
