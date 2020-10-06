@@ -50,11 +50,11 @@
 				\includegraphics[width = \linewidth]{figures/introduction/generated/small-angle-approximation-cos.pdf}
 				\caption{Small angle approximation \( \cos(\varphi) \approx 1 \) of Cosine.}
 			\end{subfigure}
-			\caption{Visualization of the small angle approximation (given is orange) of the basic trigonometric functions Sine and Cosine (given in blue). It is clear that the approximation is only valid in a small region around zero (\( \varphi \approx 0 \)).}
+			\caption{Visualization of the small angle approximation (given in orange) of the basic trigonometric functions Sine and Cosine (given in blue). It is clear that the approximation is only valid in a small region around zero (\( \varphi \approx 0 \)).}
 			\label{fig:smallAngleApproximation}
 		\end{figure}
 
-		We now look at two examples of dynamical systems, one which is linear and one that is not.
+		We now look at two examples of dynamical systems, one of which is linear and one that is not.
 
 		\paragraph{Harmonic Oscillator}
 			\label{subsec:harmonicOscillator}
@@ -89,7 +89,7 @@
 				\label{fig:simplePendulum}
 			\end{figure}
 
-			The \emph{inverse pendulum} described the dynamical system of a mass \(m\) that is attached to a rigid pole of length \(L\) which can freely swing around a suspension point (see~\autoref{fig:simplePendulum}). The pendulum stands upright if \( \varphi = 0 \) and its equation of motion is described by the \ac{ode}
+			The \emph{inverse pendulum} describes the dynamical system of a mass \(m\) that is attached to a rigid pole of length \(L\) which can freely swing around a suspension point (see~\autoref{fig:simplePendulum}). The pendulum stands upright if \( \varphi = 0 \) and its equation of motion is described by the \ac{ode}
 			\begin{align*}
 				\ddot{\varphi} = \frac{g}{L} \sin(\varphi)
 			\end{align*}
@@ -111,22 +111,22 @@
 			\end{align*}
 			where \(\varphi_0\) and \(\dot{\varphi}_0\) are the initial displacement and velocity, respectively.
 
-			However, this small angle approximation can only forecast small displacements \( \varphi \ll \pi/2 \). And, as the equilibrium at \( \varphi = 0 \) is unstable, the approximation becomes worst and worst as time goes on because the pendulum falls down. This behavior is shown in~\autoref{fig:inversePendulumApprox}.
+			However, this small angle approximation can only forecast small displacements \( \varphi \ll \pi/2 \). And, as the equilibrium at \( \varphi = 0 \) is unstable, the approximation becomes worse as time goes by because the pendulum falls down. This behavior is shown in~\autoref{fig:inversePendulumApprox}.
 
 			\begin{figure}
 				\centering
 				\begin{subfigure}[t]{0.5\linewidth}
 					\centering
 					\includegraphics[width = \linewidth]{figures/introduction/generated/pendulum-motion-solutions}
-					\caption{Trajectories of two solution strategies to the inverse pendulum, where the blue is a numerical solution of the actual motion of equation (solved using the Radau~IIA method~\cite[72]{hairerSolvingOrdinaryDifferential1996}) and the orange one is the analytically computed solution linearized \ac{ode}. The latter is linearized using small angle approximation. The dotted gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
+					\caption{Trajectories of two solution strategies to the inverse pendulum, where the blue is a numerical solution of the actual motion of equation (solved using the Radau~IIA method~\cite[72]{hairerSolvingOrdinaryDifferential1996}) and the orange one is the analytically computed solution linearized \ac{ode}. The latter is linearized using small angle approximation. The dashed gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
 				\end{subfigure}%
 				~
 				\begin{subfigure}[t]{0.5\linewidth}
 					\centering
 					\includegraphics[width = \linewidth]{figures/introduction/generated/pendulum-motion-difference}
-					\caption{Differences between the small angle approximation and the numerical solution of the \ac{ode}  The dotted gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
+					\caption{Differences between the small angle approximation and the numerical solution of the \ac{ode}. The dashed gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
 				\end{subfigure}
-				\caption{Comparison of a numerical solution to the \ac{ode} of the inverse pendulum given in\eqref{eq:inversePendulum} and the analytical solution of the linearized \ac{ode} given in\eqref{eq:linearizedInversePendulum}. A tolerance value of \( \varepsilon = 10^{-3} \) is used to show when the both solutions diverge from each other.}
+				\caption{Comparison of a numerical solution to the \ac{ode} of the inverse pendulum given in\eqref{eq:inversePendulum} and the analytical solution of the linearized \ac{ode} given in\eqref{eq:linearizedInversePendulum}. A tolerance value of \( \varepsilon = 10^{-3} \) is used to show when both solutions diverge from each other.}
 				\label{fig:inversePendulumApprox}
 			\end{figure}
 		% end
@@ -136,7 +136,7 @@
 			\begin{align*}
 				\vec{x}_{t + 1} = \vec{F}(\vec{x}_t)
 			\end{align*}
-			But we should note that, while seeming more restrictive, discrete-time dynamical systems are more general that continuous-time systems as we can discretize every continuous-time system
+			But we should note that, while seeming more restrictive, discrete-time dynamical systems are more general than continuous-time systems as we can discretize every continuous-time system
 			\begin{align*}
 				\dot{\vec{x}} = \vec{f}(\vec{x})
 			\end{align*}
@@ -148,7 +148,7 @@
 			\begin{align*}
 				\vec{F}\big(\vec{x}(t_0)\big) = \vec{x}(t_0 + \Delta_t) = \vec{x}(t_0) + \int_{t_0}^{t_0 + \Delta_t} \! \vec{f}\big(\vec{x}(\tau)\big) \dd{\tau}
 			\end{align*}
-			where \( \Delta_t \) is called the \emph{discretization interval} and \( \vec{x}_k = \vec{x}(k \Delta_t) \). Note that, from the Nyquist-Shannon sampling theorem, we now for band-limited functions that the sampling rate \( f_s = 1/\Delta_t \) has to be greater than two times the maximum frequency of the original function~\cite{shannonCommunicationPresenceNoise1949}, \ac{ie} \( f_s = 1/\Delta_t > 2 f \).
+			where \( \Delta_t \) is called the \emph{discretization interval} and \( \vec{x}_k = \vec{x}(k \Delta_t) \). Note that, from the Nyquist-Shannon sampling theorem, we know for band-limited functions that the sampling rate \( f_s = 1/\Delta_t \) has to be greater than two times the maximum frequency of the original function~\cite{shannonCommunicationPresenceNoise1949}, \ac{ie} \( f_s = 1/\Delta_t > 2 f \).
 		% end
 
 		\subsection{Koopman Dynamical Systems and the Koopman Operator}
@@ -162,7 +162,7 @@
 			\begin{align*}
 				\mathcal{K} \vec{g} = \vec{g} \circ \vec{F} \quad\iff\quad \mathcal{K} \vec{g}(\vec{x}_t) = \vec{g}\big(\vec{F}(\vec{x}_t)\big) = \vec{g}(\vec{x}_{t + 1})
 			\end{align*}
-			In other words, the the Koopman operator advances our observables \(\vec{g}\) linearly forward in time. This behavior is illustrated in~\autoref{fig:koopmanOperatorBrunton}.
+			In other words, the Koopman operator advances our observables \(\vec{g}\) linearly forward in time. This behavior is illustrated in~\autoref{fig:koopmanOperatorBrunton}.
 
 			The Koopman operator can also be formulated for time-continuous systems~\cite{abrahamManifoldsTensorAnalysis2012}:
 			\begin{align*}
@@ -207,11 +207,11 @@
 			\begin{align*}
 				\vec{x}_{t + 1} = \mat{A} \vec{x}_t
 			\end{align*}
-			with a dynamics matrix \(\mat{A}\). Using purely additive Gaussian zero-mean noise \( \vec{\epsilon} \sim \normal(\vec{0}, \mat{Q}) \) with covariance matrix \( \mat{\Sigma} \), the state transition becomes probabilistic:
+			with a dynamics matrix \(\mat{A}\). Using purely additive Gaussian zero-mean noise \( \vec{\epsilon} \sim \normal(\vec{0}, \mat{Q}) \) with covariance matrix \( \mat{Q} \), the state transition becomes probabilistic:
 			\begin{align*}
 				\vec{x}_{t + 1} = \mat{A} \vec{x}_t + \vec{\epsilon} \quad\iff\quad \vec{x}_{t + 1} \sim \normal(\mat{A} \vec{x}_t, \mat{Q})
 			\end{align*}
-			With analogous defined measurements,
+			With analogously defined measurements,
 			\begin{align*}
 				\vec{y}_t \sim \normal(\mat{C} \vec{x}_t, \mat{R})
 			\end{align*}
@@ -231,7 +231,7 @@
 	% end
 
 	\section{The Expectation-Maximization Algorithm}
-		The \ac{em} algorithm, first introduced in Ceppellini et al. in 1955~\cite{ceppelliniEstimationGeneFrequencies1955} and popularized by Dempster et al. in 1977~\cite{dempsterMaximumLikelihoodIncomplete1977}, can be used for tackling the following optimization problem: Assuming some model with latent (hidden) states \(\vec{x}\), observations \(\vec{y}\) and model parameters \(\vec{\theta}\), we want to maximize the likelihood \( p(\vec{y} \given \vec{\theta}) \) \ac{wrt} the latent states \(\vec{x}\) and the parameters \(\vec{\theta}\). However, the marginal distribution
+		The \ac{em} algorithm, first introduced by Ceppellini et al. in 1955~\cite{ceppelliniEstimationGeneFrequencies1955} and popularized by Dempster et al. in 1977~\cite{dempsterMaximumLikelihoodIncomplete1977}, can be used for tackling the following optimization problem: Assuming some model with latent (hidden) states \(\vec{x}\), observations \(\vec{y}\) and model parameters \(\vec{\theta}\), we want to maximize the likelihood \( p(\vec{y} \given \vec{\theta}) \) \ac{wrt} the latent states \(\vec{x}\) and the parameters \(\vec{\theta}\). However, the marginal distribution
 		\begin{align*}
 			p(\vec{y} \given \vec{\theta}) = \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
 		\end{align*}
@@ -279,12 +279,12 @@
 		\end{align*}
 		The quantity to optimize, \( Q(\vec{\theta}) \coloneqq \E[\log p(\vec{x}, \vec{y} \given \vec{\theta})] \), is also called the \emph{expected complete log-likelihood} as it involves both the observables and the latent variables.
 
-		As shown in~\cite{bealVariationalAlgorithmsApproximate2003}, the lower bound turns into an equality after the E-step. Hence we are guaranteed to always rise the log-likelihood after each \ac{em} iteration if we do not already have the optimal auxiliary distribution and parameters. If this would be the case, both the E- and the M-step would not change anything, so our log-likelihood is monotonically increasing. Also we might not want to calculate the whole distribution in the E-step, but we might want to restrict out computations to sufficient statistics that cover our whole distribution. This procedure may include constraining our auxiliary distribution to some kind of parametric family, \ac{eg} a Gaussian. The procedure for the \ac{em} algorithm is analogous, but the lower bound does not turn into an equality after the E-step, see~\cite[49-51]{bealVariationalAlgorithmsApproximate2003} for more details.
+		As shown in~\cite{bealVariationalAlgorithmsApproximate2003}, the lower bound turns into an equality after the E-step. Hence we are guaranteed to always rise the log-likelihood after each \ac{em} iteration if we do not already have the optimal auxiliary distribution and parameters. If this would be the case, both the E- and the M-step would not change anything, so our log-likelihood is monotonically increasing. Also we might not want to calculate the whole distribution in the E-step, but we might want to restrict our computations to sufficient statistics that cover our whole distribution. This procedure may include constraining our auxiliary distribution to some kind of parametric family, \ac{eg} a Gaussian. The procedure for the \ac{em} algorithm is analogous, but the lower bound does not turn into an equality after the E-step, see~\cite[49-51]{bealVariationalAlgorithmsApproximate2003} for more details.
 
-		In the rest of this this, we know our distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \) is Gaussian, so we can assume the auxiliary distribution to be Gaussian too, given that we set them equal. Hence, we only need to calculate the mean and correlation or covariance of each variable to cover the whole distribution and to be able to proceed. This will turn out to be really useful later on.
+		For the rest of this thesis, we know our distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \) is Gaussian, so we can assume the auxiliary distribution to be Gaussian too, given that we set them equal. Hence, we only need to calculate the mean and correlation or covariance of each variable to cover the whole distribution and to be able to proceed. This will turn out to be really useful later on.
 	% end
 
-	\section{Variational Auto-Encoders and the Evidence Lower Bound}
+	\section{Variational Autoencoders and the Evidence Lower Bound}
 		\acp{vae} have been first introduced in the context of the \ac{aevb} algorithm by Kingma and Welling in 2014~\cite{kingmaAutoEncodingVariationalBayes2014}. They tackle inference and learning in probabilistic models with latent variables, similar to the \ac{em} algorithm. To keep the notation analogous to the derivation of the \ac{em} algorithm, we deviate from~\cite{kingmaAutoEncodingVariationalBayes2014} in terms that we keep \(\vec{x}\) as our latent variables and \(\vec{y}\) as the observables.
 
 		To perform inference, we want to maximize the (log-) likelihood
@@ -296,7 +296,7 @@
 			\mathcal{L}(\vec{\theta})
 				&= \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}  \nonumber \\
 				&= \log \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}}  \nonumber \\
-				&= \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \log \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}}  \nonumber \\
+				&\geq \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \log \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}}  \nonumber \\
 				&= \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \log \frac{p(\vec{y} \given \vec{x}, \vec{\theta}) p(\vec{x} \given \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}}  \nonumber \\
 				&= \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \frac{p(\vec{y} \given \vec{x}, \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}} + \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) p(\vec{y} \given \vec{x}, \vec{\theta}) \dd{\vec{x}}  \nonumber \\
 				&= -\KL{q(\vec{x} \given \vec{y}, \vec{\phi})}{p(\vec{y} \given \vec{x}, \vec{\theta})} + \E_{q(\vec{x} \given \vec{y}, \vec{\phi})}[p(\vec{y} \given \vec{x}, \vec{\theta})] \eqqcolon \mathcal{L}_\mathrm{ELBO}(\vec{\theta}, \vec{\psi})  \label{eq:elbo}
@@ -309,14 +309,14 @@
 				= \E_{p(\vec{\epsilon})}\big[ \vec{f}(\vec{g}_{\vec{\phi}}(\vec{\epsilon}, \vec{x})) \big]
 				\approx \frac{1}{L} \sum_{l = 1}^{L} \vec{f}\big(\vec{g}_{\vec{\phi}}(\vec{\epsilon}^{(l)}, \vec{x})\big),\quad \vec{\epsilon}^{(l)} \sim p(\vec{\epsilon})
 		\end{align*}
-		This transformation is really simple for a multivariate Gaussian distribution \( \vec{x} \sim \normal(\vec{\mu}, \mat{\Sigma}^2 \mat{I}) \) with diagonal covariance, where the reparametrization is just \( \vec{g}_{\vec{\phi}}(\vec{\epsilon}, \vec{y}) = \vec{\mu} + \vec{\sigma} \odot \vec{\epsilon} \) with \( \vec{\epsilon} \sim \normal(\vec{0}, \mat{I}) \) and the element-wise product \( \odot \), also known as the Hadamard product. See~\cite[5]{kingmaAutoEncodingVariationalBayes2014}.
+		This transformation is really simple for a multivariate Gaussian distribution \( \vec{x} \sim \normal(\vec{\mu}, \vec{\sigma}^2 \mat{I}) \) with diagonal covariance, where the reparametrization is just \( \vec{g}_{\vec{\phi}}(\vec{\epsilon}, \vec{y}) = \vec{\mu} + \vec{\sigma} \odot \vec{\epsilon} \) with \( \vec{\epsilon} \sim \normal(\vec{0}, \mat{I}) \) and the element-wise product \( \odot \), also known as the Hadamard product. See~\cite[5]{kingmaAutoEncodingVariationalBayes2014}.
 
 		Shifting to Variational Auto-Encoders, we now represent the auxiliary distribution \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) using a neural network with some prior \( p(\vec{x} \given \vec{\theta}) \), e.g. a standard Gaussian \( p(\vec{x} \given \vec{\theta}) = \normal(\vec{0}, \mat{I}) \) to keep the latents "close to the center". This neural network, called the \emph{amortization network}, produces the mean and the diagonal covariance of \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) and computing the expectation is done using the Monte Carlo sampling method combined with the reparametrization trick. A second neural network is used for decoding the latent dimension, representing the decoding distribution \( p(\vec{y} \given \vec{x}, \vec{\theta}) \). If we assume a Gaussian decoding distribution with constant variance, the right side of the \ac{elbo}~\eqref{eq:elbo} just becomes the squared error between the decoding mean and the input \(\vec{y}\). Typically, we assume a smaller dimension of \(\vec{x}\) (the \emph{latent dimension}) than \( \vec{y} \) (the \emph{observation dimension}) to enforce an encoding of the observations and possibly find smaller representations. Such a network architecture is illustrated in~\autoref{fig:vae}.
 
 		\begin{figure}
 			\centering
 			\tikzVariationalAutoEncoder
-			\caption{Illustration of a Variational Auto-Encoder with the amortization network on the left and the decoder network on the right. Notice that the green-ish neurons in the middle are not "real", deterministic, neurons, but represent the sampling section of the \ac{vae} where the reparametrization takes place. The input and output size (on the left and right, respectively) are the same as we want to reconstruct out original data from the smaller latent state in the middle.}
+			\caption{Illustration of a Variational Auto-Encoder with the amortization network on the left and the decoder network on the right. Notice that the green-ish neurons in the middle are not "real", deterministic, neurons, but represent the sampling section of the \ac{vae} where the reparametrization takes place. The input and output size (on the left and right, respectively) are the same as we want to reconstruct our original data from the smaller latent state in the middle.}
 			\label{fig:vae}
 		\end{figure}
 
@@ -343,7 +343,7 @@
 			The maximization procedures differ in the following way:
 			\begin{itemize}
 				\item In the \ac{em} algorithm, we separately maximize the components of the lower bound, firstly finding the next auxiliary distribution \(q\) and then maximizing the lower bound \ac{wrt} the parameters.
-				\item In \acp{vae}, we use an amortization network to model the auxiliary distribution \(q\) in a parameterized way. Then we maximize the lower bound \ac{wrt} to both the variational and the generate parameters at once.
+				\item In \acp{vae}, we use an amortization network to model the auxiliary distribution \(q\) in a parameterized way. Then we maximize the lower bound \ac{wrt} to both the variational and the generative parameters at once.
 			\end{itemize}
 			An obvious advantage of the \ac{em} algorithm is that we are guaranteed to always rise our lower bound and we will never get worse. But the great catch of the \ac{em} algorithm comes when evaluating the expected complete log-likelihood
 			\begin{align*}
@@ -353,7 +353,7 @@
 
 			% TODO: Highlight disadvantages of VAEs. If they are so great, why not use them instead of EM? Also, is "always rise out lower bound" really an advantage? Doesn't a regular SGD do the same thing?
 
-			In the next section we will take a look at alternative methods for approximating Gaussian expectations like \(Q\) of the analytic integral is not tractable. That way we can still use an \ac{em} algorithm instead of a \ac{vae} for approximate inference.
+			In the next section we will take a look at alternative methods for approximating Gaussian expectations like \(Q\) if the analytic integral is not tractable. That way we can still use an \ac{em} algorithm instead of a \ac{vae} for approximate inference.
 		% end
 	% end
 % end

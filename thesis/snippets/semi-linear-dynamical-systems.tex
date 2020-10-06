@@ -6,7 +6,7 @@ Our idea is to replace the linear measurements \( \vec{y}_t \) in an \ac{lgds}
 	\vec{s}_{t + 1} & = \mat{A} \vec{s}_t + \vec{w}_t \\
 	\vec{y}_t       & = \mat{C} \vec{s}_t + \vec{v}_t
 \end{align*}
-reported in~\cite{ghahramaniParameterEstimationLinear1996} with an arbitrary, possible nonlinear but differentiable function \( \vec{g}_{\vec{\theta}} : \R^k \to \R^p \) with characterizing parameters \( \vec{\theta} \). In all of the following, we keep the parameters implicit for brevity.
+reported in~\cite{ghahramaniParameterEstimationLinear1996} with an arbitrary, possibly nonlinear but differentiable function \( \vec{g}_{\vec{\theta}} : \R^k \to \R^p \) with characterizing parameters \( \vec{\theta} \). In all of the following, we keep the parameters implicit for brevity.
 
 The vectors \( \vec{w}_t \) and \( \vec{v}_t \) represent the purely additive Gaussian noise of the system (with zero mean and covariance \( \mat{Q} \) and \( \mat{R} \), respectively). Then the states \( \vec{s}_t \), \( \vec{s}_{t - 1} \) and emissions \( \vec{y}_t \) are jointly Gaussian~\cite{minkaHiddenMarkovModels1999}:
 \begin{align*}
@@ -149,8 +149,6 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 		\item initial state covariance \(\mat{V}_0\),
 	\end{itemize}
 	we have to take the derivatives \ac{wrt} to all the above parameters and set them to zero.
-
-	To maximize \(Q\) \ac{wrt} all parameters, we have to take the derivatives \ac{wrt} the parameters and set them to zero.
 	\begin{itemize}
 		\item State dynamics matrix \(\mat{A}\):
 	\end{itemize}
@@ -525,7 +523,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 					&= \frac{1}{2k} \sum_{i = 1}^{2k} \sqrt{\mat{V}_{t \subgiven t - 1}^{(n)}} \vec{\xi}_i \vec{\xi}_i^T \sqrt{\mat{V}_{t \subgiven t - 1}^{(n)}}^T \mat{C}^T + \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \Big)^T - \hat{\vec{s}}_{t \subgiven t - 1}^{(n)} \Big( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \Big)^T \\
 					&= \mat{V}_{t \subgiven t - 1}^{(n)} \mat{C}^T
 			\end{align*}
-			All these equations match exactly the analytic equations we derived before. Thus, the cubature rule is exact iff \(\vec{g}(\cdot)\) is a linear function.
+			All these equations match exactly the analytic equations we derived before. Thus, the cubature rule is exact if \(\vec{g}(\cdot)\) is a linear function.
 		\end{proof}
 	% end
 
