@@ -1,7 +1,7 @@
 all: clean build
 
 clean:
-	rm -f **/*.acn **/*.acr **/*.alg **/*.aux **/*.bbl **/*.blg **/*.lof **/*.log **/*.lot **/*.opg **/*.opi **/*.opo **/*.out **/*.syg **/*.synctex* **/*.syo **/*.sys **/*.toc **/*.xdy **/*.xmpdata drawroom.pdf **/pdfa.xmpi thesis.pdf
+	./clean.sh
 
 build:
 	lualatex thesis.tex
