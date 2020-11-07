@@ -13,17 +13,17 @@
 	% Highlight why local linarization methods (e.g. small angle approximations) fail on a large scale.
 
 	A \emph{dynamical system}~\cite{birkhoffDynamicalSystems1927} is a (physical) system that evolves over time \(t\) and is completely defined by the values of \(n\) real variables
-	\begin{align*}
+	\begin{equation*}
 		x_1, x_2, \,\cdots\!, x_n \quad\longleftrightarrow\quad \vec{x} = \begin{bmatrix} x_1 & x_2 & \cdots & x_m \end{bmatrix}^T
-	\end{align*}
+	\end{equation*}
 	called the \emph{state} and often written in vector form (right). Given the differentiability of these values, we can also study their rate of change (often referred to as the "velocity") and the rate of change of the rate of change (often referred to as the "acceleration"):
-	\begin{align*}
+	\begin{equation*}
 		\dot{\vec{x}} = \dv{\vec{x}}{t} \qquad \ddot{\vec{x}} = \dv[2]{\vec{x}}{t}
-	\end{align*}
+	\end{equation*}
 	Describing these systems is possible using differential equations, both ordinary and partial ones. A general \ac{ode} is given by an implicit equation
-	\begin{align}
+	\begin{equation}
 		\vec{0} = \vec{F}\big( \vec{x}, \vec{x}^{(1)}, \vec{x}^{(2)}, \,\cdots\!, \vec{x}^{(k - 1)}, \vec{x}^{(k)}; t \big),\quad \vec{x}^{(l)} \coloneqq \dv[l]{\vec{x}}{t}  \label{eq:ode}
-	\end{align}
+	\end{equation}
 	which establishes a connection between the state itself and its time derivatives. We call a function \( \vec{x}(t) \) a \emph{solution} of an \ac{ode} if its derivatives fulfill the given \ac{ode}~\eqref{eq:ode}. In all of the following, we assume to have explicit, autonomous, first order \acp{ode}. This is valid because we can transform every explicit higher order \ac{ode} into a system of first order \acp{ode} as well as we can introduce another "clock state" which makes our \ac{ode} autonomous.
 
 	The solution theory for linear \acp{ode} is highly evolved and solutions exist for nearly every possible \ac{ode}. But for nonlinear \acp{ode}, the world looks different. With the exception of some rare cases, nonlinear \acp{ode} are not tractable. Hence, we often need approximations for the nonlinear case. Some well-known approaches for these approximations are \ac{eg} \emph{small angle approximation} for Sines and Cosines. In small angle approximations, we Taylor-expand \( \sin \)/\( \cos \) at \( \varphi_a = 0 \) and cut all higher order terms:
@@ -63,15 +63,15 @@
 		\end{figure}
 
 		The \emph{simple harmonic oscillator} describes the dynamical system of a mass \(m\) that is attached to a spring that is following Hooke's Law with stiffness \(k\) (see~\autoref{fig:simpleHarmonicOscillator}). This harmonic oscillator is described by the \ac{ode}
-		\begin{align}
+		\begin{equation}
 			m\ddot{x} = -kx \quad\iff\quad \ddot{x} = -\frac{k}{m} x  \label{eq:harmonicOscillator}
-		\end{align}
+		\end{equation}
 		where \(x\) and \(\ddot{x}\) are the position and acceleration of the mass, respectively. Note that if \( x = 0 \), the mass is in equilibrium and no force is acting on it.
 
 		By using basic results in the solution theory of linear \acp{ode}, we see that the general solution is given as
-		\begin{align*}
+		\begin{equation*}
 			x(t) = A \cos\Big(t \sqrt{k / m} + \varphi\Big)
-		\end{align*}
+		\end{equation*}
 		with the amplitude \(A\) and the phase \(\varphi\) (see~\autoref{app:harmonicOscillatorSolution} for the derivation of the solution). As neither gravity nor damping or other external forces are involved in the dynamical system, the motion continues forever with a non-changing amplitude.
 	% end
 
@@ -86,25 +86,25 @@
 		\end{figure}
 
 		The \emph{inverse pendulum} describes the dynamical system of a mass \(m\) that is attached to a rigid pole of length \(L\) which can freely swing around a suspension point (see~\autoref{fig:simplePendulum}). The pendulum stands upright if \( \varphi = 0 \) and its equation of motion is described by the \ac{ode}
-		\begin{align*}
+		\begin{equation*}
 			\ddot{\varphi} = \frac{g}{L} \sin(\varphi)
-		\end{align*}
+		\end{equation*}
 		where \(g\), \(L\), \(\varphi\) and \(\ddot{\varphi}\) describe the gravity acceleration, pole length, displacement and acceleration of the mass, respectively. Note that if \( \varphi = 0 \), the mass is in an unstable equilibrium and no force is acting on it.
 
 		In comparison to the harmonic oscillator (\autoref{subsec:harmonicOscillator}), this differential equation is nonlinear. And, even for the case with unit gravity acceleration \( g = 1 \) and unit pole length \( L = 1\), where the \ac{ode} looks really simple
-		\begin{align}
+		\begin{equation}
 			\ddot{\varphi} = \sin(\varphi)  \label{eq:inversePendulum}
-		\end{align}
+		\end{equation}
 		it is not tractable analytically (\ac{ie} there exists no solution in closed form).
 
 		Still, we can apply the small angle approximation introduced before (in this case, \( \sin(\varphi) \approx \varphi \)) which yields the simple \ac{ode}
-		\begin{align}
+		\begin{equation}
 			\ddot{\varphi} \approx \varphi  \label{eq:linearizedInversePendulum}
-		\end{align}
+		\end{equation}
 		solved by
-		\begin{align*}
+		\begin{equation*}
 			\varphi(t) = \frac{1}{2} e^{-t} \big(\varphi_0 + e^{2t} \varphi_0 - \dot{\varphi}_0 + e^{2t} \dot{\varphi}_0\big)
-		\end{align*}
+		\end{equation*}
 		where \(\varphi_0\) and \(\dot{\varphi}_0\) are the initial displacement and velocity, respectively.
 
 		However, this small angle approximation can only forecast small displacements \( \varphi \ll \pi/2 \). And, as the equilibrium at \( \varphi = 0 \) is unstable, the approximation becomes worse as time goes by because the pendulum falls down. This behavior is shown in~\autoref{fig:inversePendulumApprox}.
@@ -129,21 +129,21 @@
 
 	\subsection{Discrete-Time Dynamical Systems}
 		In comparison to continuous-time dynamical systems described by \acp{ode}, discrete-time systems are described by a \emph{dynamics function} \( \vec{F} : \R^n \to \R^n \) advancing all states forward in time:
-		\begin{align*}
+		\begin{equation*}
 			\vec{x}_{t + 1} = \vec{F}(\vec{x}_t)
-		\end{align*}
+		\end{equation*}
 		But we should note that, while seeming more restrictive, discrete-time dynamical systems are more general than continuous-time systems as we can discretize every continuous-time system
-		\begin{align*}
+		\begin{equation*}
 			\dot{\vec{x}} = \vec{f}(\vec{x})
-		\end{align*}
+		\end{equation*}
 		as a discrete-time dynamical system
-		\begin{align*}
+		\begin{equation*}
 			\vec{x}_{t + 1} = \vec{F}(\vec{x}_t)
-		\end{align*}
+		\end{equation*}
 		using the state dynamics function
-		\begin{align*}
+		\begin{equation*}
 			\vec{F}\big(\vec{x}(t_0)\big) = \vec{x}(t_0 + \Delta_t) = \vec{x}(t_0) + \int_{t_0}^{t_0 + \Delta_t} \! \vec{f}\big(\vec{x}(\tau)\big) \dd{\tau}
-		\end{align*}
+		\end{equation*}
 		where \( \Delta_t \) is called the \emph{discretization interval} and \( \vec{x}_k = \vec{x}(k \Delta_t) \). From the Nyquist-Shannon sampling theorem, we know for band-limited functions that the sampling rate \( f_s = 1/\Delta_t \) has to be greater than two times the maximum frequency of the original function~\cite{shannonCommunicationPresenceNoise1949}, \ac{ie} \( f_s = 1/\Delta_t > 2 f \).
 	% end
 % end

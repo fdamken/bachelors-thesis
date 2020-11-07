@@ -89,11 +89,11 @@
 
 \newcommand{\tikzLinearGaussianDynamicalSystem}{
 	\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
-		\node [state]                  (x1) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,1}}\)}};
-		\node [state, right = 1 of x1] (x2) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,2}}\)}};
-		\node [state, right = 1 of x2] (x3) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,3}}\)}};
+		\node [state]                  (x1) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,1}}\)}};
+		\node [state, right = 1 of x1] (x2) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,2}}\)}};
+		\node [state, right = 1 of x2] (x3) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,3}}\)}};
 		\node [minimum width = 1cm, minimum height = 1cm, right = 1 of x3] (xD) {\(\cdots\)};
-		\node [state, right = 1 of xD] (xT) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,T}}\)}};
+		\node [state, right = 1 of xD] (xT) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,T}}\)}};
 
 		\node [state, below = 1 of x1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
 		\node [state, below = 1 of x2] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
@@ -180,5 +180,53 @@
 \newcommand{\tikzVariationalAutoEncoder}{
 	\begin{tikzpicture}
 		\tikzAutoEncoder{3}{2}{5}{5}
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzPredictionFilteringSmoothing}{
+	\begin{tikzpicture}
+		\coordinate (aStart) at (0, 0);
+		\coordinate (bStart) at (0, 1);
+		\coordinate (cStart) at (0, 2);
+		\coordinate (aEnd) at (10, 0);
+		\coordinate (bEnd) at (10, 1);
+		\coordinate (cEnd) at (10, 2);
+		\coordinate (kA) at (4.5, -0.5);
+		\coordinate (kB) at (4.5, 2.5);
+		\coordinate (kpA) at (5, -0.5);
+		\coordinate (kpB) at (5, 2.5);
+		\coordinate (t1) at (0, -0.5);
+		\coordinate (tT) at (10, -0.5);
+
+		\foreach \n in { 0, 1, 2 } {
+			\foreach \t in { 0, ..., 20 } {
+				\ifthenelse{\t = 0 \OR \t = 20}{
+					\draw (\t*0.5, \n+0.25) -- (\t*0.5, \n-0.25);
+				}{
+					\draw (\t*0.5, \n+0.125) -- (\t*0.5, \n-0.125);
+				}
+			}
+		}
+
+		\draw (aStart) -- (aEnd);
+		\draw (bStart) -- (bEnd);
+		\draw (cStart) -- (cEnd);
+
+		\draw [line width = 1pt, dotted] (kA) -- (kB);
+		\draw [line width = 0.75pt] (kpA) -- (kpB);
+
+		\node [right = 0.5 of aEnd] {Smoothing};
+		\node [right = 0.5 of bEnd] {Filtering};
+		\node [right = 0.5 of cEnd] {Prediction};
+
+		\node [below = 0 of kA] {\small \( t - 1 \)};
+		\node [below = 0 of kpA] {\small \( t \)};
+
+		\node [below = 0 of t1] {\( 0 \)};
+		\node [below = 0 of tT] {\( T \)};
+
+		\path [fill = black, opacity = 0.1] (0, 0.2) -- (10, 0.2) -- (10, -0.2) -- (0, -0.2) -- cycle;
+		\path [fill = black, opacity = 0.1] (0, 1.2) -- (5, 1.2) -- (5, 0.8) -- (0, 0.8) -- cycle;
+		\path [fill = black, opacity = 0.1] (0, 2.2) -- (4.5, 2.2) -- (4.5, 1.8) -- (0, 1.8) -- cycle;
 	\end{tikzpicture}
 }
