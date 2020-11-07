@@ -47,13 +47,14 @@
 	\submissiondate{\today}
 	\examdate{\today}
 
-	%\tuprints{urn=1234,printid=12345}
-	%\dedication{Für alle, die \TeX{} nutzen.}
-
 	\maketitle
 
-	% TODO: Replace with the COVID-19 one.
-	\affidavit
+	% Include meta-content.
+	\include{meta/abstract}
+	\include{meta/acknowledgements}
+
+	% Sadly, this thesis submission is purely digital…
+	\affidavit[digital]
 
 	% Roman page numbering for toc and glossaries.
 	\pagenumbering{Roman}
@@ -78,7 +79,7 @@
 	\cleardoublepage
 	\pagenumbering{arabic}
 
-	% Someone wants content, for whatever reason.
+	% Include content.
 	\include{content/1-introduction}
 	\include{content/2-related-work}
 	\include{content/3-koopman-theory-of-dynamical-systems}
