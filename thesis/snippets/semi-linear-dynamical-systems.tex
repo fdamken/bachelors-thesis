@@ -1,6 +1,8 @@
 \section{Linear Dynamical Systems with Nonlinear Measurements}
 \label{subsec:slds}
 
+
+
 Our idea is to replace the linear measurements \( \vec{y}_t \) in an \ac{lgds}
 \begin{align*}
 	\vec{s}_{t + 1} & = \mat{A} \vec{s}_t + \vec{w}_t \\
@@ -21,7 +23,6 @@ This model can also be written as a set of both linear and nonlinear equations:
 	\vec{v}_t       & \sim \normal(\vec{0}, \mat{R})
 \end{align*}
 In all of the following, we assume to have \(N\) \ac{iid} observation sequences. Let \( \vec{y}_{1:T}^{(n)} \) be the \(n\)-th observation sequence and \( \vec{s}_{1:T}^{(n)} \) the corresponding state sequence. All sequences share a single state dynamics matrix, the same noise covariances and observation function. Let \( \vec{y}_{1:T} \coloneqq \big(\vec{y}_{1:T}^{(1)}, \vec{y}_{1:T}^{(2)}, \cdots, \vec{y}_{1:T}^{(N)}\big) \) and \( \vec{s}_{1:T} \coloneqq \big(\vec{s}_{1:T}^{(1)}, \vec{s}_{1:T}^{(2)}, \cdots, \vec{s}_{1:T}^{(n)}\big) \) be the sequences of all observation and state sequences, respectively. The same goes for \( \vec{y}_t \) and \( \vec{s}_t \). We also denote \( \vec{g}_t^{(n)} \coloneqq \vec{g}\big(\vec{s}_t^{(n)}\big) \) for brevity.
-
 
 \subsection{M-Step}
 	For a single observation sequence, the complete log-likelihood \( \ln p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big) \) has the form
