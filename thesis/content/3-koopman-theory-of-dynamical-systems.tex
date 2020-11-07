@@ -3,18 +3,19 @@
 
 
 
-\todo{Koopman Theory of Dynamical Systems}
+In the previous chapter we have seen that we are in the need of a linearization technique that generalizes globally, not only locally like the small angle approximation. This brings us directly to Koopman theory, original introduced by Bernard Koopman in 1931~\cite{koopmanHamiltonianSystemsTransformation1931} in the context of Hamiltonian systems and transformations in Hilbert spaces. Considering a nonlinear discrete-time dynamical system
+\begin{align*}
+	\vec{s}_{t + 1} = \vec{F}(\vec{s}_t),\quad \vec{F} : \R^k \to \R^k
+\end{align*}
+and observations \( \vec{g} : \R^p \to \R^p \) of this system, \ac{ie} \( \vec{g}_t \coloneqq \vec{g}(\vec{s}_t) \), the infinite-dimensional \emph{Koopman operator} \(\mathcal{K}\) advances all of the measurements forward in time. This relation can also be expressed as the composition
+\begin{align*}
+	\mathcal{K} \vec{g} \coloneqq \vec{g} \circ \vec{F} \qquad\iff\qquad \mathcal{K} \vec{g}(\vec{s}_t) = \vec{g}\big( \vec{F}(\vec{s}_t) \big) = \vec{g}(\vec{s}_{t + 1})
+\end{align*}
+This relation is true for every possible measurement function \( \vec{g} \) at any point of the system space \( \R^k \)~\cite{bruntonKoopmanInvariantSubspaces2016}. All possible measurement functions \( \vec{g} \) span an infinite-dimensional Hilbert space \( \mathcal{G} \). A finite set of measurements \( \vec{g}_1, \vec{g}_2, \cdots, \vec{g}_p \) that span an invariant subspace \( \mathcal{G}' \subset \mathcal{G} \), \ac{ie} applying the Koopman operator to a linear combination of these functions keeps them in the subspace
+\begin{align*}
+	\vec{g} &= \alpha_1 \vec{g}_1 + \alpha_2 \vec{g}_2 + \cdots + \alpha_p \vec{g}_p \\
+	\mathcal{K} \vec{g} &= \beta_1 \vec{g}_1 + \beta_2 \vec{g}_2 + \cdots + \beta_p \vec{g}_p
+\end{align*}
+can be considered as a basis of that subspace. If that is possible, we can restrict the Koopman operator onto \( \mathcal{G}' \). Functions that both span the subspace \(\mathcal{G}'\) and do only scale when applying the Koopman operator, \ac{ie} \( \mathcal{K} \vec{\varphi} = \lambda \vec{\varphi} \) are called \emph{Eigenfunctions} of the Koopman operator. Finding these Eigenfunctions is extremely desirable, as it allows us to get a finite Koopman operator \( \mat{K} \) globally linearizing the dynamical system \( \vec{F} \).
 
-\section{Global Linearization}
-	% But infinite… introduce Hilbert space theory.
-
-	\todo{Koopman: Global Linearization}
-% end
-
-\section{The Koopman Partial Differential Equation}  % TODO: Probably remove…
-	\todo{Koopman: PDE}
-% end
-
-\section{The Discrete Koopman Operator}
-	\todo{Koopman: Discrete}
-% end
+For this thesis, we do not focus on finding the actual Eigenfunctions but to just approximate them.
