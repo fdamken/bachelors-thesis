@@ -29,6 +29,22 @@
   number = {6}
 }
 
+@article{ballardCommunicationoptimalParallelSequential2010,
+  title = {Communication-Optimal {{Parallel}} and {{Sequential Cholesky Decomposition}}},
+  author = {Ballard, Grey and Demmel, James and Holtz, Olga and Schwartz, Oded},
+  year = {2010},
+  month = jan,
+  volume = {32},
+  pages = {3495--3523},
+  publisher = {{Society for Industrial and Applied Mathematics}},
+  issn = {1064-8275},
+  doi = {10.1137/090760969},
+  abstract = {Numerical algorithms have two kinds of costs: arithmetic and communication, by which we mean either moving data between levels of a memory hierarchy (in the sequential case) or over a network connecting processors (in the parallel case). Communication costs often dominate arithmetic costs, so it is of interest to design algorithms minimizing communication. In this paper we first extend known lower bounds on the communication cost (both for bandwidth and for latency) of conventional (\$O(n\^3)\$) matrix multiplication to Cholesky factorization, which is used for solving dense symmetric positive definite linear systems. Second, we compare the costs of various Cholesky decomposition implementations to these lower bounds and identify the algorithms and data structures that attain them. In the sequential case, we consider both the two-level and hierarchical memory models. Combined with prior results in [J. Demmel et al., Communication-optimal Parallel and Sequential QR and LU Factorizations, Technical report EECS-2008-89, University of California, Berkeley, CA, 2008], [J. Demmel et al., Implementing Communication-optimal Parallel and Sequential QR and LU Factorizations, SIAM. J. Sci. Comp., submitted], and [J. Demmel, L. Grigori, and H. Xiang, Communication-avoiding Gaussian Elimination, Proceedings of the 2008 ACM/IEEE Conference on Supercomputing, 2008] this gives a set of communication-optimal algorithms for \$O(n\^3)\$ implementations of the three basic factorizations of dense linear algebra: LU with pivoting, QR, and Cholesky. But it goes beyond this prior work on sequential LU by optimizing communication for any number of levels of memory hierarchy.},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/YF9YZKAW/Ballard et al. - 2010 - Communication-optimal Parallel and Sequential Chol.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/YQ3YZ746/090760969.html},
+  journal = {SIAM Journal on Scientific Computing},
+  number = {6}
+}
+
 @techreport{bealVariationalKalmanSmoother2000,
   title = {The {{Variational Kalman Smoother}}},
   author = {Beal, Matthew J. and Ghahramani, Zoubin},
@@ -177,6 +193,12 @@
   number = {10}
 }
 
+@misc{FirstHandUnscentedTransform,
+  title = {First-{{Hand}}:{{The Unscented Transform}} - {{Engineering}} and {{Technology History Wiki}}},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/KUKVLL58/First-HandThe_Unscented_Transform.html},
+  howpublished = {https://ethw.org/First-Hand:The\_Unscented\_Transform}
+}
+
 @techreport{ghahramaniParameterEstimationLinear1996,
   title = {Parameter Estimation for Linear Dynamical Systems},
   author = {Ghahramani, Zoubin and Hinton, Geoffrey E.},
@@ -233,6 +255,20 @@
   language = {FR},
   mrnumber = {MR1555027},
   zmnumber = {0087.27403}
+}
+
+@inproceedings{julierNewApproachFiltering1995,
+  title = {A New Approach for Filtering Nonlinear Systems},
+  booktitle = {Proceedings of 1995 {{American Control Conference}} - {{ACC}}'95},
+  author = {Julier, S. J. and Uhlmann, J. K. and {Durrant-Whyte}, H. F.},
+  year = {1995},
+  month = jun,
+  volume = {3},
+  pages = {1628-1632 vol.3},
+  doi = {10.1109/ACC.1995.529783},
+  abstract = {In this paper we describe a new recursive linear estimator for filtering systems with nonlinear process and observation models. This method uses a new parameterisation of the mean and covariance which can be transformed directly by the system equations to give predictions of the transformed mean and covariance. We show that this technique is more accurate and far easier to implement than an extended Kalman filter. Specifically, we present empirical results for the application of the new filter to the highly nonlinear kinematics of maneuvering vehicles.},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/PUVEWXDS/Julier et al. - 1995 - A new approach for filtering nonlinear systems.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/3ATPD9YH/529783.html},
+  keywords = {Additive noise,covariance parameterisation,Filtering,filtering theory,highly nonlinear kinematics,maneuvering vehicles,mean parameterisation,Nonlinear dynamical systems,Nonlinear equations,nonlinear filters,Nonlinear filters,nonlinear observation models,nonlinear process models,nonlinear system filtering,Nonlinear systems,recursive estimation,recursive filters,recursive linear estimator,Sensor fusion,Sensor systems,State estimation,Vehicle dynamics}
 }
 
 @article{kaiserDatadrivenDiscoveryKoopman2020,
@@ -517,11 +553,12 @@
 }
 
 @article{wanUnscentedKalmanFilter2001,
-  title = {The Unscented {{Kalman}} Filter},
+  title = {The {{Unscented Kalman Filter}}},
   author = {Wan, Eric A. and {Van der Merwe}, Rudolph and Haykin, Simon},
   year = {2001},
   volume = {5},
   pages = {221--280},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/ZLQKKV6L/Wan and Merwe - 2002 - The Unscented Kalman Filter.pdf},
   journal = {Wiley Online Library},
   number = {2007},
   series = {Kalman Filtering and Neural Networks}
