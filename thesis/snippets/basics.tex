@@ -3,7 +3,7 @@
 
 
 \subsection{The Expectation-Maximization Algorithm}
-	The \ac{em} algorithm, first introduced by Ceppellini et al. in 1955~\cite{ceppelliniEstimationGeneFrequencies1955} and popularized by Dempster et al. in 1977~\cite{dempsterMaximumLikelihoodIncomplete1977}, can be used for tackling the following optimization problem: Assuming some model with latent (hidden) states \(\vec{x}\), observations \(\vec{y}\) and model parameters \(\vec{\theta}\), we want to maximize the likelihood \( p(\vec{y} \given \vec{\theta}) \) \ac{wrt} the latent states \(\vec{x}\) and the parameters \(\vec{\theta}\). However, the marginal distribution
+	The \ac{em} algorithm, first introduced by Ceppellini et al. in 1955~\cite{ceppelliniEstimationGeneFrequencies1955} and popularized by Dempster et al. in 1977~\cite{dempsterMaximumLikelihoodIncomplete1977a}, can be used for tackling the following optimization problem: Assuming some model with latent (hidden) states \(\vec{x}\), observations \(\vec{y}\) and model parameters \(\vec{\theta}\), we want to maximize the likelihood \( p(\vec{y} \given \vec{\theta}) \) \ac{wrt} the latent states \(\vec{x}\) and the parameters \(\vec{\theta}\). However, the marginal distribution
 	\begin{align*}
 		p(\vec{y} \given \vec{\theta}) = \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
 	\end{align*}
@@ -35,11 +35,11 @@
 	\begin{align*}
 		\int\! q(\vec{x} \given \vec{y}) \dd{\vec{x}} = 1
 	\end{align*}
-	We can incorporate this into the maximization, \ac{eg} using Lagrange multipliers. Using a bit of variational calculus, it can be shown~\cite{bealVariationalAlgorithmsApproximate2003} that the maximization is gained by choosing the auxiliary distribution \(q(\vec{x} \given \vec{y})\) to be the same as the distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \). That is, we set
+	We can incorporate this into the maximization, \ac{eg} using Lagrange multipliers. Using a bit of variational calculus, it can be shown~\cite{bealVariationalAlgorithmsApproximate2003a} that the maximization is gained by choosing the auxiliary distribution \(q(\vec{x} \given \vec{y})\) to be the same as the distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \). That is, we set
 	\begin{align*}
 		q^{(n + 1)}(\vec{x} \given \vec{y}) = p\big(\vec{x} \biggiven \vec{y}, \vec{\theta}^{(n)}\big)
 	\end{align*}
-	while holding the parameters \(\vec{\theta}\) fixed. This maximization turns the lower bound into an equality with the actual likelihood~\cite{bealVariationalAlgorithmsApproximate2003}.
+	while holding the parameters \(\vec{\theta}\) fixed. This maximization turns the lower bound into an equality with the actual likelihood~\cite{bealVariationalAlgorithmsApproximate2003a}.
 
 	For the M-step, we keep the auxiliary distribution fixed and maximize the lower bound \ac{wrt} the parameters \(\vec{\theta}\). As this involves taking the derivative of \(\mathcal{L}_\mathrm{EM}\) \ac{wrt} \(\vec{\theta}\), we can safely omit the right hand side of the lower bound as it does not depend on \(\vec{\theta}\). Hence, we get the M-step as:
 	\begin{align*}
@@ -51,7 +51,7 @@
 	\end{align*}
 	The quantity to optimize, \( Q(\vec{\theta}) \coloneqq \E[\log p(\vec{x}, \vec{y} \given \vec{\theta})] \), is also called the \emph{expected complete log-likelihood} as it involves both the observables and the latent variables.
 
-	As shown in~\cite{bealVariationalAlgorithmsApproximate2003}, the lower bound turns into an equality after the E-step. Hence we are guaranteed to always rise the log-likelihood after each \ac{em} iteration if we do not already have the optimal auxiliary distribution and parameters. If this would be the case, both the E- and the M-step would not change anything, so our log-likelihood is monotonically increasing. Also we might not want to calculate the whole distribution in the E-step, but we might want to restrict our computations to sufficient statistics that cover our whole distribution. This procedure may include constraining our auxiliary distribution to some kind of parametric family, \ac{eg} a Gaussian. The procedure for the \ac{em} algorithm is analogous, but the lower bound does not turn into an equality after the E-step, see~\cite[49-51]{bealVariationalAlgorithmsApproximate2003} for more details.
+	As shown in~\cite{bealVariationalAlgorithmsApproximate2003a}, the lower bound turns into an equality after the E-step. Hence we are guaranteed to always rise the log-likelihood after each \ac{em} iteration if we do not already have the optimal auxiliary distribution and parameters. If this would be the case, both the E- and the M-step would not change anything, so our log-likelihood is monotonically increasing. Also we might not want to calculate the whole distribution in the E-step, but we might want to restrict our computations to sufficient statistics that cover our whole distribution. This procedure may include constraining our auxiliary distribution to some kind of parametric family, \ac{eg} a Gaussian. The procedure for the \ac{em} algorithm is analogous, but the lower bound does not turn into an equality after the E-step, see~\cite[49-51]{bealVariationalAlgorithmsApproximate2003a} for more details.
 
 	For the rest of this thesis, we know our distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \) is Gaussian, so we can assume the auxiliary distribution to be Gaussian too, given that we set them equal. Hence, we only need to calculate the mean and correlation or covariance of each variable to cover the whole distribution and to be able to proceed. This will turn out to be really useful later on.
 % end
@@ -73,7 +73,7 @@
 			&= \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \frac{p(\vec{y} \given \vec{x}, \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}} + \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) p(\vec{y} \given \vec{x}, \vec{\theta}) \dd{\vec{x}}  \nonumber \\
 			&= -\KL{q(\vec{x} \given \vec{y}, \vec{\phi})}{p(\vec{y} \given \vec{x}, \vec{\theta})} + \E_{q(\vec{x} \given \vec{y}, \vec{\phi})}[p(\vec{y} \given \vec{x}, \vec{\theta})] \eqqcolon \mathcal{L}_\mathrm{ELBO}(\vec{\theta}, \vec{\psi})  \label{eq:elbo}
 	\end{align}
-	Note that we have introduced an auxiliary parametric distribution \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) which originally leads to the first integral to be an expectation and makes the application of Jensen's inequality possible. We now seek to maximize the \ac{elbo}~\eqref{eq:elbo} \ac{wrt} the variational and generative parameters \(\vec{\phi}\) and \(\vec{\theta}\), respectively. But the gradient \ac{wrt} \(\vec{\phi}\) is problematic, as the usual naive Monte Carlo estimator exhibits very high variance~\cite{kingmaAutoEncodingVariationalBayes2014,paisleyVariationalBayesianInference2012a}.
+	Note that we have introduced an auxiliary parametric distribution \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) which originally leads to the first integral to be an expectation and makes the application of Jensen's inequality possible. We now seek to maximize the \ac{elbo}~\eqref{eq:elbo} \ac{wrt} the variational and generative parameters \(\vec{\phi}\) and \(\vec{\theta}\), respectively. But the gradient \ac{wrt} \(\vec{\phi}\) is problematic, as the usual naive Monte Carlo estimator exhibits very high variance~\cite{kingmaAutoEncodingVariationalBayes2014,paisleyVariationalBayesianInference2012b}.
 
 	They propose a solution to this problem called the \emph{reparametrization trick}. Instead of sampling the latent state \( \tilde{\vec{x}} \sim q(\vec{x} \given \vec{y}, \vec{\phi}) \) directly, a (differentiable) transformation \( \vec{g}_{\varphi}(\vec{\epsilon}, \vec{y}) \) with an auxiliary noise variable \(\vec{\epsilon} \sim p(\vec{\epsilon})\) such that \( \tilde{\vec{x}} = \vec{g}_{\vec{\phi}}(\vec{\epsilon}, \vec{y}) \). By sampling the noise \(\vec{\epsilon}\) and applying the transformation \(\vec{g}_{\vec{\phi}}\), the expectation of some function \( \vec{f}(\vec{x}) \) can be easily calculated with Monte Carlo estimates~\cite{kingmaAutoEncodingVariationalBayes2014} which allows the gradients to flow through the expectation:
 	\begin{align*}

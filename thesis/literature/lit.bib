@@ -45,6 +45,19 @@
   number = {6}
 }
 
+@phdthesis{bealVariationalAlgorithmsApproximate2003a,
+  title = {Variational Algorithms for Approximate {{Bayesian}} Inference},
+  author = {Beal, Matthew J.},
+  year = {2003},
+  abstract = {The Bayesian framework for machine learning allows for the incorporation of prior knowledge in a coherent way, avoids overfitting problems, and provides a principled basis for selecting between alternative models. Unfortunately the computations required are usually intractable. This thesis presents a unified variational Bayesian (VB) framework which approximates these computations in models with latent variables using a lower bound on the marginal likelihood. Chapter 1 presents background material on Bayesian inference, graphical models, and propagation algorithms. Chapter 2 forms the theoretical core of the thesis, generalising the expectation- maximisation (EM) algorithm for learning maximum likelihood parameters to the VB EM algorithm which integrates over model parameters. The algorithm is then specialised to the large family of conjugate-exponential (CE) graphical models, and several theorems are presented to pave the road for automated VB derivation procedures in both directed and undirected graphs (Bayesian and Markov networks, respectively). Chapters 3\textendash 5 derive and apply the VB EM algorithm to three commonly-used and important models: mixtures of factor analysers, linear dynamical systems, and hidden Markov models. It is shown how model selection tasks such as determining the dimensionality, cardinality, or number of variables are possible using VB approximations. Also explored are methods for combining sampling procedures with variational approximations, to estimate the tightness of VB bounds and to obtain more effective sampling algorithms. Chapter 6 applies VB learning to a long-standing problem of scoring discrete-variable directed acyclic graphs, and compares the performance to annealed importance sampling amongst other methods. Throughout, the VB approximation is compared to other methods including sampling, Cheeseman-Stutz, and asymptotic approximations such as BIC. The thesis concludes with a discussion of evolving directions for model selection including infinite models and alternative approximations to the marginal likelihood.},
+  copyright = {open},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/DISILN6V/Beal - 2003 - Variational algorithms for approximate Bayesian in.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/KJDHW239/10101435.html;/home/fdamken/snap/zotero-snap/common/Zotero/storage/TEJ584VK/10101435.html},
+  journal = {Doctoral thesis, UCL (University College London).},
+  language = {eng},
+  school = {UCL (University College London)},
+  type = {Doctoral}
+}
+
 @techreport{bealVariationalKalmanSmoother2000,
   title = {The {{Variational Kalman Smoother}}},
   author = {Beal, Matthew J. and Ghahramani, Zoubin},
@@ -435,6 +448,21 @@
   file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/5IU4LHDL/Morton et al. - 2019 - Deep Variational Koopman Models Inferring Koopman.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/AEEQ9MTN/1902.html},
   journal = {arXiv:1902.09742 [cs, stat]},
   keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
+@article{paisleyVariationalBayesianInference2012b,
+  title = {Variational {{Bayesian Inference}} with {{Stochastic Search}}},
+  author = {Paisley, John and Blei, David and Jordan, Michael},
+  year = {2012},
+  month = jun,
+  abstract = {Mean-field variational inference is a method for approximate Bayesian posterior inference. It approximates a full posterior distribution with a factorized set of distributions by maximizing a lower bound on the marginal likelihood. This requires the ability to integrate a sum of terms in the log joint likelihood using this factorized distribution. Often not all integrals are in closed form, which is typically handled by using a lower bound. We present an alternative algorithm based on stochastic optimization that allows for direct optimization of the variational lower bound. This method uses control variates to reduce the variance of the stochastic search gradient, in which existing lower bounds can play an important role. We demonstrate the approach on two non-conjugate models: logistic regression and an approximation to the HDP.},
+  archivePrefix = {arXiv},
+  eprint = {1206.6430},
+  eprinttype = {arxiv},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/2YQF84R9/Paisley et al. - 2012 - Variational Bayesian Inference with Stochastic Sea.pdf},
+  journal = {arXiv:1206.6430 [cs, stat]},
+  keywords = {Computer Science - Machine Learning,Statistics - Computation,Statistics - Machine Learning},
   primaryClass = {cs, stat}
 }
 
