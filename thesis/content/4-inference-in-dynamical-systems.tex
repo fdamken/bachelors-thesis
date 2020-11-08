@@ -131,9 +131,9 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{equation*}
 		\int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \approx \sum_{i = 1}^{m} w_i \vec{f}(\vec{x}_i)
 	\end{equation*}
-	In this thesis we utilize the spherical-radial cubature rule~\cite{solinCubatureIntegrationMethods2010} which is a third-degree approximation for Gaussian integrals. A third-degree approximation means that "this rule exact for all monomials up to degree three"~\cite[p. 18]{solinCubatureIntegrationMethods2010}. In this cubature rule, the approximation a finite sum over \( 2n \) points, where \( n \) is the dimensionality of \(\vec{x}\), \ac{ie} \( \vec{x} \in \R^n \). With \( \sqrt{\mat{\Sigma}} \) being the Cholesky decomposition of \( \mat{\Sigma} \), so \( \mat{\Sigma} = \sqrt{\mat{\Sigma}} \sqrt{\mat{\Sigma}}^T \), the approximation is given as
+	In this thesis we utilize the spherical-radial cubature rule~\cite{solinCubatureIntegrationMethods2010} which is a third-degree approximation for Gaussian integrals. A third-degree approximation means that "this rule exact for all monomials up to degree three"~\cite[p. 18]{solinCubatureIntegrationMethods2010}. In this cubature rule, the approximation a finite sum over \( 2n \) points, where \( n \) is the dimensionality of \(\vec{x}\), \ac{ie} \( \vec{x} \in \R^n \). With \( \mat{\Sigma}^{1/2} \) being the Cholesky decomposition of \( \mat{\Sigma} \), so \( \mat{\Sigma} = \mat{\Sigma}^{1/2} \mat{\Sigma}^{1/2, T} \), the approximation is given as
 	\begin{equation*}
-		\int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \approx \frac{1}{2N} \sum_{i = 1}^{2n} \vec{f}(\sqrt{\mat{\Sigma}} \vec{\xi}_i - \vec{\mu})
+		\int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\mat{\Sigma}^{1/2} \vec{\xi}_i - \vec{\mu})
 	\end{equation*}
 	with the cubature points \( \vec{\xi}_i = \sqrt{n} [\vec{1}]_i \). Here the points \( [\vec{1}]_i \) are "from the intersections between the Cartesian axes and the \(n\)-dimensional unit hypersphere"~\cite{solinCubatureIntegrationMethods2010}. That is, the point \( [\vec{1}]_i \) is the \(i\)-th row vector of the block matrix \( \begin{bmatrix} \mat{I} & -\mat{I} \end{bmatrix} \), where \( \mat{I} \) is the \(n\)-dimensional identity matrix.
 
@@ -165,21 +165,21 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 
 	\subsection{The Unscented Transform}
 		The \emph{unscented\footnote{The name "unscented", meaning "without perfume", was given by Uhlmann as he did not want people to call the corresponding filter the "Uhlmann Filter"~\cite{FirstHandUnscentedTransform}.} transform}, originally introduced by S.~J.~Julier and J.~K.~Uhlmann in 1995~\cite{julierNewApproachFiltering1995} is another method for approximating nonlinear Gaussian integrals with a parameterized transformation, the \ac{ut}. As shown by~\cite{solinCubatureIntegrationMethods2010}, the spherical-radial cubature rule is just a special case of the more general \ac{ut}. We will follows Solins derivation of this fact here. For \ac{ut}, \( 2n + 1 \) sigma points are formed as a matrix
-		\begin{equation*}
-			\mat{\mathcal{X}} = \sqrt{n + \lambda}
+		\begin{equation}
+			\mat{\mathcal{X}} =
 				\begin{bmatrix}
-					\vec{\mu} & \vec{\mu} \vec{1}^T + \sqrt{\mat{\Sigma}} & \vec{\mu} \vec{1}^T - \sqrt{\mat{\Sigma}}
-				\end{bmatrix}
-		\end{equation*}
+					\vec{\mu} & \vec{\mu} \vec{1}^T + \gamma \mat{\Sigma}^{1/2} & \vec{\mu} \vec{1}^T - \gamma \mat{\Sigma}^{1/2}
+				\end{bmatrix}  \label{eqn:utSigmaPoints}
+		\end{equation}
 		where \( \vec{1} \) is a column vector with ones everywhere and
 		\begin{equation*}
-			\lambda = \alpha^2 (n + \kappa) - n
+			\gamma \coloneqq \sqrt{n + \lambda} \qquad\qquad \lambda \coloneqq \alpha^2 (n + \kappa) - n
 		\end{equation*}
-		is a scaling parameter defined using the parameters of the \ac{ut} \( \alpha \) and \( \kappa \). The approximation for the transformed mean and covariance is then given as
-		\begin{align*}
-			\hat{\vec{\mu}} \coloneqq \E_{\vec{x} \sim \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big] &\approx \sum_{i = 1}^{2n + 1} w_{i - 1}^{(m)} \vec{f}(\mat{\mathcal{X}}_i) \\
-			\hat{\mat{\Sigma}} \coloneqq \Cov_{\vec{x} \sim \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big] &\approx \sum_{i = 1}^{2n + 1} w_{i - 1}^{(c)} \big( \vec{f}(\mat{\mathcal{X}}_i) - \hat{\vec{\mu}} \big) \big( \mat{\mathcal{X}}_i - \hat{\vec{\mu}} \big)^T
-		\end{align*}
+		are a scaling parameters defined using the parameters of the \ac{ut} \( \alpha \) and \( \kappa \). The approximation for the transformed mean and covariance is then given as
+		\begin{align}
+			\hat{\vec{\mu}} \coloneqq \E_{\vec{x} \sim \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big] &\approx \sum_{i = 1}^{2n + 1} w_{i - 1}^{(m)} \vec{f}(\mat{\mathcal{X}}_i)  \label{eqn:utMean} \\
+			\hat{\mat{\Sigma}} \coloneqq \Cov_{\vec{x} \sim \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big] &\approx \sum_{i = 1}^{2n + 1} w_{i - 1}^{(c)} \big( \vec{f}(\mat{\mathcal{X}}_i) - \hat{\vec{\mu}} \big) \big( \mat{\mathcal{X}}_i - \hat{\vec{\mu}} \big)^T  \label{eqn:utCov}
+		\end{align}
 		where \( \mat{\mathcal{X}}_i \) is the \(i\)-th column of the sigma points matrix \( \mat{\mathcal{X}} \). The weights \( w_i^{(m)} \) for the mean and \( w_i^{(c)} \) for the covariance are defined as
 		\begin{align*}
 			w_0^{(m)} &\coloneqq \frac{\lambda}{n + \lambda} & w_0^{(c)} &\coloneqq \frac{\lambda}{n + \lambda} + (1 - \alpha^2 + \beta) \\
@@ -197,16 +197,17 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		In~\autoref{alg:cubatureKalmanFilter} we show the cubature Kalman filter, where the code line/equation correspondence to the linear Kalman filter is shown in~\autoref{tab:cubatureKalmanFilter}. Analogous, the cubature \ac{rts} smoother is shown in~\autoref{alg:cubatureRtsSmoother} and the correspondence table is shown in~\autoref{tab:cubatureRtsSmoother}.
 
 		\begin{algorithm}  \DontPrintSemicolon
-			\( \vec{s}_{0 \subgiven 0} \gets \vec{m}_0 \) \;
-			\( \vec{P}_{0 \subgiven 0} \gets \mat{V}_0 \) \;
+			\KwData{Initial state \( \vec{m}_0 \in \R^k \), covariance \( \mat{V}_0 \) and observations \( \vec{y}_{1:T} \in \R^{p \times T} \).}
+			\eqmakebox[ckfinit][r]{\( \vec{s}_{0 \subgiven 0} \gets \)} \( \vec{m}_0 \) \;
+			\eqmakebox[ckfinit][r]{\( \mat{P}_{0 \subgiven 0} \gets \)} \( \mat{V}_0 \) \;
 			\For{\( t = 1, 2, \rangedots, T \)}{
 				\( \vec{\xi}_i \gets \sqrt{n} [\vec{1}]_i \) \;
 				\textbf{Prediction:} \;
-				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t - 1 \subgiven t - 1} \gets \)} \( \sqrt{\mat{P}_{t - 1 \subgiven t - 1}} \vec{\xi}_i + \vec{s}_{t - 1 \subgiven t - 1} \) \;
+				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t - 1 \subgiven t - 1} \gets \)} \( \mat{P}_{t - 1 \subgiven t - 1}^{1/2} \vec{\xi}_i + \vec{s}_{t - 1 \subgiven t - 1} \) \;
 				\quad\eqmakebox[ckf][r]{\( \vec{s}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \)  \label{algline:ckfStatePre} \;
 				\quad\eqmakebox[ckf][r]{\( \mat{P}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \vec{f}^T(\vec{x}_{i, t - 1 \subgiven t - 1}) - \vec{s}_{t \subgiven t - 1} \vec{s}_{t \subgiven t - 1}^T + \mat{Q} \)  \label{algline:ckfCovPre} \;
 				\textbf{Correction:} \;
-				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t \subgiven t - 1} \gets \)} \( \sqrt{\mat{P}_{t \subgiven t - 1}} + \vec{s}_{t \subgiven t - 1} \) \;
+				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t \subgiven t - 1} \gets \)} \( \mat{P}_{t \subgiven t - 1}^{1/2} + \vec{s}_{t \subgiven t - 1} \) \;
 				\quad\eqmakebox[ckf][r]{\( \vec{y}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{g}(\vec{x}_{i, t \subgiven t - 1}) \)  \label{algline:ckfInno} \;
 				\quad\eqmakebox[ckf][r]{\( \mat{S}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{g}(\vec{x}_{i, t \subgiven t - 1}) \vec{g}^T(\vec{x}_{i, t \subgiven t - 1}) - \vec{y}_{t \subgiven t - 1} \vec{y}_{t \subgiven t - 1}^T + \mat{R} \)  \label{algline:ckfResCov} \;
 				\quad\eqmakebox[ckf][r]{\( \mat{J}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \vec{g}^T(\vec{x}_{i, t \subgiven t - 1}) - \vec{s}_{t \subgiven t - 1} \vec{y}_{t \subgiven t - 1}^T \) \;
@@ -234,9 +235,10 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\end{table}
 
 		\begin{algorithm}  \DontPrintSemicolon
-			\For{\( t = T, T - 1, \rangedots, 1 \)}{
+			\KwData{All values from the Kalman filter.}
+			\For{\( t = T - 1, T - 2, \rangedots, 1 \)}{
 				\eqmakebox[crts][r]{\( \vec{\xi}_i \gets \)} \(\sqrt{n} [\vec{1}]_i \) \;
-				\eqmakebox[crts][r]{\( \vec{x}_i \gets \)} \( \sqrt{\mat{P}_{t \subgiven t}} \vec{\xi}_i + \vec{s}_{t \subgiven t} \) \;
+				\eqmakebox[crts][r]{\( \vec{x}_i \gets \)} \( \mat{P}_{t \subgiven t}^{1/2} \vec{\xi}_i + \vec{s}_{t \subgiven t} \) \;
 				\eqmakebox[crts][r]{\( \mat{D}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} (\vec{x}_i - \vec{s}_{t \subgiven t}) \big( \vec{f}(\vec{x}_i) - \vec{s}_{t + 1 \subgiven t} \big)^T \) \;
 				\eqmakebox[crts][r]{\( \mat{J}_t \gets \)} \( \mat{D}_t \mat{P}_{t + 1 \subgiven t}^{-1} \) \;
 				\eqmakebox[crts][r]{\( \vec{s}_{t \subgiven T} \gets \)} \( \vec{s}_{t \subgiven t} + \mat{J}_t (\vec{s}_{t + 1 \subgiven T} - \vec{s}_{t + 1 \subgiven t}) \)  \label{algline:crtsState} \;
@@ -258,8 +260,96 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	% end
 
 	\subsection{Square-Root Filtering/Smoothing}
-		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. Also, finding \( \sqrt{\mat{\Sigma}} \) is computationally expensive with a complexity of \( \mathcal{O}(n^3) \) where \( \mat{\Sigma} \in \R^{n \times n} \)~\cite{ballardCommunicationoptimalParallelSequential2010}. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \mat{P}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not exhibit valid covariance matrices, \ac{ie} positive definite and symmetric ones. One approach for solving this problem is producing the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look at it now.
+		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. Also, finding \( \sqrt{\mat{\Sigma}} \) is computationally expensive with a complexity of \( \mathcal{O}\big(k^3\big) \) where \( \mat{\Sigma} \in \R^{k \times k} \)~\cite{ballardCommunicationoptimalParallelSequential2010}. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \mat{P}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not exhibit valid covariance matrices, \ac{ie} positive definite and symmetric ones. One approach for solving this problem is producing the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look at it now.
 
-		To take comparison, we wrote down the cubature Kalman smoother without in~\ref{alg:unscentedSmoother}.
+		We will mostly follow the derivation in~\cite{ruttenSquarerootUnscentedFiltering2013} and only shortly outline the key results. With the sigma points \( \mat{\mathcal{X}} \) from the \ac{ut} equation~\eqref{eqn:utSigmaPoints} and the corresponding weights, we can define the transformed sigma points
+		\begin{equation*}
+			\mat{\mathcal{X}}_i' = \vec{f}(\mat{\mathcal{X}}_i)
+		\end{equation*}
+		and utilize the \ac{ut} mean \( \hat{\vec{\mu}} \)~\eqref{eqn:utMean} and covariance \( \hat{\mat{\Sigma}} \)~\eqref{eqn:utCov} estimates. By applying another transformation to the transformed sigma points,
+		\begin{equation*}
+			\mat{\mathcal{Y}}_i = \sqrt{w_i^{(c)}} (\mat{\mathcal{X}}' - \hat{\vec{\mu}})
+		\end{equation*}
+		which are the "scaled residuals" of the sigma points, we can choose an orthogonal matrix \( \mat{\Theta} \) such that
+		\begin{equation}
+			\mat{\mathcal{Y}} \mat{\Theta} = \begin{bmatrix} \mat{B} & \mat{O}_{k \times (k + 1)} \end{bmatrix}  \label{eqn:sqrtFilteringQR}
+		\end{equation}
+		Squaring both sides of this equation yields the covariance estimate
+		\begin{equation*}
+			\hat{\mat{\Sigma}} = \mat{\mathcal{Y}} \mat{\mathcal{Y}}^T = \mat{\mathcal{Y}} \mat{\Theta} \mat{\Theta}^T \mat{\mathcal{Y}} = \begin{bmatrix} \mat{B} & \mat{O}_{k \times (k + 1)} \end{bmatrix} \begin{bmatrix} \mat{B}^T \\ \mat{O}_{(k + 1) \times n} \end{bmatrix} = \mat{B} \mat{B}^T
+		\end{equation*}
+		so \( \mat{B} \) is the Cholesky decomposition of \( \hat{\mat{\Sigma}} \). But the equation~\eqref{eqn:sqrtFilteringQR}, where we neither now the orthogonal matrix \( \mat{\Theta} \) nor the right side of the equation, is exactly the type of matrix decomposition known as the \emph{QR decomposition} that is numerically more stable than the Cholesky decomposition as it does not require any special structure like positive definiteness of the matrix. \todo{Time complexity?} In NumPy~\cite{harrisArrayProgrammingNumPy2020}, we can easily compute the matrix \( \mat{B} \) from \( \mathbb{\mathcal{Y}} \) using \lstinline|Y = np.linalg.qr(Y.T).T|. By applying this argumentation in an analogous way to every covariance computation in the cubature Kalman filter and \ac{rts} smoother, we find a complete square-root filtering and smoothing propagating the Cholesky decomposition of the covariance matrices \( \mat{P}_{t \subgiven t - 1} \), \( \mat{P}_{t \subgiven t} \) and \( \mat{P}_{t \subgiven T} \).
+
+		The square-root cubature Kalman filter is summarized in~\autoref{alg:sqrtCubatureKalmanFilter} and the square-root cubature \ac{rts} smoother is summarized in~\autoref{alg:sqrtCubatureRtsSmoother}.
+
+		The square-root filtering now allows us to pass the Cholesky decomposition of the covariances directly through the smoothing and filtering process, allowing higher numerical stability because we guarantee the covariances to be positive definite even with approximations.
+
+		\begin{algorithm}  \DontPrintSemicolon
+			\KwData{Initial state \( \vec{m}_0 \in \R^k \), covariance sqrt \( \mat{V}_0^{1/2} \) and observations \( \vec{y}_{1:T} \in \R^{p \times T} \).}
+			\eqmakebox[sqrtckfinit][r]{\( \vec{s}_{0 \subgiven 0} \gets \)} \( \vec{m}_0 \) \;
+			\eqmakebox[sqrtckfinit][r]{\( \mat{P}_{0 \subgiven 0}^{1/2} \gets \)} \( \mat{V}_0^{1/2} \) \;
+			\For{\( t = 1, 2, \rangedots, T \)}{
+				\eqmakebox[sqrtckf][r]{\( \mat{\Lambda} \gets \)} \( \sqrt{n} \cdot \mat{P}_{t - 1 \subgiven t - 1}^{1/2} \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{X}}_{t - 1 \subgiven t - 1} \gets \)} \( \begin{bmatrix} \vec{s}_{t - 1 \subgiven t - 1} \vec{1}^T + \mat{\Lambda} & \vec{s}_{t - 1 \subgiven t - 1} \vec{1}^T - \mat{\Lambda} \end{bmatrix} \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{X}}_{t \subgiven t - 1, i}^s \gets \)} \( \vec{f}(\mat{\mathcal{X}}_{t - 1 \subgiven t - 1, i}) + (-1)^i \cdot \mat{Q} \),\quad \( i = 1, 2, \rangedots, 2k \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{X}}_{t \subgiven t - 1, i}^y \gets \)} \( \vec{g}\big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^s\big) + (-1)^i \cdot \mat{R} \),\quad \( i = 1, 2, \rangedots, 2k \) \;
+				\eqmakebox[sqrtckf][r]{\( \vec{s}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2k} \sum_{i = 1}^{2k} \mat{\mathcal{X}}_{t \subgiven t - 1, i}^s \) \;
+				\eqmakebox[sqrtckf][r]{\( \vec{y}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2k} \sum_{i = 1}^{2k} \mat{\mathcal{X}}_{t \subgiven t - 1, i}^y \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^s \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^s - \vec{s}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^y \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^y - \vec{y}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
+				Find \( \mat{S}_t^{1/2} \), \( \mat{J}_t \) and \( \mat{P}_{t \subgiven t}^{1/2} \) using the QR decomposition: \\
+				\quad \(
+					\begin{bmatrix}
+						\mat{\mathcal{Y}}_{t \subgiven t - 1}^y \\
+						\mat{\mathcal{Y}}_{t \subgiven t - 1}^s
+					\end{bmatrix}
+					\mat{\Theta}
+					=
+					\begin{bmatrix}
+						\mat{S}_t^{1/2} & \mat{O} & \mat{O} \\
+						\mat{J}_t       & \mat{P}_{t \subgiven t}^{1/2} & \mat{O}
+					\end{bmatrix}
+				\) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{K}_t \gets \)} \( \mat{J}_t \mat{S}_t^{-1/2} \) \;
+				\eqmakebox[sqrtckf][r]{\( \vec{s}_{t \subgiven t} \gets \)} \( \vec{s}_{t \subgiven t - 1} + \mat{K}_t (\vec{y}_t - \vec{y}_{t \subgiven t - 1}) \) \;
+			}
+			\caption{Square-Root Cubature Kalman Filter}
+			\label{alg:sqrtCubatureKalmanFilter}
+		\end{algorithm}
+
+		\begin{algorithm}
+			\KwData{All values from the Kalman filter.}
+			\For{\( t = T - 1, T - 2, \rangedots, 1 \)}{
+				\eqmakebox[sqrtcrts][r]{\( \mat{\mathcal{Y}}_{t \subgiven t, i}^s \gets \)} \( (\mat{\mathcal{X}}_{t \subgiven t, i} - \vec{s}_{t \subgiven t}) \) \;
+				Find \( \mat{D}_t \) and \( \mat{Z}_t \) using the QR decomposition: \\
+				\quad \(
+					\begin{bmatrix}
+						\mat{\mathcal{Y}}_{t + 1 \subgiven t}^s \\
+						\mat{\mathcal{Y}}_{t \subgiven t}^s
+					\end{bmatrix}
+					\mat{\Theta}
+					=
+					\begin{bmatrix}
+						\mat{P}_{t + 1 \subgiven t}^{1/2} & \mat{O}   & \mat{O} \\
+						\mat{D}_t                         & \mat{Z}_t & \mat{O}
+					\end{bmatrix}
+				\) \;
+				\eqmakebox[sqrtcrts][r]{\( \mat{J}_t \gets \)} \( \mat{D}_t \mat{P}_{t + 1 \subgiven t}^{-1/2} \) \;
+				\eqmakebox[sqrtcrts][r]{\( \vec{s}_{t \subgiven T} \gets \)} \( \vec{s}_{t \subgiven t} + \mat{J}_t (\vec{s}_{t + 1 \subgiven T} - \vec{s}_{t + 1 \subgiven t}) \) \;
+				Find \( \mat{P}_{t \subgiven T}^{1/2} \) using the QR decomposition: \\
+				\quad \(
+					\begin{bmatrix}
+						\mat{Z}_t & \mat{J}_t \mat{P}_{t + 1 \subgiven T}^{1/2}
+					\end{bmatrix}
+					\mat{\Theta}
+					=
+					\begin{bmatrix}
+						\mat{P}_{t \subgiven T}^{1/2} & \mat{O}
+					\end{bmatrix}
+				\)
+			}
+			\caption{Square-Root Cubature Rauch-Tung-Striebel Smoother}
+			\label{alg:sqrtCubatureRtsSmoother}
+		\end{algorithm}
 	% end
 % end
