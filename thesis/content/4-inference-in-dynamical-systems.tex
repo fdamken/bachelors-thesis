@@ -49,6 +49,8 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 % end
 
 \section{Inference: Filtering and Smoothing}
+	\label{sec:filteringSmoothing}
+
 	When looking at an \ac{lgds}, one of the first problems that one might consider is how to get the states (also called \emph{latent states} as we cannot observe) them back? This procedure is called \emph{inference}. In this section we will give an overview on how to perform inference on an \ac{lgds}, so on a linear system that behaves Markovian.
 
 	For time-series data, the inference procedure is widely know as \emph{filtering} ans \emph{smoothing}, where the following distributions on the latent states \( \vec{s}_t \) are calculated:
@@ -75,21 +77,21 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\end{enumerate}
 		For a simple linear system with Gaussian noise, \ac{ie} an \ac{lgds}, the equations for both the prediction and the correction can be given in closed form and are fairly straightforward. For the prediction step, the equations are given as
 		\begin{align}
-			\vec{s}_{t \subgiven t - 1} &= \mat{A} \vec{s}_{t - 1 \subgiven t - 1}  \label{eqn:kfStatePre} \\
-			\mat{P}_{t \subgiven t - 1} &= \mat{A} \mat{P}_{t - 1 \subgiven t - 1} \mat{A}^T + \mat{Q}  \label{eqn:kfCovPre}
+			\hat{\vec{s}}_{t \subgiven t - 1} &= \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1}  \label{eqn:kfStatePre} \\
+			\hat{\mat{V}}_{t \subgiven t - 1} &= \mat{A} \hat{\mat{V}}_{t - 1 \subgiven t - 1} \mat{A}^T + \mat{Q}  \label{eqn:kfCovPre}
 		\end{align}
-		where \( \vec{s}_{t \given t - 1} \) and \( \mat{P}_{t \given t - 1} \) are the mean and covariance of the prediction distribution \( p(\vec{s}_t \given \vec{y}_{1:t - 1}) \), respectively. The correction step, which integrated new knowledge gained from the observation \( \vec{y}_t \) into the estimated, is given as
+		where \( \hat{\vec{s}}_{t \given t - 1} \) and \( \hat{\mat{V}}_{t \given t - 1} \) are the mean and covariance of the prediction distribution \( p(\vec{s}_t \given \vec{y}_{1:t - 1}) \), respectively. The correction step, which integrated new knowledge gained from the observation \( \vec{y}_t \) into the estimated, is given as
 		\begin{align}
-			\vec{s}_{t \subgiven t} &= \vec{s}_{t \subgiven t - 1} + \mat{K}_t \vec{y}_{t \subgiven t - 1}  \label{eqn:kfStatePost} \\
-			\mat{P}_{t \subgiven t} &= \mat{P}_{t \subgiven t - 1} - \mat{K}_t \mat{S}_t \mat{K}_t^T  \label{eqn:kfCovPost}
+			\hat{\vec{s}}_{t \subgiven t} &= \hat{\vec{s}}_{t \subgiven t - 1} + \mat{K}_t \tilde{\vec{y}}_t  \label{eqn:kfStatePost} \\
+			\hat{\mat{V}}_{t \subgiven t} &= \hat{\mat{V}}_{t \subgiven t - 1} - \mat{K}_t \mat{S}_t \mat{K}_t^T  \label{eqn:kfCovPost}
 		\end{align}
 		with the auxiliary variables
 		\begin{align}
-			\vec{y}_{t \subgiven t - 1} &= \vec{y}_t - \mat{C} \vec{s}_{t \subgiven t - 1}  \label{eqn:kfInno} \\
-			\mat{S}_t &= \mat{C} \mat{P}_{t \subgiven t - 1} \mat{C}^T + \mat{R}  \label{eqn:kfResCov} \\
-			\mat{K}_t &= \mat{P}_{t \subgiven t - 1} \mat{C}^T \mat{S}_t^{-1}  \label{eqn:kfKalmanGain}
+			\tilde{\vec{y}}_t &= \vec{y}_t - \mat{C} \hat{\vec{s}}_{t \subgiven t - 1}  \label{eqn:kfInno} \\
+			\mat{S}_t &= \mat{C} \hat{\mat{V}}_{t \subgiven t - 1} \mat{C}^T + \mat{R}  \label{eqn:kfResCov} \\
+			\mat{K}_t &= \hat{\mat{V}}_{t \subgiven t - 1} \mat{C}^T \mat{S}_t^{-1}  \label{eqn:kfKalmanGain}
 		\end{align}
-		known as the innovation, residual covariance and Kalman gain. The resulting estimates \( \vec{s}_{t \subgiven t} \) and \( \mat{P}_{t \subgiven t} \) then form the mean and covariance of the filtered distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \), respectively. These equations form a recursive algorithm "forward in time" starting off with initial state estimates \( \vec{s}_{0 \subgiven 0} = \vec{m}_0 \) and \( \mat{P}_{0 \subgiven 0} = \mat{V}_0 \) that have to be determined in another way.
+		known as the innovation, residual covariance and Kalman gain. The resulting estimates \( \hat{\vec{s}}_{t \subgiven t} \) and \( \hat{\mat{V}}_{t \subgiven t} \) then form the mean and covariance of the filtered distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \), respectively. These equations form a recursive algorithm "forward in time" starting off with initial state estimates \( \hat{\vec{s}}_{0 \subgiven 0} = \vec{m}_0 \) and \( \hat{\mat{V}}_{0 \subgiven 0} = \mat{V}_0 \) that have to be determined in another way.
 
 		But these equations only work for linear systems. Lots of extensions of the regular Kalman filter have been proposed to extend the filter to nonlinear systems. The most used one is the \ac{ekf} which assumes locally linear dynamics and uses first-order Taylor expansions to linearize them. Throughout this thesis we will use the cubature Kalman filter, which we will introduce later in~\autoref{sec:cubatureFiltering}.
 	% end
@@ -101,10 +103,10 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\end{equation*}
 		which uses all measurements (see again~\autoref{fig:predictionFilteringSmoothing} for an illustration). With letting the Kalman filter "run" beforehand, we have the filtered distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \) at hand. Then we have the smoothing equations as
 		\begin{align}
-			\vec{s}_{t \subgiven T} &= \vec{s}_{t \subgiven t} + \mat{J}_t (\vec{s}_{t + 1 \subgiven T} - \vec{s}_{t + 1 \subgiven t})  \label{eqn:rtsState} \\
-			\mat{P}_{t \subgiven T} &= \mat{P}_{t \subgiven t} + \mat{J}_t (\mat{P}_{t + 1 \subgiven T} - \mat{P}_{t + 1 \subgiven t}) \mat{J}_t^T  \label{eqn:rtsCov}
+			\hat{\vec{s}}_{t \subgiven T} &= \hat{\vec{s}}_{t \subgiven t} + \mat{J}_t (\hat{\vec{s}}_{t + 1 \subgiven T} - \hat{\vec{s}}_{t + 1 \subgiven t})  \label{eqn:rtsState} \\
+			\hat{\mat{V}}_{t \subgiven T} &= \hat{\mat{V}}_{t \subgiven t} + \mat{J}_t (\hat{\mat{V}}_{t + 1 \subgiven T} - \hat{\mat{V}}_{t + 1 \subgiven t}) \mat{J}_t^T  \label{eqn:rtsCov}
 		\end{align}
-		with the auxiliary variable \( \mat{J}_t = \mat{P}_{t \subgiven t} \mat{A}^T \mat{P}_{t + 1 \subgiven t}^{-1} \). The resulting estimates \( \vec{s}_{t \subgiven T} \) and \( \mat{P}_{t \subgiven T} \) then form the mean and covariance of the smoothed/posterior distribution \( p(\vec{s}_t \given \vec{y}_{1:T}) \). These equations form a recursive algorithm "backward in time" starting off with the final state and covariance estimates of the filter.
+		with the auxiliary variable \( \mat{J}_t = \hat{\mat{V}}_{t \subgiven t} \mat{A}^T \hat{\mat{V}}_{t + 1 \subgiven t}^{-1} \). The resulting estimates \( \hat{\vec{s}}_{t \subgiven T} \) and \( \hat{\mat{V}}_{t \subgiven T} \) then form the mean and covariance of the smoothed/posterior distribution \( p(\vec{s}_t \given \vec{y}_{1:T}) \). These equations form a recursive algorithm "backward in time" starting off with the final state and covariance estimates of the filter.
 
 		Hence, we need the Kalman filter before using the \ac{rts} smoother. Due to this hard wiring between the two algorithms, the \ac{rts} smoother is also often referred to as the Kalman smoother.
 
@@ -113,7 +115,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 % end
 
 \section{Cubature Rules and Filtering}
-	\label{sec:cubatureFiltering}
+	\label{sec:cubatureRules}
 
 	As we have already discussed is the plain Kalman filter not applicable to nonlinear systems without modifications. In this section we want to motivate the need for \emph{cubature rules} and outline their derivation and how to apply them.
 
@@ -135,7 +137,11 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{equation*}
 		\int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\mat{\Sigma}^{1/2} \vec{\xi}_i - \vec{\mu})
 	\end{equation*}
-	with the cubature points \( \vec{\xi}_i = \sqrt{n} [\vec{1}]_i \). Here the points \( [\vec{1}]_i \) are "from the intersections between the Cartesian axes and the \(n\)-dimensional unit hypersphere"~\cite{solinCubatureIntegrationMethods2010}. That is, the point \( [\vec{1}]_i \) is the \(i\)-th row vector of the block matrix \( \begin{bmatrix} \mat{I} & -\mat{I} \end{bmatrix} \), where \( \mat{I} \) is the \(n\)-dimensional identity matrix.
+	with the cubature points \( \vec{\xi}_i = \sqrt{n} [\vec{1}]_i \). Here the points \( [\vec{1}]_i \) are "from the intersections between the Cartesian axes and the \(n\)-dimensional unit hypersphere"~\cite{solinCubatureIntegrationMethods2010}. That is, the point \( [\vec{1}]_i \) is the \(i\)-th row vector of the block matrix \( \begin{bmatrix} \mat{I} & -\mat{I} \end{bmatrix} \), where \( \mat{I} \) is the \(n\)-dimensional identity matrix. In the rest of this thesis we will write
+	\begin{equation*}
+		\SRC[\vec{f}; \vec{\mu}, \mat{\Sigma}] \coloneqq \sum_{i = 1}^{m} w_i \vec{f}(\vec{x}_i)
+	\end{equation*}
+	for evaluations of the spherical-radial cubature rule as it is much shorter and emphasizes the usage of the rule instead of the rule itself.
 
 	\autoref{fig:cubature} shows the spherical-radial cubature rule working on a transition from polar coordinates to Cartesian coordinates where the transformation is given by:
 	\begin{equation*}
@@ -189,6 +195,8 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	% end
 
 	\subsection{Cubature Kalman Filtering and Smoothing}
+		\label{subsec:cubatureFiltering}
+
 		Following~\cite{deisenrothProbabilisticPerspectiveGaussian2011,solinCubatureIntegrationMethods2010}, we can use the spherical-radial cubature rule to extend the Kalman filter and \ac{rts} smoother to nonlinear systems with Gaussian noise, \ac{ie}
 		\begin{align*}
 			\vec{s}_{t + 1} &\sim \normal\big( \vec{f}(\vec{s}_t), \mat{Q} \big) \\
@@ -198,22 +206,22 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 
 		\begin{algorithm}  \DontPrintSemicolon
 			\KwData{Initial state \( \vec{m}_0 \in \R^k \), covariance \( \mat{V}_0 \) and observations \( \vec{y}_{1:T} \in \R^{p \times T} \).}
-			\eqmakebox[ckfinit][r]{\( \vec{s}_{0 \subgiven 0} \gets \)} \( \vec{m}_0 \) \;
-			\eqmakebox[ckfinit][r]{\( \mat{P}_{0 \subgiven 0} \gets \)} \( \mat{V}_0 \) \;
+			\eqmakebox[ckfinit][r]{\( \hat{\vec{s}}_{0 \subgiven 0} \gets \)} \( \vec{m}_0 \) \;
+			\eqmakebox[ckfinit][r]{\( \hat{\mat{V}}_{0 \subgiven 0} \gets \)} \( \mat{V}_0 \) \;
 			\For{\( t = 1, 2, \rangedots, T \)}{
 				\( \vec{\xi}_i \gets \sqrt{n} [\vec{1}]_i \) \;
 				\textbf{Prediction:} \;
-				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t - 1 \subgiven t - 1} \gets \)} \( \mat{P}_{t - 1 \subgiven t - 1}^{1/2} \vec{\xi}_i + \vec{s}_{t - 1 \subgiven t - 1} \) \;
-				\quad\eqmakebox[ckf][r]{\( \vec{s}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \)  \label{algline:ckfStatePre} \;
-				\quad\eqmakebox[ckf][r]{\( \mat{P}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \vec{f}^T(\vec{x}_{i, t - 1 \subgiven t - 1}) - \vec{s}_{t \subgiven t - 1} \vec{s}_{t \subgiven t - 1}^T + \mat{Q} \)  \label{algline:ckfCovPre} \;
+				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t - 1 \subgiven t - 1} \gets \)} \( \hat{\mat{V}}_{t - 1 \subgiven t - 1}^{1/2} \vec{\xi}_i + \hat{\vec{s}}_{t - 1 \subgiven t - 1} \) \;
+				\quad\eqmakebox[ckf][r]{\( \hat{\vec{s}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \)  \label{algline:ckfStatePre} \;
+				\quad\eqmakebox[ckf][r]{\( \hat{\mat{V}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \vec{f}^T(\vec{x}_{i, t - 1 \subgiven t - 1}) - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{s}}_{t \subgiven t - 1}^T + \mat{Q} \)  \label{algline:ckfCovPre} \;
 				\textbf{Correction:} \;
-				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t \subgiven t - 1} \gets \)} \( \mat{P}_{t \subgiven t - 1}^{1/2} + \vec{s}_{t \subgiven t - 1} \) \;
-				\quad\eqmakebox[ckf][r]{\( \vec{y}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{g}(\vec{x}_{i, t \subgiven t - 1}) \)  \label{algline:ckfInno} \;
-				\quad\eqmakebox[ckf][r]{\( \mat{S}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{g}(\vec{x}_{i, t \subgiven t - 1}) \vec{g}^T(\vec{x}_{i, t \subgiven t - 1}) - \vec{y}_{t \subgiven t - 1} \vec{y}_{t \subgiven t - 1}^T + \mat{R} \)  \label{algline:ckfResCov} \;
-				\quad\eqmakebox[ckf][r]{\( \mat{J}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \vec{g}^T(\vec{x}_{i, t \subgiven t - 1}) - \vec{s}_{t \subgiven t - 1} \vec{y}_{t \subgiven t - 1}^T \) \;
+				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t \subgiven t - 1} \gets \)} \( \hat{\mat{V}}_{t \subgiven t - 1}^{1/2} + \hat{\vec{s}}_{t \subgiven t - 1} \) \;
+				\quad\eqmakebox[ckf][r]{\( \hat{\vec{y}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{g}(\vec{x}_{i, t \subgiven t - 1}) \)  \label{algline:ckfInno} \;
+				\quad\eqmakebox[ckf][r]{\( \mat{S}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{g}(\vec{x}_{i, t \subgiven t - 1}) \vec{g}^T(\vec{x}_{i, t \subgiven t - 1}) - \hat{\vec{y}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T + \mat{R} \)  \label{algline:ckfResCov} \;
+				\quad\eqmakebox[ckf][r]{\( \mat{J}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \vec{g}^T(\vec{x}_{i, t \subgiven t - 1}) - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T \) \;
 				\quad\eqmakebox[ckf][r]{\( \mat{K}_t \gets \)} \( \mat{J}_t \mat{S}_t^{-1} \)  \label{algline:ckfKalmanGain} \;
-				\quad\eqmakebox[ckf][r]{\( \vec{s}_{t \subgiven t} \gets \)} \( \vec{s}_{t \subgiven t - 1} + \mat{K}_t (\vec{y}_t - \vec{y}_{t \subgiven t - 1}) \)  \label{algline:ckfStatePost} \;
-				\quad\eqmakebox[ckf][r]{\( \mat{P}_{t \subgiven t} \gets \)} \( \mat{P}_{t \subgiven t - 1} + \mat{K}_t \mat{S}_t \mat{K}_t^T \)  \label{algline:ckfCovPost} \;
+				\quad\eqmakebox[ckf][r]{\( \hat{\vec{s}}_{t \subgiven t} \gets \)} \( \hat{\vec{s}}_{t \subgiven t - 1} + \mat{K}_t (\vec{y}_t - \hat{\vec{y}}_{t \subgiven t - 1}) \)  \label{algline:ckfStatePost} \;
+				\quad\eqmakebox[ckf][r]{\( \hat{\mat{V}}_{t \subgiven t} \gets \)} \( \hat{\mat{V}}_{t \subgiven t - 1} + \mat{K}_t \mat{S}_t \mat{K}_t^T \)  \label{algline:ckfCovPost} \;
 			}
 			\caption{Spherical-Radial Cubature Kalman Filter}
 			\label{alg:cubatureKalmanFilter}
@@ -238,11 +246,11 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 			\KwData{All values from the Kalman filter.}
 			\For{\( t = T - 1, T - 2, \rangedots, 1 \)}{
 				\eqmakebox[crts][r]{\( \vec{\xi}_i \gets \)} \(\sqrt{n} [\vec{1}]_i \) \;
-				\eqmakebox[crts][r]{\( \vec{x}_i \gets \)} \( \mat{P}_{t \subgiven t}^{1/2} \vec{\xi}_i + \vec{s}_{t \subgiven t} \) \;
-				\eqmakebox[crts][r]{\( \mat{D}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} (\vec{x}_i - \vec{s}_{t \subgiven t}) \big( \vec{f}(\vec{x}_i) - \vec{s}_{t + 1 \subgiven t} \big)^T \) \;
-				\eqmakebox[crts][r]{\( \mat{J}_t \gets \)} \( \mat{D}_t \mat{P}_{t + 1 \subgiven t}^{-1} \) \;
-				\eqmakebox[crts][r]{\( \vec{s}_{t \subgiven T} \gets \)} \( \vec{s}_{t \subgiven t} + \mat{J}_t (\vec{s}_{t + 1 \subgiven T} - \vec{s}_{t + 1 \subgiven t}) \)  \label{algline:crtsState} \;
-				\eqmakebox[crts][r]{\( \mat{P}_{t \subgiven T} \gets \)} \( \mat{P}_{t \subgiven t} + \mat{J}_t (\mat{P}_{t + 1 \subgiven T} - \mat{P}_{t + 1 \subgiven t}) \mat{C}_t^T \)  \label{algline:crtsCov} \;
+				\eqmakebox[crts][r]{\( \vec{x}_i \gets \)} \( \hat{\mat{V}}_{t \subgiven t}^{1/2} \vec{\xi}_i + \hat{\vec{s}}_{t \subgiven t} \) \;
+				\eqmakebox[crts][r]{\( \mat{D}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} (\vec{x}_i - \hat{\vec{s}}_{t \subgiven t}) \big( \vec{f}(\vec{x}_i) - \hat{\vec{s}}_{t + 1 \subgiven t} \big)^T \) \;
+				\eqmakebox[crts][r]{\( \mat{J}_t \gets \)} \( \mat{D}_t \hat{\mat{V}}_{t + 1 \subgiven t}^{-1} \) \;
+				\eqmakebox[crts][r]{\( \hat{\vec{s}}_{t \subgiven T} \gets \)} \( \hat{\vec{s}}_{t \subgiven t} + \mat{J}_t (\hat{\vec{s}}_{t + 1 \subgiven T} - \hat{\vec{s}}_{t + 1 \subgiven t}) \)  \label{algline:crtsState} \;
+				\eqmakebox[crts][r]{\( \hat{\mat{V}}_{t \subgiven T} \gets \)} \( \hat{\mat{V}}_{t \subgiven t} + \mat{J}_t (\hat{\mat{V}}_{t + 1 \subgiven T} - \hat{\mat{V}}_{t + 1 \subgiven t}) \mat{C}_t^T \)  \label{algline:crtsCov} \;
 			}
 			\caption{Spherical-Radial Cubature Rauch-Tung-Striebel Smoother}
 			\label{alg:cubatureRtsSmoother}
@@ -260,7 +268,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	% end
 
 	\subsection{Square-Root Filtering/Smoothing}
-		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. Also, finding \( \sqrt{\mat{\Sigma}} \) is computationally expensive with a complexity of \( \mathcal{O}\big(k^3\big) \) where \( \mat{\Sigma} \in \R^{k \times k} \)~\cite{ballardCommunicationoptimalParallelSequential2010}. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \mat{P}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not exhibit valid covariance matrices, \ac{ie} positive definite and symmetric ones. One approach for solving this problem is producing the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look at it now.
+		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. Also, finding \( \sqrt{\mat{\Sigma}} \) is computationally expensive with a complexity of \( \mathcal{O}\big(k^3\big) \) where \( \mat{\Sigma} \in \R^{k \times k} \)~\cite{ballardCommunicationoptimalParallelSequential2010}. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \hat{\mat{V}}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not exhibit valid covariance matrices, \ac{ie} positive definite and symmetric ones. One approach for solving this problem is producing the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look at it now.
 
 		We will mostly follow the derivation in~\cite{ruttenSquarerootUnscentedFiltering2013} and only shortly outline the key results. With the sigma points \( \mat{\mathcal{X}} \) from the \ac{ut} equation~\eqref{eqn:utSigmaPoints} and the corresponding weights, we can define the transformed sigma points
 		\begin{equation*}
@@ -278,7 +286,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\begin{equation*}
 			\hat{\mat{\Sigma}} = \mat{\mathcal{Y}} \mat{\mathcal{Y}}^T = \mat{\mathcal{Y}} \mat{\Theta} \mat{\Theta}^T \mat{\mathcal{Y}} = \begin{bmatrix} \mat{B} & \mat{O}_{k \times (k + 1)} \end{bmatrix} \begin{bmatrix} \mat{B}^T \\ \mat{O}_{(k + 1) \times n} \end{bmatrix} = \mat{B} \mat{B}^T
 		\end{equation*}
-		so \( \mat{B} \) is the Cholesky decomposition of \( \hat{\mat{\Sigma}} \). But the equation~\eqref{eqn:sqrtFilteringQR}, where we neither now the orthogonal matrix \( \mat{\Theta} \) nor the right side of the equation, is exactly the type of matrix decomposition known as the \emph{QR decomposition} that is numerically more stable than the Cholesky decomposition as it does not require any special structure like positive definiteness of the matrix. \todo{Time complexity?} In NumPy~\cite{harrisArrayProgrammingNumPy2020}, we can easily compute the matrix \( \mat{B} \) from \( \mathbb{\mathcal{Y}} \) using \lstinline|Y = np.linalg.qr(Y.T).T|. By applying this argumentation in an analogous way to every covariance computation in the cubature Kalman filter and \ac{rts} smoother, we find a complete square-root filtering and smoothing propagating the Cholesky decomposition of the covariance matrices \( \mat{P}_{t \subgiven t - 1} \), \( \mat{P}_{t \subgiven t} \) and \( \mat{P}_{t \subgiven T} \).
+		so \( \mat{B} \) is the Cholesky decomposition of \( \hat{\mat{\Sigma}} \). But the equation~\eqref{eqn:sqrtFilteringQR}, where we neither now the orthogonal matrix \( \mat{\Theta} \) nor the right side of the equation, is exactly the type of matrix decomposition known as the \emph{QR decomposition} that is numerically more stable than the Cholesky decomposition as it does not require any special structure like positive definiteness of the matrix. \todo{Time complexity?} In NumPy~\cite{harrisArrayProgrammingNumPy2020}, we can easily compute the matrix \( \mat{B} \) from \( \mathbb{\mathcal{Y}} \) using \lstinline|Y = np.linalg.qr(Y.T).T|. By applying this argumentation in an analogous way to every covariance computation in the cubature Kalman filter and \ac{rts} smoother, we find a complete square-root filtering and smoothing propagating the Cholesky decomposition of the covariance matrices \( \hat{\mat{V}}_{t \subgiven t - 1} \), \( \hat{\mat{V}}_{t \subgiven t} \) and \( \hat{\mat{V}}_{t \subgiven T} \).
 
 		The square-root cubature Kalman filter is summarized in~\autoref{alg:sqrtCubatureKalmanFilter} and the square-root cubature \ac{rts} smoother is summarized in~\autoref{alg:sqrtCubatureRtsSmoother}.
 
@@ -286,19 +294,19 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 
 		\begin{algorithm}  \DontPrintSemicolon
 			\KwData{Initial state \( \vec{m}_0 \in \R^k \), covariance sqrt \( \mat{V}_0^{1/2} \) and observations \( \vec{y}_{1:T} \in \R^{p \times T} \).}
-			\eqmakebox[sqrtckfinit][r]{\( \vec{s}_{0 \subgiven 0} \gets \)} \( \vec{m}_0 \) \;
-			\eqmakebox[sqrtckfinit][r]{\( \mat{P}_{0 \subgiven 0}^{1/2} \gets \)} \( \mat{V}_0^{1/2} \) \;
+			\eqmakebox[sqrtckfinit][r]{\( \hat{\vec{s}}_{0 \subgiven 0} \gets \)} \( \vec{m}_0 \) \;
+			\eqmakebox[sqrtckfinit][r]{\( \hat{\mat{V}}_{0 \subgiven 0}^{1/2} \gets \)} \( \mat{V}_0^{1/2} \) \;
 			\For{\( t = 1, 2, \rangedots, T \)}{
-				\eqmakebox[sqrtckf][r]{\( \mat{\Lambda} \gets \)} \( \sqrt{n} \cdot \mat{P}_{t - 1 \subgiven t - 1}^{1/2} \) \;
-				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{X}}_{t - 1 \subgiven t - 1} \gets \)} \( \begin{bmatrix} \vec{s}_{t - 1 \subgiven t - 1} \vec{1}^T + \mat{\Lambda} & \vec{s}_{t - 1 \subgiven t - 1} \vec{1}^T - \mat{\Lambda} \end{bmatrix} \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\Lambda} \gets \)} \( \sqrt{n} \cdot \hat{\mat{V}}_{t - 1 \subgiven t - 1}^{1/2} \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{X}}_{t - 1 \subgiven t - 1} \gets \)} \( \begin{bmatrix} \hat{\vec{s}}_{t - 1 \subgiven t - 1} \vec{1}^T + \mat{\Lambda} & \hat{\vec{s}}_{t - 1 \subgiven t - 1} \vec{1}^T - \mat{\Lambda} \end{bmatrix} \) \;
 				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{X}}_{t \subgiven t - 1, i}^s \gets \)} \( \vec{f}(\mat{\mathcal{X}}_{t - 1 \subgiven t - 1, i}) + (-1)^i \cdot \mat{Q} \),\quad \( i = 1, 2, \rangedots, 2k \) \;
 				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{X}}_{t \subgiven t - 1, i}^y \gets \)} \( \vec{g}\big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^s\big) + (-1)^i \cdot \mat{R} \),\quad \( i = 1, 2, \rangedots, 2k \) \;
-				\eqmakebox[sqrtckf][r]{\( \vec{s}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2k} \sum_{i = 1}^{2k} \mat{\mathcal{X}}_{t \subgiven t - 1, i}^s \) \;
-				\eqmakebox[sqrtckf][r]{\( \vec{y}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2k} \sum_{i = 1}^{2k} \mat{\mathcal{X}}_{t \subgiven t - 1, i}^y \) \;
-				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^s \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^s - \vec{s}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
-				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^y \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^y - \vec{y}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
+				\eqmakebox[sqrtckf][r]{\( \hat{\vec{s}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2k} \sum_{i = 1}^{2k} \mat{\mathcal{X}}_{t \subgiven t - 1, i}^s \) \;
+				\eqmakebox[sqrtckf][r]{\( \hat{\vec{y}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2k} \sum_{i = 1}^{2k} \mat{\mathcal{X}}_{t \subgiven t - 1, i}^y \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^s \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^s - \hat{\vec{s}}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
+				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^y \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^y - \hat{\vec{y}}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
 				\begin{minipage}{\linewidth}
-					Find \( \mat{S}_t^{1/2} \), \( \mat{J}_t \) and \( \mat{P}_{t \subgiven t}^{1/2} \) using the QR decomposition: \\
+					Find \( \mat{S}_t^{1/2} \), \( \mat{J}_t \) and \( \hat{\mat{V}}_{t \subgiven t}^{1/2} \) using the QR decomposition: \\
 					\null\hspace{1cm} \(
 						\begin{bmatrix}
 							\mat{\mathcal{Y}}_{t \subgiven t - 1}^y \\
@@ -308,12 +316,12 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 						=
 						\begin{bmatrix}
 							\mat{S}_t^{1/2} & \mat{O} & \mat{O} \\
-							\mat{J}_t       & \mat{P}_{t \subgiven t}^{1/2} & \mat{O}
+							\mat{J}_t       & \hat{\mat{V}}_{t \subgiven t}^{1/2} & \mat{O}
 						\end{bmatrix}
 					\)
 				\end{minipage} \; \vspace{-0.5cm}
 				\eqmakebox[sqrtckf][r]{\( \mat{K}_t \gets \)} \( \mat{J}_t \mat{S}_t^{-1/2} \) \;
-				\eqmakebox[sqrtckf][r]{\( \vec{s}_{t \subgiven t} \gets \)} \( \vec{s}_{t \subgiven t - 1} + \mat{K}_t (\vec{y}_t - \vec{y}_{t \subgiven t - 1}) \) \;
+				\eqmakebox[sqrtckf][r]{\( \hat{\vec{s}}_{t \subgiven t} \gets \)} \( \hat{\vec{s}}_{t \subgiven t - 1} + \mat{K}_t (\vec{y}_t - \hat{\vec{y}}_{t \subgiven t - 1}) \) \;
 			}
 			\caption{Square-Root Cubature Kalman Filter}
 			\label{alg:sqrtCubatureKalmanFilter}
@@ -322,7 +330,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\begin{algorithm}  \DontPrintSemicolon
 			\KwData{All values from the Kalman filter.}
 			\For{\( t = T - 1, T - 2, \rangedots, 1 \)}{
-				\eqmakebox[sqrtcrts][r]{\( \mat{\mathcal{Y}}_{t \subgiven t, i}^s \gets \)} \( (\mat{\mathcal{X}}_{t \subgiven t, i} - \vec{s}_{t \subgiven t}) \) \;
+				\eqmakebox[sqrtcrts][r]{\( \mat{\mathcal{Y}}_{t \subgiven t, i}^s \gets \)} \( (\mat{\mathcal{X}}_{t \subgiven t, i} - \hat{\vec{s}}_{t \subgiven t}) \) \;
 				\begin{minipage}{\linewidth}
 					Find \( \mat{D}_t \) and \( \mat{Z}_t \) using the QR decomposition: \\
 					\null\hspace{1cm} \(
@@ -333,23 +341,23 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 						\mat{\Theta}
 						=
 						\begin{bmatrix}
-							\mat{P}_{t + 1 \subgiven t}^{1/2} & \mat{O}   & \mat{O} \\
-							\mat{D}_t                         & \mat{Z}_t & \mat{O}
+							\hat{\mat{V}}_{t + 1 \subgiven t}^{1/2} & \mat{O}   & \mat{O} \\
+							\mat{D}_t                               & \mat{Z}_t & \mat{O}
 						\end{bmatrix}
 					\)
 				\end{minipage} \; \vspace{-0.5cm}
-				\eqmakebox[sqrtcrts][r]{\( \mat{J}_t \gets \)} \( \mat{D}_t \mat{P}_{t + 1 \subgiven t}^{-1/2} \) \;
-				\eqmakebox[sqrtcrts][r]{\( \vec{s}_{t \subgiven T} \gets \)} \( \vec{s}_{t \subgiven t} + \mat{J}_t (\vec{s}_{t + 1 \subgiven T} - \vec{s}_{t + 1 \subgiven t}) \) \;
+				\eqmakebox[sqrtcrts][r]{\( \mat{J}_t \gets \)} \( \mat{D}_t \hat{\mat{V}}_{t + 1 \subgiven t}^{-1/2} \) \;
+				\eqmakebox[sqrtcrts][r]{\( \hat{\vec{s}}_{t \subgiven T} \gets \)} \( \hat{\vec{s}}_{t \subgiven t} + \mat{J}_t (\hat{\vec{s}}_{t + 1 \subgiven T} - \hat{\vec{s}}_{t + 1 \subgiven t}) \) \;
 				\begin{minipage}{\linewidth}
-					Find \( \mat{P}_{t \subgiven T}^{1/2} \) using the QR decomposition: \\
+					Find \( \hat{\mat{V}}_{t \subgiven T}^{1/2} \) using the QR decomposition: \\
 					\null\hspace{1cm} \(
 						\begin{bmatrix}
-							\mat{Z}_t & \mat{J}_t \mat{P}_{t + 1 \subgiven T}^{1/2}
+							\mat{Z}_t & \mat{J}_t \hat{\mat{V}}_{t + 1 \subgiven T}^{1/2}
 						\end{bmatrix}
 						\mat{\Theta}
 						=
 						\begin{bmatrix}
-							\mat{P}_{t \subgiven T}^{1/2} & \mat{O}
+							\hat{\mat{V}}_{t \subgiven T}^{1/2} & \mat{O}
 						\end{bmatrix}
 					\)
 				\end{minipage} \; \vspace{-0.5cm}

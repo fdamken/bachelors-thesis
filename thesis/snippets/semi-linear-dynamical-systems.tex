@@ -55,7 +55,7 @@ In all of the following, we assume to have \(N\) \ac{iid} observation sequences.
 	This quantity depends on three expectations
 	\begin{align*}
 		\hat{\vec{s}}_{t \subgiven t_0}^{(n)}  &\coloneqq \E\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t_0}\Big]
-			& \hat{\vec{s}}_{t, t_0}           &\coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t_0}^{(n)} \\
+			& \hat{\vec{s}}_{t \subgiven t_0}           &\coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t_0}^{(n)} \\
 		\mat{P}_{t \subgiven t_0}^{(n)}        &\coloneqq \E\bigg[\vec{s}_t^{(n)} \vec{s}_t^{(n), T} \bigggiven \vec{y}_{1:t_0}\bigg]
 			& \mat{P}_{t \subgiven t_0}        &\coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t \subgiven t_0}^{(n)} \\
 		\mat{P}_{t, t - 1 \subgiven t_0}^{(n)} &\coloneqq \E\bigg[\vec{s}_t^{(n)} \vec{s}_{t - 1}^{(n), T} \bigggiven \vec{y}_{1:t_0}\bigg]

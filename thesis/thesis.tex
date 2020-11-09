@@ -23,7 +23,7 @@
 \input{preamble/glossary}
 \input{preamble/tikzGraphs}
 
-\newcommand{\algname}{Nonlinear Gaussian Koopman}
+\newcommand{\algname}{Nonlinear Gaussian Koopman\xspace}
 
 
 
@@ -103,11 +103,12 @@
 
 	\cleardoublepage
 	\bibliography{literature/lit}
-	\nocite{*}
+	%\nocite{*}
 
 	\cleardoublepage
 	\appendix
-	\include{meta/appendix}
+	\include{appendix/nonlinear-gaussian-koopman-full-derivation}
+	\include{appendix/misc}
 	\chapter{Snippets}
 		\include{snippets/basics}
 		\include{snippets/cubature-rules}

@@ -36,7 +36,7 @@ that can equivalently be formulated as
 	\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
 	\vec{y}_t       &\sim \normal\big(\vec{g}(\vec{s}_t), \mat{R}\big)
 \end{align*}
-We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \emph{latent space} with dimensionality \(k\), \( \vec{y}_t \) the \emph{observation variables} or \emph{observations} in the \emph{observation space} with dimensionality \(p\), \( \vec{g} : \R^k \to \R^p \) the \emph{observation function} mapping latents to observations, \( \mat{A} \) the \emph{state dynamics matrix}, \( \mat{Q} \) the state covariance matrix and \( \mat{R} \) the observation covariance matrix.
+We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \emph{latent space} with dimensionality \(k\), \( \vec{y}_t \) the \emph{observation variables} or \emph{observations} in the \emph{observation space} with dimensionality \(p\), \( \vec{g} : \R^k \to \R^p \) the \emph{observation function} mapping latents to observations, \( \mat{A} \) the \emph{(state) dynamics matrix}, \( \mat{Q} \) the state covariance matrix and \( \mat{R} \) the observation covariance matrix.
 
 \begin{figure}
 	\centering
@@ -52,7 +52,93 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	% Summarize M-step equations.
 	% Combine ideas from ch. 2 (cubature and sqrt) and summarize.
 
-	\todo{NGK: Formulating and Solving}
+	%Instead of tackling the inference problem with some kind of \ac{vae}, we choose to use an \ac{em} algorithm as it requires less training because of putting more prior knowledge and assumptions into the model, like the Gaussian noise or the specific
+
+	We seek to find the matrices \(\mat{A}\), \(\mat{Q}\) and \(\mat{R}\) and the observation function \( \vec{g}_{\vec{\theta}}(\cdot) \), parameterized by \(\vec{\theta}\) and the initial state distribution \( \vec{s}_1 \sim \normal(\vec{m}_0, \mat{V}_0) \) that maximize the likelihood
+	\begin{equation*}
+		p(\vec{s}_{1:T}, \vec{y}_{1:T}) = p(\vec{s}_1) \prod_{t = 2}^{T} p(\vec{s}_t \given \vec{s}_{t - 1}) \prod_{t = 1}^{T} p(\vec{y}_t \given \vec{s}_t)
+	\end{equation*}
+	which factors over the conditional distributions due to the Markovian assumption. For brevity, we will keep the parameters \( \vec{\theta} \) of the observation function \( \vec{g}_{\vec{\theta}}(\cdot) \) implicit from now on. Subsequently, we can proceed by not maximizing the likelihood but the log-likelihood which is easier to maximize as the Gaussian lies in the exponential family, exhibiting a convex optimization problem\footnote{Strictly speaking, the optimization problem is only convex \ac{wrt} \(\mat{A}\) and \(\mat{Q}\). For \(\mat{R}\) and \(\vec{\theta}\), the problem is still non-convex, but numerically more stable as sums is easier to differentiate and to compute than products.}:
+	\begin{equation*}
+		\log p(\vec{s}_{1:T}, \vec{y}_{1:T}) = \log p(\vec{s}_1) + \sum_{t = 2}^{T} \log p(\vec{s}_t \given \vec{s}_{t - 1}) + \sum_{t = 1}^{T} \log p(\vec{y}_t \given \vec{s}_t)
+	\end{equation*}
+	Inserting the Gaussian distributions
+	\begin{equation*}
+		p(\vec{s}_1) = \normal(\vec{s}_1 \given \vec{m}_0, \mat{V}_0) \qquad\qquad
+		p(\vec{s}_t \given \vec{s}_{t - 1}) = \normal(\vec{s}_t \given \mat{A} \vec{s}_{t - 1}, \mat{Q}) \qquad\qquad
+		p(\vec{y}_t \given \vec{s}_t) = \normal\big(\vec{y}_t \given \vec{g}(\vec{s}_t), \mat{R}\big)
+	\end{equation*}
+	yields the log-likelihood
+	\begin{align*}
+		\log p(\vec{s}_{1:T}, \vec{y}_{1:T})
+			&= -\frac{T(k + p)}{2} \log(2\pi) - \frac{1}{2} \log \lvert \mat{V}_0 \rvert - \frac{T - 1}{2} \log \lvert \mat{Q} \rvert - \frac{T}{2} \log \lvert \mat{R} \rvert \\
+			&\qquad\qquad -\frac{1}{2} (\vec{s}_1 - \vec{m}_0)^T \mat{V}_0^{-1} (\vec{s}_1 - \vec{m}_0) \\
+			&\qquad\qquad -\frac{1}{2} \sum_{t = 2}^{T} (\vec{s}_t - \mat{A} \vec{s}_{t - 1})^T \mat{Q}^{-1} (\vec{s}_t - \mat{A} \vec{s}_{t - 1}) \\
+			&\qquad\qquad -\frac{1}{2} \sum_{t = 1}^{T} (\vec{y}_t - \vec{g}_t)^T \mat{R}^{-1} (\vec{y}_t - \vec{g}_t)
+	\end{align*}
+	with the abbreviation \( \vec{g}_t \coloneqq \vec{g}(\vec{s}_t) \).
+
+	But maximizing this quantity is impossible as we do not have the latent states \( \vec{s}_{1:T} \). Hence, as usual in \ac{em} \todo{see section xy}, we instead maximize the expected log-likelihood and estimate the latent states based on out previous guess for the state dynamics. These two steps form our E- and M-step of the \algname algorithm:
+	\begin{itemize}
+		\item E-Step: Estimate the latent states \( \vec{s}_{1:T} \).
+		\item M-Step: Maximize the expected log-likelihood \ac{wrt} the state dynamics and observation function parameters.
+	\end{itemize}
+	We will proceed with deriving the M-step and finish this section off by deriving the E-step. Please be aware that we only briefly touch the derivation here and focus on the important steps. See~\autoref{app:fullNgkDerivation} for the complete derivation with explanations throughout every step.
+
+	For the M-step, we first need the expected log-likelihood \( Q \coloneqq \E_{\vec{s}_{1:T}}\big[ p(\vec{s}_{1:T}, \vec{y}_{1:T}) \big] \) as stated previously. This quantity depends on three expectations that be estimate in the E-step:
+	\begin{align*}
+		\hat{\vec{s}}_{t \subgiven t_0}^{(n)}  & \coloneqq \E\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t_0}\Big]                             & \hat{\vec{s}}_{t \subgiven t_0}           & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t_0}^{(n)}  \\
+		\mat{P}_{t \subgiven t_0}^{(n)}        & \coloneqq \E\Big[\vec{s}_t^{(n)} \vec{s}_t^{(n), T} \bigggiven \vec{y}_{1:t_0}\Big]       & \mat{P}_{t \subgiven t_0}        & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t \subgiven t_0}^{(n)}        \\
+		\mat{P}_{t, t - 1 \subgiven t_0}^{(n)} & \coloneqq \E\Big[\vec{s}_t^{(n)} \vec{s}_{t - 1}^{(n), T} \bigggiven \vec{y}_{1:t_0}\Big] & \mat{P}_{t, t - 1 \subgiven t_0} & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t, t - 1 \subgiven t_0}^{(n)}
+	\end{align*}
+	These expectations are called the expected state, the self-correlation and the cross-correlation, respectively. We also silently introduced an upper index, \( \cdot^{(n)} \), which indicated which observation sequence our observation is from, because the algorithm can simultaneously learn on \(N\) observation sequences. For brevity, we may write \( \hat{\vec{s}}_t \) instead of \( \hat{\vec{s}}_{t \subgiven T} \) (analogous for all other values). Additionally, we have to define two quantities for the expectations of the nonlinear observation function \( \vec{g} \) that we cannot evaluate in closed form:
+	\begin{align*}
+		\hat{\vec{g}}_t^{(n)} &\coloneqq \E\Big[\vec{g}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big] \\
+		\mat{G}_t^{(n)}       &\coloneqq \E\Big[\vec{g}_t^{(n)} \vec{g}_t^{(n), T} \Biggiven \vec{y}_{1:T}\Big]
+	\end{align*}
+	We can now evaluate the expected log-likelihood depending on the above quantities using the trace-trick\footnote{The trace of a product of matrices/vectors is invariant under even permutations of the matrices/vectors within the trace.}, giving the following (enormous) quantity:
+	\begin{align*}
+		Q
+			&= \E_{\vec{s}_{1:T}}\big[ p(\vec{s}_{1:T}, \vec{y}_{1:T}) \big] \\
+			&= -\frac{NT(k + p)}{2} \ln(2\pi) - \frac{N}{2} \ln \lvert \mat{V}_0 \rvert - \frac{N(T - 1)}{2} \ln \lvert \mat{Q} \rvert - \frac{NT}{2} \ln \lvert \mat{R} \rvert \\
+			&\qquad\qquad -\frac{N}{2} \tr\!\Big( \mat{P}_1 \mat{V}_0^{-1} \Big) + \frac{N}{2} \tr\!\Big( \hat{\vec{s}}_1 \vec{m}_0^T \mat{V}_0^{-1} \Big) + \frac{N}{2} \tr\!\Big( \vec{m}_0 \hat{\vec{s}}_1^T \mat{V}_0^{-1} \Big) - \frac{N}{2} \tr\!\Big(\vec{m}_0 \vec{m}_0^T \mat{V}_0^{-1} \Big) \\
+			&\qquad\qquad -\frac{N}{2} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{P}_{t, t - 1} \mat{A}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t, t - 1} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t - 1} \mat{A}^T \mat{Q}^{-1} \Big) \\
+			&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \tr\!\Big( \vec{y}_t^{(n)} \vec{y}_t^{(n), T} \mat{R}^{-1} \Big) - \tr\!\Big( \vec{y}_t^{(n)} \hat{\vec{g}}_t^{(n), T} \mat{R}^{-1} \Big) - \tr\!\Big( \hat{\vec{g}}_t^{(n)} \vec{y}_t^{(n), T} \mat{R}^{-1} \Big) + \tr\!\Big( \mat{G}_t^{(n)} \mat{R}^{-1} \Big)
+	\end{align*}
+	By maximizing this quantity \ac{wrt} the dynamics matrix \(\mat{A}\), the covariance matrices \(\mat{Q}\) and \(\mat{R}\), the initial state mean \(\vec{m}_0\) and the initial state covariance \(\mat{V}_0\), \ac{ie} setting the derivative \ac{wrt} these parameters to zero and rearranging the equations, we get the closed-form solutions
+	\begin{align*}
+		\mat{A}^\new   &= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} \\
+		\mat{Q}^\new   &= \frac{1}{T - 1} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \\
+		\vec{m}_0^\new &= \hat{\vec{s}}_1 = \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_1^{(n)} \\
+		\mat{V}_0^\new &= \mat{P}_1 - \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \\
+		\mat{R}^\new   &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \vec{y}_t^{(n), T} - \hat{\vec{g}}_t^{(n)} \vec{y}_t^{(n), T} - \vec{y}_t^{(n)} \hat{\vec{g}}_t^{(n), T} + \mat{G}_t^{(n), T}
+	\end{align*}
+	where we assume an optimal \( \vec{g}(\cdot) \) for the last equation for \(\mat{R}\). To maximize the expected log-likelihood \ac{wrt} the observation function \( \vec{g} \), we choose a learnable function approximator, \ac{eg} a neural network and maximize \(Q\) using simple gradient descent or a more evolved optimizer like Adam~\cite{kingmaAdamMethodStochastic2017}. We should note that we do not need to fully maximize \(Q\) in every M-step but that it is enough to just get better in every M-step for the convergence properties to still hold~\cite{dempsterMaximumLikelihoodIncomplete1977a}.
+
+	We now turn to the problem of evaluating \( \hat{\vec{g}}_t^{(n)} \) and \( \mat{G}_t^{(n)} \). Instead of using Monte Carlo methods that are both very computationally expensive (especially as the gradient has to flow through the evaluation), we are employing the spherical-radial cubature rule that we have introduced in~\autoref{sec:cubatureRules}. That way, we can approximate the integrals both efficient and deterministically (as compared to Monte Carlo methods):
+	\begin{align}
+		\hat{\vec{g}}_t^{(n)} &= \int\! \vec{g}_t^{(n)} p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \dd{\vec{s}_{1:T}^{(n)}} \approx \SRC\Big[\vec{g};\, \hat{\vec{s}}_t^{(n)}, \mat{V}_t^{(n)}\Big]  \label{eq:ngkgeval} \\
+		\mat{G}_t^{(n)}       &= \int\! \vec{g}_t^{(n)} \vec{g}\vec{s}_t^{(n), T} p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T} \Big) \dd{\vec{s}_{1:T}^{(n)}} \approx \SRC\Big[\vec{g} \vec{g}^T;\, \hat{\vec{s}}_t^{(n)}, \mat{V}_t^{(n)}\Big]  \label{eq:ngkGeval}
+	\end{align}
+	This concludes the derivation of the M-step, where we do not have explicit formulas for the observation parameters \(\vec{\theta}\) as we do learn these using a numerical optimizer.
+
+	Deriving the E-step is quite straightforward given the groundwork we developed in~\autoref{sec:filteringSmoothing} and~\autoref{subsec:cubatureFiltering}. As we heavily employ cubature rules in the M-step (in fact, in every \ac{gd} iteration in the M-step), we chose to use a square-root Kalman filter and a square-root \ac{rts} smoother to directly get the Cholesky decomposition of the used covariance matrices. We apply~\autoref{alg:sqrtCubatureKalmanFilter} after afterwards~\autoref{alg:sqrtCubatureRtsSmoother} with the state dynamics function \( \vec{f} : \R^k \to \R^k : \vec{s} \mapsto \mat{A} \vec{s} \) and the observations function \( \vec{g}_{\vec{\theta}} \). Additionally to the covariances, we have to compute the self- and cross-correlation. Following~\cite{minkaHiddenMarkovModels1999}, they are given as
+	\begin{align*}
+		\mat{P}_t^{(n)} &= \hat{\mat{V}}_t^{(n)} - \hat{\vec{s}}_t^{(n)} \hat{\vec{s}}_t^{(n), T} \\
+		\mat{P}_{t, t - 1}^{(n)} &= \hat{\mat{J}}_{t - 1} \hat{\mat{V}}_t - \hat{\vec{s}}_{t}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T}
+	\end{align*}
+
+	The whole \algname algorithm is outline in~\autoref{alg:ngk}.
+
+	\begin{algorithm}  \DontPrintSemicolon
+		\KwData{\(N\) observation sequences \( \vec{y}_{1:T}^{(n)} \in \R^{p \times T} \).}
+		\textbf{Initialize} \(\mat{A}\), \(\mat{Q}\), \(\mat{R}\), \(\vec{m}_0\), \(\mat{V}_0\) and \(\vec{\theta}\) somehow (\ac{eg} identity matrices). \;
+		\While{not converged}{
+			\( \vec{s}_{1:T}^{(1:N)},\, \mat{V}_{1:T} \) % TODO: Stopped here.
+		}
+		\caption{\algname}
+		\label{alg:ngk}
+	\end{algorithm}
 % end
 
 \section{Implementation}
