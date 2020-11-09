@@ -1,4 +1,4 @@
-\documentclass[class = report]{tudapub}
+\documentclass[class=report, customborders=false, marginpar=false]{tudapub}
 
 % Include preamble to not clutter this file.
 \input{preamble/packages}
@@ -6,8 +6,7 @@
 \input{preamble/tikzGraphs}
 
 \begin{document}
-	\begin{figure}
-		\centering
-		\tikzPredictionFilteringSmoothing
-	\end{figure}
+	\begin{center}
+		\tikzNonlinearGaussianKoopman
+	\end{center}
 \end{document}

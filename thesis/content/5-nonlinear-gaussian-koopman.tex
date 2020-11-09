@@ -4,16 +4,49 @@
 
 
 
-\todo{NGK}
+In this chapter we will introduce out contribution and the theoretical background of the \algname algorithm that we will implement as a proof of concept in~\autoref{c:experiments}. We will start by introducing the ideas that lead to the idea, then formulate and also solve the arising (approximate) inference problem.
 
-\section{Relation of HMMs, LGDS and Koopman Dynamical Systems}
-	% Show nice images, or reference them from ch. 2.
-	% They make the underlying idea of the thesis quite obvious.
+By looking at the graphical model for an \ac{lgds} and the state transition model for a Koopman dynamical system in~\autoref{fig:lgdsKoopmanRelation}, we can see that there are lots of similarities. The first and most interesting similarity is that both systems assume a latent state that transitions linearly, either with a state dynamics matrix \(\mat{A}\) for the \ac{lgds} or with the Koopman operator\footnote{From now on, we assume a finite-dimensional matrix approximation \(\mat{K}\) of the Koopman operator \(\mathcal{K}\).} \(\mat{K}\). The greatest difference is that measurements in classic \ac{lgds} are taken linearly with an observation matrix \( \mat{C} \) and nonlinear in the Koopman system with the measurement function \( \vec{h}(\cdot) \).
 
-	\todo{NGK: Relation of HMM, LGDS, Koopman}
-% end
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.5\linewidth}
+		\centering
+		\resizebox{\linewidth}{!}{\tikzLinearGaussianDynamicalSystem}
+		\caption{Graphical model of a linear Gaussian dynamical system with the latent state \(\vec{s}_t\) and the (linear) observations \(\vec{y}_t\). In contrast to the Koopman system, this system is not deterministic and the arrows represent probabilistic dependency rather than hard transitions.}
+	\end{subfigure}%
+	\begin{subfigure}[t]{0.5\linewidth}
+		\centering
+		\resizebox{\linewidth}{!}{\tikzKoopmanOperator}
+		\caption{State transition model of a Koopman dynamical system with the Koopman operator \( \mathcal{K} \) that can be approximated with a matrix \(\mat{K}\). In contrast to the \ac{lgds}, the state is represented via nonlinear transitions and the observations are the linear dynamics. \\ Adopted from~\cite{bruntonKoopmanInvariantSubspaces2016}.}
+	\end{subfigure}
+	\caption{Side-by-side comparison of the a \ac{lgds} on the left and a Koopman dynamical system on the right. This side-by-side view highlights our idea of interpreting an Koopman system as a semi-linear dynamical system (\ac{ie} an \ac{lgds} with nonlinear observations).}
+	\label{fig:lgdsKoopmanRelation}
+\end{figure}
 
-\section{Formulating and Solving the Nonlinear Approximate Inference Problem using an Approximate EM Algorithm}
+Our idea is to "flip" the Koopman dynamical system and replace the observation matrix \( \mat{C} \) with a nonlinear observation function \( \vec{g}(\cdot) \), that takes the linear states \( \vec{s}_t \) and maps them into a nonlinear observation space \( \vec{y}_t \). In other words, we seek to find the inverse function of \( \vec{h}(\cdot) \) to map out of the linear embedding that Koopman theory guarantees us to exist. Our belief that such an inverse function exists is backed by previous accomplishments in data-driven Koopman analysis~\cite{luschDeepLearningUniversal2018} that also seek and find such an inverse mapping (see~\ref{c:relatedWork} for more information).
+
+Additionally, we contribute a probabilistic view on the Koopman operator, being able to gauche our uncertainty about the embedding and the inverse mapping to the observation space. Speaking of the observation space, this is a good point to clear up chaos of notation and names that builds up when working with two systems where "observation" means contrary concepts. From now on, we will work on the graphical system shown in~\autoref{fig:nonlinearGaussianKoopman} characterized by the dynamics
+\begin{align*}
+	\vec{s}_{t + 1} &= \eqmakebox[ngkIntro][l]{\( \mat{A} \vec{s}_t + \vec{w}_t,\quad \vec{w}_t \)} \sim \normal(\vec{0}, \mat{Q}) \\
+	\vec{y}_t       &= \eqmakebox[ngkIntro][l]{\( \vec{g}(\vec{s}_t) + \vec{v}_t,\quad \vec{v}_t \)} \sim \normal(\vec{0}, \mat{R})
+\end{align*}
+that can equivalently be formulated as
+\begin{align*}
+	\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
+	\vec{y}_t       &\sim \normal\big(\vec{g}(\vec{s}_t), \mat{R}\big)
+\end{align*}
+We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \emph{latent space} with dimensionality \(k\), \( \vec{y}_t \) the \emph{observation variables} or \emph{observations} in the \emph{observation space} with dimensionality \(p\), \( \vec{g} : \R^k \to \R^p \) the \emph{observation function} mapping latents to observations, \( \mat{A} \) the \emph{state dynamics matrix}, \( \mat{Q} \) the state covariance matrix and \( \mat{R} \) the observation covariance matrix.
+
+\begin{figure}
+	\centering
+	\tikzNonlinearGaussianKoopman
+	\caption{The graphical model of the \algname model. Given an observation sequence \( \vec{y}_{1:T} \), we seek the latent dynamics and the corresponding nonlinear mapping \( \vec{g}(\cdot) \) from the latent space to the observations.}
+	\label{fig:nonlinearGaussianKoopman}
+\end{figure}
+
+%\section{Formulating and Solving the Nonlinear Approximate Inference Problem using an Approximate EM Algorithm}
+\section{Formulating and Solving the Inference Problem using an EM Algorithm}
 	% Formulate likelihood, expected likelihood.
 	% Shortly outline how to do the derivation and reference appendix.
 	% Summarize M-step equations.

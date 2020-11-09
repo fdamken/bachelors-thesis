@@ -40,6 +40,12 @@
 		\node [minimum width = 1cm, minimum height = 1cm, below = 1 of yD] (xD) {\(\cdots\)};
 		\node [state, below = 1 of yT] (xT) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,T}}\)}};
 
+		% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
+		\coordinate [left = 0.5 of x1] (needle1);
+		\coordinate [right = 0.5 of xT] (needle2);
+		\draw [opacity = 0] (needle1) -- (x1);
+		\draw [opacity = 0] (needle2) -- (xT);
+
 		\draw (y1) -- node[above]{\(\mathcal{K}\)} (y2);
 		\draw (y2) -- node[above]{\(\mathcal{K}\)} (y3);
 		\draw (y3) -- node[above]{\(\mathcal{K}\)} (yD);
@@ -50,15 +56,15 @@
 		\draw (x3) -- node[below]{\(\vec{F}\)} (xD);
 		\draw (xD) -- node[below]{\(\vec{F}\)} (xT);
 
-		\draw (y1) to[bend right = 15] node[left]{\(\vec{g}\)} (x1);
-		\draw (y2) to[bend right = 15] node[left]{\(\vec{g}\)} (x2);
-		\draw (y3) to[bend right = 15] node[left]{\(\vec{g}\)} (x3);
-		\draw (yT) to[bend right = 15] node[left]{\(\vec{g}\)} (xT);
+		\draw (y1) to[bend right = 15] node[left]{\(\vec{h}\)} (x1);
+		\draw (y2) to[bend right = 15] node[left]{\(\vec{h}\)} (x2);
+		\draw (y3) to[bend right = 15] node[left]{\(\vec{h}\)} (x3);
+		\draw (yT) to[bend right = 15] node[left]{\(\vec{h}\)} (xT);
 
-		\draw [dashed] (x1) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (y1);
-		\draw [dashed] (x2) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (y2);
-		\draw [dashed] (x3) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (y3);
-		\draw [dashed] (xT) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (yT);
+		\draw [dashed] (x1) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y1);
+		\draw [dashed] (x2) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y2);
+		\draw [dashed] (x3) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y3);
+		\draw [dashed] (xT) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (yT);
 	\end{tikzpicture}
 }
 
@@ -74,6 +80,12 @@
 		\node [state, below = 1 of s2] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
 		\node [state, below = 1 of s3] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
 		\node [state, below = 1 of sT] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+		% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
+		\coordinate [left = 0.5 of s1] (needle1);
+		\coordinate [right = 0.5 of sT] (needle2);
+		\draw [opacity = 0] (needle1) -- (s1);
+		\draw [opacity = 0] (needle2) -- (sT);
 
 		\draw (s1) -- (s2);
 		\draw (s2) -- (s3);
@@ -100,6 +112,12 @@
 		\node [state, below = 1 of x3] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
 		\node [state, below = 1 of xT] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
 
+		% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
+		\coordinate [left = 0.5 of x1] (needle1);
+		\coordinate [right = 0.5 of xT] (needle2);
+		\draw [opacity = 0] (needle1) -- (x1);
+		\draw [opacity = 0] (needle2) -- (xT);
+
 		\draw (x1) -- node[above]{\(\mat{A}\)} (x2);
 		\draw (x2) -- node[above]{\(\mat{A}\)} (x3);
 		\draw (x3) -- node[above]{\(\mat{A}\)} (xD);
@@ -110,6 +128,37 @@
 		\draw (x3) -- node[left]{\(\mat{C}\)} (y3);
 		\draw (xT) -- node[left]{\(\mat{C}\)} (yT);
 	\end{tikzpicture}
+}
+
+\newcommand{\tikzNonlinearGaussianKoopman}{
+\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
+	\node [state]                  (x1) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,1}}\)}};
+	\node [state, right = 1 of x1] (x2) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,2}}\)}};
+	\node [state, right = 1 of x2] (x3) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,3}}\)}};
+	\node [minimum width = 1cm, minimum height = 1cm, right = 1 of x3] (xD) {\(\cdots\)};
+	\node [state, right = 1 of xD] (xT) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,T}}\)}};
+
+	\node [state, below = 1 of x1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+	\node [state, below = 1 of x2] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+	\node [state, below = 1 of x3] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+	\node [state, below = 1 of xT] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+	% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
+	\coordinate [left = 0.5 of x1] (needle1);
+	\coordinate [right = 0.5 of xT] (needle2);
+	\draw [opacity = 0] (needle1) -- (x1);
+	\draw [opacity = 0] (needle2) -- (xT);
+
+	\draw (x1) -- node[above]{\(\mat{A}\)} (x2);
+	\draw (x2) -- node[above]{\(\mat{A}\)} (x3);
+	\draw (x3) -- node[above]{\(\mat{A}\)} (xD);
+	\draw (xD) -- node[above]{\(\mat{A}\)} (xT);
+
+	\draw (x1) -- node[left]{\(\vec{g}(\cdot)\)} (y1);
+	\draw (x2) -- node[left]{\(\vec{g}(\cdot)\)} (y2);
+	\draw (x3) -- node[left]{\(\vec{g}(\cdot)\)} (y3);
+	\draw (xT) -- node[left]{\(\vec{g}(\cdot)\)} (yT);
+\end{tikzpicture}
 }
 
 % #1 := Optional TikZ style arguments.

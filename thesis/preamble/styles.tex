@@ -1,5 +1,12 @@
 \makeatletter
 
+% Make LOA a section.
+\newcommand{\listalgorithmname}{List of Algorithms}
+\renewcommand\listofalgorithms{
+	\section*{\listalgorithmname}
+	\@mkboth{\MakeUppercase\listalgorithmname}{\MakeUppercase\listalgorithmname}
+	\@starttoc{loa}
+}
 % Make LOF a section.
 \renewcommand\listoffigures{
 	\section*{\listfigurename}
