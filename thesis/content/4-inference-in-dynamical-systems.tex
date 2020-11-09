@@ -297,19 +297,21 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 				\eqmakebox[sqrtckf][r]{\( \vec{y}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2k} \sum_{i = 1}^{2k} \mat{\mathcal{X}}_{t \subgiven t - 1, i}^y \) \;
 				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^s \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^s - \vec{s}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
 				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^y \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^y - \vec{y}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
-				Find \( \mat{S}_t^{1/2} \), \( \mat{J}_t \) and \( \mat{P}_{t \subgiven t}^{1/2} \) using the QR decomposition: \\
-				\quad \(
-					\begin{bmatrix}
-						\mat{\mathcal{Y}}_{t \subgiven t - 1}^y \\
-						\mat{\mathcal{Y}}_{t \subgiven t - 1}^s
-					\end{bmatrix}
-					\mat{\Theta}
-					=
-					\begin{bmatrix}
-						\mat{S}_t^{1/2} & \mat{O} & \mat{O} \\
-						\mat{J}_t       & \mat{P}_{t \subgiven t}^{1/2} & \mat{O}
-					\end{bmatrix}
-				\) \;
+				\begin{minipage}{\linewidth}
+					Find \( \mat{S}_t^{1/2} \), \( \mat{J}_t \) and \( \mat{P}_{t \subgiven t}^{1/2} \) using the QR decomposition: \\
+					\null\hspace{1cm} \(
+						\begin{bmatrix}
+							\mat{\mathcal{Y}}_{t \subgiven t - 1}^y \\
+							\mat{\mathcal{Y}}_{t \subgiven t - 1}^s
+						\end{bmatrix}
+						\mat{\Theta}
+						=
+						\begin{bmatrix}
+							\mat{S}_t^{1/2} & \mat{O} & \mat{O} \\
+							\mat{J}_t       & \mat{P}_{t \subgiven t}^{1/2} & \mat{O}
+						\end{bmatrix}
+					\)
+				\end{minipage} \; \vspace{-0.5cm}
 				\eqmakebox[sqrtckf][r]{\( \mat{K}_t \gets \)} \( \mat{J}_t \mat{S}_t^{-1/2} \) \;
 				\eqmakebox[sqrtckf][r]{\( \vec{s}_{t \subgiven t} \gets \)} \( \vec{s}_{t \subgiven t - 1} + \mat{K}_t (\vec{y}_t - \vec{y}_{t \subgiven t - 1}) \) \;
 			}
@@ -317,36 +319,40 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 			\label{alg:sqrtCubatureKalmanFilter}
 		\end{algorithm}
 
-		\begin{algorithm}
+		\begin{algorithm}  \DontPrintSemicolon
 			\KwData{All values from the Kalman filter.}
 			\For{\( t = T - 1, T - 2, \rangedots, 1 \)}{
 				\eqmakebox[sqrtcrts][r]{\( \mat{\mathcal{Y}}_{t \subgiven t, i}^s \gets \)} \( (\mat{\mathcal{X}}_{t \subgiven t, i} - \vec{s}_{t \subgiven t}) \) \;
-				Find \( \mat{D}_t \) and \( \mat{Z}_t \) using the QR decomposition: \\
-				\quad \(
-					\begin{bmatrix}
-						\mat{\mathcal{Y}}_{t + 1 \subgiven t}^s \\
-						\mat{\mathcal{Y}}_{t \subgiven t}^s
-					\end{bmatrix}
-					\mat{\Theta}
-					=
-					\begin{bmatrix}
-						\mat{P}_{t + 1 \subgiven t}^{1/2} & \mat{O}   & \mat{O} \\
-						\mat{D}_t                         & \mat{Z}_t & \mat{O}
-					\end{bmatrix}
-				\) \;
+				\begin{minipage}{\linewidth}
+					Find \( \mat{D}_t \) and \( \mat{Z}_t \) using the QR decomposition: \\
+					\null\hspace{1cm} \(
+						\begin{bmatrix}
+							\mat{\mathcal{Y}}_{t + 1 \subgiven t}^s \\
+							\mat{\mathcal{Y}}_{t \subgiven t}^s
+						\end{bmatrix}
+						\mat{\Theta}
+						=
+						\begin{bmatrix}
+							\mat{P}_{t + 1 \subgiven t}^{1/2} & \mat{O}   & \mat{O} \\
+							\mat{D}_t                         & \mat{Z}_t & \mat{O}
+						\end{bmatrix}
+					\)
+				\end{minipage} \; \vspace{-0.5cm}
 				\eqmakebox[sqrtcrts][r]{\( \mat{J}_t \gets \)} \( \mat{D}_t \mat{P}_{t + 1 \subgiven t}^{-1/2} \) \;
 				\eqmakebox[sqrtcrts][r]{\( \vec{s}_{t \subgiven T} \gets \)} \( \vec{s}_{t \subgiven t} + \mat{J}_t (\vec{s}_{t + 1 \subgiven T} - \vec{s}_{t + 1 \subgiven t}) \) \;
-				Find \( \mat{P}_{t \subgiven T}^{1/2} \) using the QR decomposition: \\
-				\quad \(
-					\begin{bmatrix}
-						\mat{Z}_t & \mat{J}_t \mat{P}_{t + 1 \subgiven T}^{1/2}
-					\end{bmatrix}
-					\mat{\Theta}
-					=
-					\begin{bmatrix}
-						\mat{P}_{t \subgiven T}^{1/2} & \mat{O}
-					\end{bmatrix}
-				\)
+				\begin{minipage}{\linewidth}
+					Find \( \mat{P}_{t \subgiven T}^{1/2} \) using the QR decomposition: \\
+					\null\hspace{1cm} \(
+						\begin{bmatrix}
+							\mat{Z}_t & \mat{J}_t \mat{P}_{t + 1 \subgiven T}^{1/2}
+						\end{bmatrix}
+						\mat{\Theta}
+						=
+						\begin{bmatrix}
+							\mat{P}_{t \subgiven T}^{1/2} & \mat{O}
+						\end{bmatrix}
+					\)
+				\end{minipage} \; \vspace{-0.5cm}
 			}
 			\caption{Square-Root Cubature Rauch-Tung-Striebel Smoother}
 			\label{alg:sqrtCubatureRtsSmoother}
