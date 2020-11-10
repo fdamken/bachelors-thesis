@@ -9,4 +9,23 @@
 	\begin{center}
 		\tikzNonlinearGaussianKoopman
 	\end{center}
+	\begin{algorithm}  \DontPrintSemicolon
+		\KwData{\(N\) observation sequences \( \vec{y}_{1:T}^{(n)} \in \R^{p \times T} \).}
+		\textbf{Initialize} \(\mat{A}\), \(\mat{Q}\), \(\mat{R}\), \(\vec{m}_0\), \(\mat{V}_0\) and \(\vec{\theta}\) somehow (for example identity matrices). \;
+		\While{not converged}{
+			\tcp{\textbf{E-Step:}}
+			\( \displaystyle \vec{s}_{1:T}^{(1:N)},\, \hat{\mat{V}}_{1:T} \gets \text{RTS-Smoother} \) \;
+			\eqmakebox[ngkestep][r]{\( \displaystyle \mat{P}_t^{(n)} \gets \)} \( \displaystyle \hat{\mat{V}}_t^{(n)} - \hat{\vec{s}}_t^{(n)} \hat{\vec{s}}_t^{(n), T} \) for \( t = 1, 2, \rangedots T \) and \( n = 1, 2, \rangedots, N \) \;
+			\eqmakebox[ngkestep][r]{\( \displaystyle \mat{P}_{t, t - 1}^{(n)} \gets \)} \( \displaystyle \hat{\mat{J}}_{t - 1} \hat{\mat{V}}_t - \hat{\vec{s}}_{t}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T} \) for \( t = 2, 3, \rangedots T \) and \( n = 1, 2, \rangedots, N \) \;
+			\tcp{\textbf{M-Step:}}
+			\eqmakebox[ngkmstep][r]{\( \displaystyle \vec{\theta} \gets \)} \( \text{GD}\big(Q(\vec{\theta})\big) \) \;
+			\eqmakebox[ngkmstep][r]{\( \displaystyle \mat{R} \gets \)} \( \displaystyle \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \vec{y}_t^{(n), T} - \hat{\vec{g}}_t^{(n)} \vec{y}_t^{(n), T} - \vec{y}_t^{(n)} \hat{\vec{g}}_t^{(n), T} + \mat{G}_t^{(n), T} \) \;
+			\eqmakebox[ngkmstep][r]{\( \displaystyle \mat{A} \gets \)} \( \displaystyle \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} \) \;
+			\eqmakebox[ngkmstep][r]{\( \displaystyle \mat{Q} \gets \)} \( \displaystyle \frac{1}{T - 1} \Bigg(\! \sum_{t = 2}^{T} \mat{P}_t - \mat{A}^\new \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \) \;
+			\eqmakebox[ngkmstep][r]{\( \displaystyle \vec{m}_0 \gets \)} \( \displaystyle \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_1^{(n)} \) \;
+			\eqmakebox[ngkmstep][r]{\( \displaystyle \mat{V}_0 \gets \)} \( \displaystyle \mat{P}_1 - \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \) \;
+		}
+		\caption{TODO}
+		\label{alg:ngk}
+	\end{algorithm}
 \end{document}
