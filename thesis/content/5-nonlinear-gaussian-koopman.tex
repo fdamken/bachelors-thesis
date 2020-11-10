@@ -156,13 +156,50 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	% Find reasons why and explain difficulties with learning from multiple observation sequences at once.
 	% Highlight more performant QR decomposition on the GPU.
 
-	\todo{NGK: Implementation}
+	We implemented the \algname algorithm in Python using the popular array processing library NumPy~\cite{harrisArrayProgrammingNumPy2020} throughout the whole implementation, the deep learning library PyTorch~\cite{paszkePyTorchImperativeStyle2019} for the numerical optimization of \(\vec{\theta}\) and Sacred~\cite{greffSacredInfrastructureComputational2017} for experiment management. The whole implementation can be found on GitHub\footnote{See \href{https://github.com/fdamken/bachelors-thesis_code}{\texttt{https://github.com/fdamken/bachelors-thesis\_code}}.}.
 
-	\subsection{Problems and Solutions}
-		\todo{Impl: Problems}
+	During the implementation we focused on making the algorithm as reusable as possible, separating all data generation and investigation code from the actual implementation. Separating the data generation also has the advantage that we can run benchmarks on the exact same data to compare model performance. We have separated the optimization of \(\vec{\theta}\) as much as possible (as outlined in~\autoref{alg:ngk}) and made it possible for the user of the algorithm to easily change the optimization algorithm to use in conjunction with the parameters of the algorithm like the learning rate (defaulting to Adam~\cite{kingmaAdamMethodStochastic2017} with a learning rate of \( 0.01 \)). We also made all of the following configurable:
+	\begin{itemize}
+		\item Whether to perform whitening of the observation data or not. That is, if we perform whitening, we normalize and standardize the training observations beforehand using \( \hat{\vec{y}}_{1:T, i} = (\vec{y}_{1:T, i} - \bar{\vec{y}}_i) / \sigma_{y_i} \) where \( \bar{\vec{y}}_i \) is the mean and \( \sigma_{y_i} \) is the standard deviation of the \(i\)-th component of all measurements. Doing the whitening first sometimes improves the performance as we will see in~\ref{c:experiments}.
+		\item The convergence precision, \ac{ie} how much the log-likelihood has to change in order to continue the \ac{em} iterations. We will see that, due to numerical instabilities and approximation errors in the cubature rules, the algorithm rarely really converges before becoming numerically unstable.
+		\item That is why we also made the maximum number of iterations configurable to support \emph{early stopping}. Once the algorithm performed these number of \ac{em} iterations, it will abort and report the results.
+		\item Similarly it is possible to configure the convergence precision and maximum number of iterations for the subsequent optimization of \(\vec{\theta}\).
+	\end{itemize}
+	These are only the parameters that can be configured directly on the \ac{em} algorithm, but the user is also able to specify how to initialize everything, \ac{ie} the matrices \( \mat{A} \), \( \mat{Q} \), \( \mat{R} \), \( \mat{V}_0 \), \( \vec{m}_0 \) and the parameters \( \vec{\theta} \) of the observation function \( \vec{g}_{\vec{\theta}} \). Speaking of the observation function, we used a neural network with \( \tanh \) activation function and a single hidden layer for all experiments (see~\autoref{c:experiments} for more information about the experiment setup). We made it also possible to pass arbitrary Torch modules as the function approximator that can be learned via a \ac{gd}-like algorithm (\ac{ie} they must be differentiable and expose parameters).
+
+	For learning multiple observation sequences, as outlined in the derivation of the \algname algorithm in~\autoref{c:nonlinearGaussianKoopman}, it turns out to be useful to add noise to the training data which has the effect of regularizing the algorithm a bit. This effect is visible in smoother log-likelihood curves as we will see in~\autoref{c:experiments}.
+
+	\subsection{Insights, Problems and Solutions}
+		In this section we will focus on interesting insights and problems we found during the implementation and how to (possibly) solve them.
+
+		\subsubsection{Slow QR Decomposition on GPU}
+			During our implementation we found found that QR decomposition is relatively slow on the \ac{gpu} due to a bug in PyTorch\footnote{See \href{https://web.archive.org/web/20201110121407/https://github.com/pytorch/pytorch/issues/22573}{\texttt{https://github.com/pytorch/pytorch/issues/22573}}.} at the time of writing. While faster QR decomposition methods on a \ac{gpu} have been proposed~\cite{andersonCommunicationAvoidingQRDecomposition2011a}, we stuck to copying the data back and forth between \ac{cpu} and \ac{gpu} in every \ac{em} iteration.
+		% end
+
+		\subsubsection{Diagonal Covariance}
+			As we assumed the noise to be independent\todo{Include that assumption in the theoretical section!}, we can safely omit the non-diagonal entries of the covariance \( \mat{Q} \), \( \mat{R} \) and \( \mat{V}_0 \). That way we further reduce the computational overhead that would other wise be generated as we still (even with square-root filtering) have to compute the Cholesky decomposition of \( \mat{Q} \) and \( \mat{R} \). We can now just take the square-root of the diagonal entries and get the Cholesky decomposition around ten times faster\todo{Cite something or add experiment?}.
+
+			% >>> As = [np.diag(np.random.random(size=(1000,)) ** 2) for n in range(1000)]
+			% >>> timeit.timeit(lambda: [np.linalg.cholesky(A) for A in As], number=10)
+			% 50.62359843800368
+			% >>> timeit.timeit(lambda: [np.diag(np.sqrt(np.diag(A))) for A in As], number=10)
+			% 4.582914652011823
+			% >>> 50.62359843800368 / 4.582914652011823
+			% 11.046157801734486
+		% end
+
+		\subsubsection{Regularization and Learning Cholesky Decompositions}
+			There are also a few points where our code is extensible to make it faster, improve numerical stability and so on (see also~\autoref{sec:futureWork}). The main points are regularization and/or learning the Cholesky decomposition directly.
+
+			As we will see in~\autoref{c:experiments}, having singular and non-positive definite matrices is a big problem that should be assessed. We already implemented the square-root smoothing that increased the numerical stability through the smoothing by not allowing non-positive definite matrices to be produced by the smoothing at all (as we directly learn the Cholesky decomposition). Additional regularization might make sense at the computation of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\). Another approach would be to learn the Cholesky decomposition of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\) directly by replacing the explicit formulas with a \ac{gd} algorithm that directly learn the Cholesky or the square-root diagonal. As the optimization problem is still convex\todo{This is a hot take.}, finding the global optimum should be easily possible.
+
+			However we sadly did not have more time to look into this idea.
+		% end
 	% end
 
-	\subsection{Notes on Numerical Stability}
-		\todo{Impl: Numerical Stability}
+	\subsection{Hyperparameters}
+		One of the largest hyperparameter with high influence is obviously the architectural choice for \( \vec{g}_{\vec{\theta}} \). As it turns out, even simple models like a single hidden layer produce good results as we will see in~\autoref{c:experiments} and~\autoref{c:dicussion}. A \( \tanh \) activation function turns out to be really suitable as it produces smooth results compared to \ac{eg} a step function or \ac{relu}. The other high-influence hyperparameter is the dimensionality \(k\) of the latent space, \ac{ie} how many dimensions the Koopman operator has to build up a linear system that, taking the observations, behaves the same as the original nonlinear system. We will further investigate into the dependence on this hyperparameter in~\autoref{subsec:experimentLatentDim}.
+
+		On the same page is the maximum number of iterations in the numerical optimization of \( \vec{\theta} \). High maximum iterations seem to lead to overfitting on the neural network, causing the whole algorithm to not generalize well. On the other hand, too less iterations do not raise the likelihood enough to get reasonable results.
 	% end
 % end
