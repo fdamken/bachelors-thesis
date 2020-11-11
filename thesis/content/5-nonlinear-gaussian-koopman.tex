@@ -152,9 +152,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 % end
 
 \section{Implementation}
-	% Discuss training tricks (max. iterations and stuff).
-	% Find reasons why and explain difficulties with learning from multiple observation sequences at once.
-	% Highlight more performant QR decomposition on the GPU.
+	\label{sec:implementation}
 
 	We implemented the \algname algorithm in Python using the popular array processing library NumPy~\cite{harrisArrayProgrammingNumPy2020} throughout the whole implementation, the deep learning library PyTorch~\cite{paszkePyTorchImperativeStyle2019} for the numerical optimization of \(\vec{\theta}\) and Sacred~\cite{greffSacredInfrastructureComputational2017} for experiment management. The whole implementation can be found on GitHub\footnote{See \href{https://github.com/fdamken/bachelors-thesis_code}{\texttt{https://github.com/fdamken/bachelors-thesis\_code}}.}.
 
