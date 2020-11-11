@@ -13,6 +13,13 @@
 	\@mkboth{\MakeUppercase\listfigurename}{\MakeUppercase\listfigurename}
 	\@starttoc{lof}
 }
+% Make LOL a section.
+\newcommand{\listlistingname}{List of Listings}
+\newcommand\listoflistings{
+	\section*{\listlistingname}
+	\@mkboth{\MakeUppercase\listfigurename}{\MakeUppercase\listfigurename}
+	\@starttoc{lol}
+}
 % Make LOT a section.
 \renewcommand\listoftables{
 	\section*{\listtablename}
@@ -69,7 +76,6 @@
 \newcommand{\doublefootnotetext}[2]{\addtocounter{footnote}{-1} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2}}
 \newcommand{\triplefootnotetext}[3]{\addtocounter{footnote}{-2} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2} \stepcounter{footnote} \footnotetext{#3}}
 
-\renewcommand{\arraystretch}{1.5}
 \parindent0pt
 
 % Definitions, Theorems and Lemmata.
@@ -110,6 +116,7 @@
 	breakatwhitespace = true,
 	breaklines        = true,
 	breakautoindent   = true,
+	captionpos        = b,
 	commentstyle      = \color{lstcomments},
 	escapeinside      = {{*@}{@*}},
 	keywordstyle      = \color{lstkeywords},

@@ -16,13 +16,66 @@
 \newcommand{\tikzSimplePendulum}{
 	\begin{tikzpicture}
 		\node [draw, circle, fill, minimum width = 0.5cm] (C) at (0, 0) {};
-		\node [draw, circle] (mass) at (120:3cm) {\(m\)};
+		\node [draw, circle] (mass) at (90-30:3cm) {\(m\)};
 		\coordinate (A) at (90:3cm);
-		\draw (C) -- node[left]{\(L\)} (mass);
+		\draw (C) -- coordinate(cm) (mass);
+		\path (cm) -- node[right]{\(\ell_1\)} (mass);
 		\draw [dashed] (C) -- (A);
-		\draw pic [draw, "$\varphi$", angle radius = 1.5cm] {angle=A--C--mass};
+		\draw pic [draw, "$\varphi$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=mass--C--A};
 
-		\draw [<-] (0.5, 1) -- node[right]{\(g\)} (0.5, 2);
+		\draw [<-] (-0.5, 1) -- node[left]{\(g\)} (-0.5, 2);
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzDoublePendulum}{
+	\begin{tikzpicture}
+		\def\L{3};
+		\node [draw, circle, fill, minimum width = 0.5cm] (C) at (0, 0) {};
+		\node [draw, circle] (mass1) at (270+20:\L) {\(m_{\mathclap{\,\,1}}\)};
+		\coordinate (A) at (270:\L);
+		\draw (C) -- coordinate(cm1) (mass1);
+		\path (cm1) -- node[right]{\(\ell_1\)} (mass1);
+		\draw [dashed] (C) -- (A);
+		\draw pic [draw, "$\,\varphi_1$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=A--C--mass1};
+
+		\draw [<-] (-0.5, -2) -- node[left]{\(g\)} (-0.5, -1);
+
+		\begin{scope}[rotate=300, shift=(mass1)]
+			\coordinate (B) at (0:\L);
+			\node [draw, circle] (mass2) at (30:\L) {\(m_{\mathclap{\,\;2}}\)};
+			\draw (mass1) -- coordinate(cm2) (mass2);
+			\path (cm2) -- node[right, yshift = 2pt]{\(\ell_2\)} (mass2);
+			\draw [dashed] (mass1) -- (B);
+			\draw pic [draw, "$\,\varphi_2$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=B--mass1--mass2};
+		\end{scope}
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzCartpole}{
+	\begin{tikzpicture}
+		\coordinate (cartTopLeft);
+		\draw [fill] (cartTopLeft) rectangle coordinate(C) ++(1.5, 0.5);
+		\coordinate [above = 3 of C] (A);
+		\draw [dashed] (C) -- (A);
+		\coordinate [left = 4 of C] (a);
+		\coordinate [right = 4 of C] (b);
+		\draw (a) -- (b);
+
+		\draw [<-] (0.25, 1.5) -- node[left]{\(g\)} (0.25, 2.5);
+
+		\coordinate [below = 0.5 of C] (xInd);
+		\coordinate [above = 0.1 of xInd] (xIndA);
+		\coordinate [below = 0.1 of xInd] (xIndB);
+		\draw (xIndA) -- (xIndB);
+		\coordinate [right = 0.75 of xInd] (xInd2);
+		\draw [->] (xInd) -- node[below, xshift = -1pt]{\(x\)} (xInd2);
+
+		\begin{scope}[shift=(C)]
+			\coordinate (mass) at (90-30:3);
+			\draw [line width = 1mm] (C) -- coordinate(cm) (mass);
+			\path (cm) -- node[right, yshift=-2pt]{\(L\)} (mass);
+			\draw pic [draw, "$\theta$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=mass--C--A};
+		\end{scope}
 	\end{tikzpicture}
 }
 
