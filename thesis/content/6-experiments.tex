@@ -341,7 +341,13 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\item The \emph{rollout}, starting both from the learned initial value as well as from the last smoothed state. While the former visualizes the ability of the model to work completely "on its own", the latter shows how well the linear dynamics generalize beyond the training data.
 		\item And of course the confidence (\ac{ie} the learned variance) around each trajectory.
 	\end{itemize}
-	For quantitative comparison, we focus on the \ac{rmse} across all dimensions and time steps, where we can compute four different error values: The error over the rollout from start to finish (\( t = 1, 2, \rangedots, T \)), over the training data only (\( t = 1, 2, \rangedots, T_\train \)), over the prediction only (\( t = T_\train, T_\train + 1, \rangedots, T \)) or over the smoothed trajectory (\ac{ie} the results from the E-step, \(  \hat{\vec{s}}_{1:T} \)). The latter primarily checks that our algorithm performs correct and that it is even capable of learning the dynamics and it should be near zero or at least below one for a decent parameter choice and model performance. On the other hand, the \ac{rmse} over the complete rollout describes the generalization abilities. In conjunction with the rollout error over the training and prediction set, we can see where our error comes from. A low error over the training set is the least we should expect while at some environments a high error on the prediction is expected (we will later see when and why).
+	For quantitative comparison, we focus on the \ac{nrmse} across all dimensions and time steps, computed as
+	\begin{equation*}
+		\mathit{NRMSE} = \frac{1}{k} \sum_{i = 1}^{k} \frac{1}{y_\mathrm{max} - y_\mathrm{min}} \sqrt{ \frac{1}{T} \sum_{t = 1}^{T} (y_{t, i} - \tilde{y}_{t, i})^2 }
+	\end{equation*}
+	where \( y_{t, i} \) is the true data and \( \tilde{y}_{t, i} \) is the corresponding data to evaluate at the \(t\)-th time step of the \(i\)-th dimension. We can compute four different error values: The error over the rollout from start to finish (\( t = 1, 2, \rangedots, T \)), over the training data only (\( t = 1, 2, \rangedots, T_\train \)), over the prediction only (\( t = T_\train, T_\train + 1, \rangedots, T \)) or over the smoothed trajectory (\ac{ie} the results from the E-step, \(  \hat{\vec{s}}_{1:T} \)). The latter primarily checks that our algorithm performs correct and that it is even capable of learning the dynamics and it should be near zero or at least below one for a decent parameter choice and model performance. On the other hand, the \ac{nrmse} over the complete rollout describes the generalization abilities. In conjunction with the rollout error over the training and prediction set, we can see where our error comes from. A low error over the training set is the least we should expect while at some environments a high error on the prediction is expected (we will later see when and why).
+
+	Using the \ac{nrmse} instead of the plain \ac{rmse} allows us to compare model performance across the difference dimensions as we are scaling the error to a reasonable interval. For error values below \( 0.01 \), we say that the error is close to zero as it only deviates at most \(1\%\) from the true data. For \(<0.1\) we say it is a good fit, and for \(<0.2\) we say the approximation is decent. However, we have to take these numbers with care as they summarize a lot of data into a single scalar.
 
 	All subsections (of non-proof-of-concept environments) are separated into two main parts: Looking at the hyper-experiment of the latent dimensionality and inspect how well the model performs with different latent dimensionalities. Then we will pick two or three of those latent dimensionalities and look at the qualitative plots of the runs (exemplary evaluation).
 
@@ -359,14 +365,14 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Influence of the Latent Dimensionality}
 			For the pendulum experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 
-			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:pendulumRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the pendulum dynamics. We see that the \ac{rmse} shrinks to near zero (less than \( 0.01 \)). Even for \( k = 1 \), the error is only approx. \( 0.18 \).
+			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:pendulumRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the pendulum dynamics. We see that the \ac{nrmse} shrinks to near zero (less than \( 0.01 \)). Even for \( k = 1 \), the error is only approx. \( 0.18 \).
 
-			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:pendulumRmseComplete}, we see that the error is quite noisy due to initialization. Nevertheless, the error shrinks until \( k \geq 10 \) and then stabilizes around an error of approx. \(0.15\). Comparing the complete rollout error with the training and prediction \ac{rmse} in~\autoref{fig:pendulumRmseTrain} and~\autoref{fig:pendulumRmsePred}, respectively, we see that the training error falls until \( k \geq 10 \) and then stabilizes around \(0.08\). For the prediction error, we see a similar connection to \( k \geq 10 \), but the error does not shrink as much and always is around \(0.20\).
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:pendulumRmseComplete}, we see that the error is quite noisy due to initialization. Nevertheless, the error shrinks until \( k \geq 10 \) and then stabilizes around an error of approx. \(0.15\). Comparing the complete rollout error with the training and prediction \ac{nrmse} in~\autoref{fig:pendulumRmseTrain} and~\autoref{fig:pendulumRmsePred}, respectively, we see that the training error falls until \( k \geq 10 \) and then stabilizes around \(0.08\). For the prediction error, we see a similar connection to \( k \geq 10 \), but the error does not shrink as much and always is around \(0.20\).
 
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{rmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
+				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
 				\label{fig:pendulumRmseSmoothed}
 			\end{figure}
 
@@ -419,7 +425,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}) as we postulated from the \ac{rmse} data that this is the boundary of diminishing returns, \ac{ie} it does not get much better with higher latent dimensionalities.~\autoref{fig:pendulumRolloutL10} shows the rollout of the model, where the dynamics of the system are captured really good with high confidence. Also the prediction is really good, so that it is hard to distinguish between true data, smoothed prediction and rollout.
+			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}) as we postulated from the \ac{nrmse} data that this is the boundary of diminishing returns, \ac{ie} it does not get much better with higher latent dimensionalities.~\autoref{fig:pendulumRolloutL10} shows the rollout of the model, where the dynamics of the system are captured really good with high confidence. Also the prediction is really good, so that it is hard to distinguish between true data, smoothed prediction and rollout.
 
 			\begin{figure}
 				\centering
@@ -430,7 +436,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 14-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{210}) for which we got the smallest overall \ac{rmse}.~\autoref{fig:pendulumDampedRolloutL14} shows the rollout of the model. In comparison to the 10-dimensional latent, nothing has changed, fulfilling the expectation of diminishing returns with high latent dimensionality.
+			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{210}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumDampedRolloutL14} shows the rollout of the model. In comparison to the 10-dimensional latent, nothing has changed, fulfilling the expectation of diminishing returns with high latent dimensionality.
 
 			\begin{figure}
 				\centering
@@ -447,16 +453,16 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Influence of the Latent Dimensionality}
 			For the damped pendulum experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 
-			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:pendulumDampedRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the damped pendulum dynamics. We see that the \ac{rmse} shrinks to near zero (less than \( 0.01 \)) for latent dimensionalities of \( k \geq 2 \). Even for \( k = 1 \), the error is only approx. \( 0.10 \).
+			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:pendulumDampedRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the damped pendulum dynamics. We see that the \ac{nrmse} shrinks to near zero (less than \( 0.01 \)) for latent dimensionalities of \( k \geq 2 \). Even for \( k = 1 \), the error is only approx. \( 0.10 \).
 
-			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:pendulumDampedRmseComplete}, we see that there is a point of diminishing returns in terms of the latent dimensionality for \( k \geq 10 \), where we get decent errors (around \( 0.05 \)) for all latent dimensionalities. Looking at the parts the complete \ac{rmse} is composed of, the training and prediction error in~\autoref{fig:pendulumDampedRmseTrain} and~\autoref{fig:pendulumDampedRmsePred}, respectively, we see that the latent dimensionality affects both parts, the training and prediction error. However, the prediction error in generally smaller, which is mostly caused by the value of the state and hence the rollout being smaller.
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:pendulumDampedRmseComplete}, we see that there is a point of diminishing returns in terms of the latent dimensionality for \( k \geq 10 \), where we get decent errors (around \( 0.05 \)) for all latent dimensionalities. Looking at the parts the complete \ac{nrmse} is composed of, the training and prediction error in~\autoref{fig:pendulumDampedRmseTrain} and~\autoref{fig:pendulumDampedRmsePred}, respectively, we see that the latent dimensionality affects both parts, the training and prediction error. However, the prediction error in generally smaller, which is mostly caused by the value of the state and hence the rollout being smaller.
 
 			In the next few sections we will look at some qualitative plots of the rollout to verify the results with a little bit of common sense rather than hard numbers.
 
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{rmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
+				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
 				\label{fig:pendulumDampedRmseSmoothed}
 			\end{figure}
 
@@ -498,7 +504,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{60}). We chose this latent dimensionality as it is the boundary of diminishing returns in terms of the \ac{rmse}, \ac{ie} it does not get much better from now on.~\autoref{fig:pendulumDampedRolloutL10} shows the rollout of the model. In comparison to the four-dimensional latent, the behavior of the system is captured pretty good, but with low confidence. But the rollout diverges from the true data after the prediction boundary.
+			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{60}). We chose this latent dimensionality as it is the boundary of diminishing returns in terms of the \ac{nrmse}, \ac{ie} it does not get much better from now on.~\autoref{fig:pendulumDampedRolloutL10} shows the rollout of the model. In comparison to the four-dimensional latent, the behavior of the system is captured pretty good, but with low confidence. But the rollout diverges from the true data after the prediction boundary.
 
 			\begin{figure}
 				\centering
@@ -509,7 +515,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 24-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 24 \) (run \texttt{24}) for which we got the smallest overall \ac{rmse}.~\autoref{fig:pendulumDampedRolloutL24} shows the rollout of the model. In comparison to the ten-dimensional latent, the model is a lot more confident regarding the position and velocity of the damped pendulum.
+			We will now look at an exemplary run for the latent dimensionality \( k = 24 \) (run \texttt{24}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumDampedRolloutL24} shows the rollout of the model. In comparison to the ten-dimensional latent, the model is a lot more confident regarding the position and velocity of the damped pendulum.
 
 			\begin{figure}
 				\centering
@@ -535,14 +541,14 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Influence of the Latent Dimensionality}
 			For the cartpole experiment, we tested \(100\) latent dimensionalities from \( k = 1 \) to \( k = 100 \). Towards the end of this interval, the data points we where able to collect shrink (sometimes even to zero), as the algorithm increasingly numerically brittle with higher latent dimensionality (see also~\autoref{sec:implementation} for comments on the numerical stability).
 
-			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{rmse} shrinks to near zero for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
+			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{nrmse} shrinks to near zero for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
 
-			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the latent dimensionality does not really have an effect on how well we learn the dynamics. However, a look at the training and prediction \ac{rmse} plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, shows that the most errors is primarily caused by the prediction. Looking just at the training error, we see that we need at least \( k \geq 10 \) to get a nearly perfect error on the training data (below \(0.01\). As the data is quite noisy due to initialization errors, we might reach this boundary before, but starting from \(k \geq 10\) latent dimensions, most of the data points lie on the zero-line, so it is fair to say that the other runs where "just unlucky" in the initialization. Looking at the prediction plot, however, we see total randomness in the \ac{rmse} with the average \ac{rmse} across all latents being quite high (approx. \(0.44\)). Hence, we can safely say that our algorithm does not generalize well on the cartpole environment (we will look at potential reasons for this in~\autoref{c:discussion}).
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the latent dimensionality does not really have an effect on how well we learn the dynamics. However, a look at the training and prediction \ac{nrmse} plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, shows that the most errors is primarily caused by the prediction. Looking just at the training error, we see that we need at least \( k \geq 10 \) to get a nearly perfect error on the training data (below \(0.01\). As the data is quite noisy due to initialization errors, we might reach this boundary before, but starting from \(k \geq 10\) latent dimensions, most of the data points lie on the zero-line, so it is fair to say that the other runs where "just unlucky" in the initialization. Looking at the prediction plot, however, we see total randomness in the \ac{nrmse} with the average \ac{nrmse} across all latents being quite high (approx. \(0.44\)). Hence, we can safely say that our algorithm does not generalize well on the cartpole environment (we will look at potential reasons for this in~\autoref{c:discussion}).
 
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{rmse} of the smoothed trajectory on the training data of the cartpole environment.}
+				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the cartpole environment.}
 				\label{fig:cartpoleRmseSmoothed}
 			\end{figure}
 
@@ -578,13 +584,13 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-02/without-confidence/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 2\). The top left plot shows the cart position, the top right plot the cart velocity, the bottom left plot the pendulum angle and the bottom right plot the pendulum velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". Note that we have removed the confidence on this plot as it is really low, result in high variances. See~\autoref{fig:cartpoleRolloutL01Appendix} in~\autoref{app:remainingPlots} for the plot with confidence.}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 2\). The top left plot shows the cart position, the top right plot the cart velocity, the bottom left plot the pendulum angle and the bottom right plot the pendulum velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". Note that we have removed the confidence on this plot as it is really low, result in high variances. See~\autoref{fig:cartpoleRolloutL02Appendix} in~\autoref{app:remainingPlots} for the plot with confidence.}
 				\label{fig:cartpoleRolloutL02}
 			\end{figure}
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{462}). According to the \ac{rmse} of the training data, this should perform decent on the training data and, according to the \ac{rmse} on the prediction, bad on the prediction.~\autoref{fig:cartpoleRolloutL10} shows that the rollout and the smoothed trajectory actually follow the true data really good, while the rollout diverges from the true trajectory pretty fast after the prediction boundary. Also the variance in the training area around changes in the plot, \ac{ie} when the system actually moves or changes its velocity, is very high. Interestingly, the confidence in the pendulum position and velocity is a lot higher than in the cart position.
+			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{462}). According to the \ac{nrmse} of the training data, this should perform decent on the training data and, according to the \ac{nrmse} on the prediction, bad on the prediction.~\autoref{fig:cartpoleRolloutL10} shows that the rollout and the smoothed trajectory actually follow the true data really good, while the rollout diverges from the true trajectory pretty fast after the prediction boundary. Also the variance in the training area around changes in the plot, \ac{ie} when the system actually moves or changes its velocity, is very high. Interestingly, the confidence in the pendulum position and velocity is a lot higher than in the cart position.
 
 			\begin{figure}
 				\centering
@@ -595,7 +601,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 14-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{14}), the run which had the lowest \ac{rmse} over the complete rollout data. Still, according to the \ac{rmse} of the prediction, we do not expect a good prediction.~\autoref{fig:cartpoleRolloutL14} confirms this, as the rollout on the training data follows the true data closely while the prediction is off the true trajectory.
+			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{14}), the run which had the lowest \ac{nrmse} over the complete rollout data. Still, according to the \ac{nrmse} of the prediction, we do not expect a good prediction.~\autoref{fig:cartpoleRolloutL14} confirms this, as the rollout on the training data follows the true data closely while the prediction is off the true trajectory.
 
 			\begin{figure}
 				\centering
@@ -615,14 +621,14 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 %
 %			For the double pendulum environment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 %
-%			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:acrobotRmseSmoothed} to see how many latent dimensions we need to get a model that is even slightly capable of learning the double pendulum dynamics. We see that the \ac{rmse} does not shrink a lot for latent dimensionalities of \( k \geq 5 \), where the \ac{rmse} falls below \(0.1\) (ignoring the outlier run \texttt{5} at \( k = 5 \)). Hence, we need at least \(5\) latent dimensions to learn the dynamics.
+%			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:acrobotRmseSmoothed} to see how many latent dimensions we need to get a model that is even slightly capable of learning the double pendulum dynamics. We see that the \ac{nrmse} does not shrink a lot for latent dimensionalities of \( k \geq 5 \), where the \ac{nrmse} falls below \(0.1\) (ignoring the outlier run \texttt{5} at \( k = 5 \)). Hence, we need at least \(5\) latent dimensions to learn the dynamics.
 %
-%			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:acrobotRmseComplete}, we see that the average error falls for approximately the first \(10\) dimensionalities and then roughly stays at approx. \(1.76\). Looking at the training and prediction errors in~\autoref{fig:acrobotRmseTrain} and~\autoref{fig:acrobotRmsePred}, we see that the prediction error has the most contribution to the overall error and that it does not change much with different latent dimensionalities. The training data on the other hand does fall with higher latent dimensionalities for the first few and does then equalize.
+%			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:acrobotRmseComplete}, we see that the average error falls for approximately the first \(10\) dimensionalities and then roughly stays at approx. \(1.76\). Looking at the training and prediction errors in~\autoref{fig:acrobotRmseTrain} and~\autoref{fig:acrobotRmsePred}, we see that the prediction error has the most contribution to the overall error and that it does not change much with different latent dimensionalities. The training data on the other hand does fall with higher latent dimensionalities for the first few and does then equalize.
 %
 %			\begin{figure}
 %				\centering
 %				\includegraphics[width=0.7\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-normalized-smoothed-mean-vs-latent-dim.pdf}
-%				\caption{The \ac{rmse} of the smoothed trajectory on the training data of the double pendulum environment.}
+%				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the double pendulum environment.}
 %				\label{fig:acrobotRmseSmoothed}
 %			\end{figure}
 %
