@@ -622,10 +622,49 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 	% end
 
 	\subsection{Gym Double Pendulum}
-		\todo{Results: Gym Double Pendulum}
+		\todo{Update this section with the complete data once the experiment has finished!}
+		\todo{Which error values are considered "good"?}
 
 		\subsubsection{Influence of the Latent Dimensionality}
-			\todo{Results: Gym Double Pendulum, Latent Dim.}
+			\todo{Test another 50, to k = 100!}
+
+			For the double pendulum environment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
+
+			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:acrobotRmseSmoothed} to see how many latent dimensions we need to get a model that is even slightly capable of learning the double pendulum dynamics. We see that the \ac{rmse} does not shrink a lot for latent dimensionalities of \( k \geq 5 \), where the \ac{rmse} falls below \(0.1\) (ignoring the outlier run \texttt{5} at \( k = 5 \)). Hence, we need at least \(5\) latent dimensions to learn the dynamics.
+
+			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:acrobotRmseComplete}, we see that the average error falls for approximately the first \(10\) dimensionalities and then roughly stays at approx. \(1.76\). Looking at the training and prediction errors in~\autoref{fig:acrobotRmseTrain} and~\autoref{fig:acrobotRmsePred}, we see that the prediction error has the most contribution to the overall error and that it does not change much with different latent dimensionalities. The training data on the other hand does fall with higher latent dimensionalities for the first few and does then equalize.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.7\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-smoothed-mean-vs-latent-dim.pdf}
+				\caption{The \ac{rmse} of the smoothed trajectory on the training data of the double pendulum environment.}
+				\label{fig:acrobotRmseSmoothed}
+			\end{figure}
+
+			\begin{figure}
+				\centering
+				\begin{subfigure}{0.7\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-rollout-mean-vs-latent-dim.pdf}
+					\caption{Error of the complete rollout from on the cartpole double pendulum.}
+					\label{fig:acrobotRmseComplete}
+				\end{subfigure} \\
+				\begin{subfigure}{0.5\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-rollout-train-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the training data only on the double pendulum environment.}
+					\label{fig:acrobotRmseTrain}
+				\end{subfigure}%
+				~
+				\begin{subfigure}{0.5\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-rollout-prediction-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the prediction only on the double pendulum environment.}
+					\label{fig:acrobotRmsePred}
+				\end{subfigure}
+				\caption{Plot of the errors of the double pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation. The data points on the right side of the plot get increasingly sparse as the algorithm gets increasingly numerically brittle for higher latent dimensionalities.}
+				\label{fig:acrobotRmse}
+			\end{figure}
 		% end
 	% end
 % end
