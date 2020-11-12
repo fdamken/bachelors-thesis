@@ -140,6 +140,8 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 		% end
 
 		\subsubsection{Gym Cartpole}
+			\label{subsubsec:cartpole}
+
 			\begin{itemize}
 				\item Experiment ID: \texttt{cartpole\_gym}
 			\end{itemize}
@@ -299,7 +301,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				    Gym Acrobot      &         no          &        \(16\)        &         \(350\)
 			\end{tabular}
 			\caption{Overview over the different hyperparameter setting for the different environments.}
-			\label{tab:experimentSetup}.
+			\label{tab:experimentSetup}
 		\end{table}
 
 		For the proof-of-concept environments (the linear system and the polynomial system), we used slightly different setups as those environments are a lot simpler. For the linear system, we used a zero-layer neural network with no activation function, \ac{ie} a learnable matrix/linear transformation. We also fix the latent dimensionality to be \(2\) for the linear system as we only have two states. For the polynomial system, we know~\cite{williamsonLearningNonLinearDynamical2020} that the Koopman operator has the exact finite form
@@ -328,7 +330,18 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 % end
 
 \section{Results}
-	In this section we will look at the results of the experiments described above. We organized the section into the different environments and will take a look at both the hyper-experiments first and then the individual results for optimized\todo{Really? The optimized hyperparameters?} hyperparameters.
+	In this section we will look at the results of the experiments described above. We organized the section into the different environments and will take a look at both the hyper-experiments first and then the individual results for optimized hyperparameters.
+
+	For evaluating the performance of the model, we use different measures and metrics, both qualitative and quantitative. For a qualitative evaluation, we simply plot the produced data. These plots can get quite noisy as we will see, but they comprise all things we need for a qualitative assessment:
+	\begin{itemize}
+		\item The \emph{ground truth}, generated as described above with the adequate numerical integration of the equations of motion.
+		\item The \emph{smoothed states} as they are produced from the E-step of the \algname algorithm, \ac{ie} \(\hat{\vec{s}}_{1:T}\).
+		\item The \emph{rollout}, starting both from the learned initial value as well as from the last smoothed state. While the former visualizes the ability of the model to work completely "on its own", the latter shows how well the linear dynamics generalize beyond the training data.
+		\item And of course the confidence (\ac{ie} the learned variance) around each trajectory.
+	\end{itemize}
+	For quantitative comparison, we focus on the \ac{rmse} across all dimensions and time steps, where we can compute four different error values: The error over the rollout from start to finish (\( t = 1, 2, \rangedots, T \)), over the training data only (\( t = 1, 2, \rangedots, T_\train \)), over the prediction only (\( t = T_\train, T_\train + 1, \rangedots, T \)) or over the smoothed trajectory (\ac{ie} the results from the E-step, \(  \hat{\vec{s}}_{1:T} \)). The latter primarily checks that our algorithm performs correct and that it is even capable of learning the dynamics and it should be near zero or at least below one for a decent parameter choice and model performance. On the other hand, the \ac{rmse} over the complete rollout describes the generalization abilities. In conjunction with the rollout error over the training and prediction set, we can see where our error comes from. A low error over the training set is the least we should expect while at some environments a high error on the prediction is expected (we will later see when and why).
+
+	All subsections (of non-proof-of-concept environments) are separated into two main parts: Looking at the hyper-experiment of the latent dimensionality and inspect how well the model performs with different latent dimensionalities. Then we will pick two or three of those latent dimensionalities and look at the qualitative plots of the runs (exemplary evaluation).
 
 	\subsection{Proof-of-Concept: LGDS}
 		\todo{Results: LGDS}
@@ -363,10 +376,55 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 	% end
 
 	\subsection{Gym Cartpole}
-		\todo{Results: Gym Cartpole}
-
 		\subsubsection{Influence of the Latent Dimensionality}
-			\todo{Results: Gym Cartpole, Latent Dim.}
+			For the cartpole experiment, we tested \(100\) latent dimensionalities from \( k = 1 \) to \( k = 100 \). Towards the end of this interval, the data points we where able to collect shrink (sometimes even to zero), as the algorithm becomes more and more numerically brittle with higher latent dimensionality (see also~\autoref{sec:implementation} for comments on the numerical stability).
+
+			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see which latent dimensionality we will need the least to get a model that is even slightly capable of learning the cartpole dynamics. We that the \ac{rmse} shrinks to near zero for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
+
+			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the latent dimensionality does not really have an effect on how well we learn the dynamics. However, a look at the training and prediction \ac{rmse} plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, shows that the most errors is primarily caused by the prediction. Looking just at the training error, we see that we need at least \( k \geq 3 \) latent dimensions to push our training rollout below \(1\) and that \( k \geq 10 \) are needed to push the \ac{rmse} below \(0.1\). As the data is quite noisy due to initialization errors, we might reach this boundary before, but starting from \(k \geq 10\) latent dimensions, most of the data points lie on the zero-line, so it is fair to say that the other runs where "just unlucky" in the initialization. Looking at the prediction plot, however, we see total randomness in the \ac{rmse} with the average \ac{rmse} across all latents being quite high (approx. \( 6.93 \)). Hence, we can safely say that our algorithm does not generalize well on the cartpole environment (we will look at potential reasons for this in~\autoref{c:discussion}).
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.7\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-smoothed-mean-vs-latent-dim.pdf}
+				\caption{The \ac{rmse} of the smoothed trajectory from \( t = 1 \) to \( t = T_\train \), \ac{ie} on the training data. We can see that we need at least \( 2\) latent dimensions to get decent smoothing results.}
+				\label{fig:cartpoleRmseSmoothed}
+			\end{figure}
+
+			\begin{figure}
+				\centering
+				\begin{subfigure}{0.7\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-rollout-mean-vs-latent-dim.pdf}
+					\caption{Error of the complete rollout from \( t = 1 \) to \( t = T \) on the cartpole environment.}
+					\label{fig:cartpoleRmseComplete}
+				\end{subfigure} \\
+				\begin{subfigure}{0.5\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-rollout-train-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the training data only on the cartpole environment.}
+					\label{fig:cartpoleRmseTrain}
+				\end{subfigure}%
+				~
+				\begin{subfigure}{0.5\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-rollout-prediction-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the prediction only on the cartpole environment.}
+					\label{fig:cartpoleRmsePred}
+				\end{subfigure}
+				\caption{Plot of the errors of the cartpole environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation. The data points on the right side of the plot get more and more sparse as the algorithm gets more and more numerically brittle for higher latent dimensionalities.}
+				\label{fig:cartpoleRmse}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: One-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 1 \). As we have already seen, this should not perform well and even the smoothed trajectory should be far off.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-01/rollout-observations-N0.pdf}
+				\caption{TODO} % TODO
+				\label{fig:cartpoleRolloutL01}
+			\end{figure}
 		% end
 	% end
 
