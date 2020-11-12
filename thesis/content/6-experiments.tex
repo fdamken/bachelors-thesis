@@ -330,6 +330,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 % end
 
 \section{Results}
+	\label{sec:results}
+
 	In this section we will look at the results of the experiments described above. We organized the section into the different environments and will take a look at both the hyper-experiments first and then the individual results for optimized hyperparameters.
 
 	For evaluating the performance of the model, we use different measures and metrics, both qualitative and quantitative. For a qualitative evaluation, we simply plot the produced data. These plots can get quite noisy as we will see, but they comprise all things we need for a qualitative assessment:
@@ -343,6 +345,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 	All subsections (of non-proof-of-concept environments) are separated into two main parts: Looking at the hyper-experiment of the latent dimensionality and inspect how well the model performs with different latent dimensionalities. Then we will pick two or three of those latent dimensionalities and look at the qualitative plots of the runs (exemplary evaluation).
 
+	Each exemplary evaluation also contains the ID of the run containing the data we used and the raw data of the runs is added to the GitHub repository along with the code. The documentation for how to generate the plots and so on is also there.
+
 	\subsection{Proof-of-Concept: LGDS}
 		\todo{Results: LGDS}
 	% end
@@ -352,41 +356,208 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 	% end
 
 	\subsection{Pendulum}
-		\todo{Results: Pendulum}
+		\todo{Which error values are considered "good"?}
 
 		\subsubsection{Influence of the Latent Dimensionality}
-			\todo{Results: Pendulum, Latent Dim.}
+			For the pendulum experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
+
+			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:pendulumRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the pendulum dynamics. We see that the \ac{rmse} shrinks to near zero (less than \( 0.05 \)) with some outliers for latent dimensionalities of \( k \geq 2 \). Even for \( k = 1 \), the error is only approx. \( 1.0 \).
+
+			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:pendulumRmseComplete}, we see that the error is quite noisy due to initialization. Nevertheless, the error shrinks until \( k \geq 10 \) and then stabilizes around an error of approx. \(0.77\). Comparing the complete rollout error with the training and prediction \ac{rmse} in~\autoref{fig:pendulumRmseTrain} and~\autoref{fig:pendulumRmsePred}, respectively, we see that the training error falls until \( k \geq 10 \) and then stabilizes near zero. For the prediction error, we see a similar connection to \( k \geq 10 \), but the error does not shrink as much and always is around \( 1.0 \).
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-smoothed-mean-vs-latent-dim.pdf}
+				\caption{The \ac{rmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
+				\label{fig:pendulumRmseSmoothed}
+			\end{figure}
+
+			\begin{figure}
+				\centering
+				\begin{subfigure}{0.7\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/pendulum/latent-dim/comparison-rmse-rollout-mean-vs-latent-dim.pdf}
+					\caption{Error of the complete rollout on the pendulum environment.}
+					\label{fig:pendulumRmseComplete}
+				\end{subfigure} \\
+				\begin{subfigure}{0.5\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/pendulum/latent-dim/comparison-rmse-rollout-train-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the training data only on the pendulum environment.}
+					\label{fig:pendulumRmseTrain}
+				\end{subfigure}%
+				~
+				\begin{subfigure}{0.5\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/pendulum/latent-dim/comparison-rmse-rollout-prediction-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the prediction only on the pendulum environment.}
+					\label{fig:pendulumRmsePred}
+				\end{subfigure}
+				\caption{Plot of the errors of the pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
+				\label{fig:pendulumRmse}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{100}). According to the errors, the rollout error should be quite high. On the other hand, the smoothed trajectory should nearly match the true data.~\autoref{fig:pendulumRolloutL02} shows that the rollout and also the rollout of the smoothed trajectory are far off with low confidence, but the true data is in the confidence region. However, the smoothed trajectory follows the true data really good.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-02/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 2\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+				\label{fig:pendulumRolloutL02}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: 4-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 4 \) (run \texttt{53}). This run is especially interesting for comparison with~\cite{mortonDeepVariationalKoopman2019a} which we will do in~\autoref{c:discussion}.~\autoref{fig:pendulumRolloutL04} shows the rollout of the model with four latent dimensions. We see that the smoothed trajectory equals the true data as expected, while the rollout captures the dynamics of the system really roughly and the true data lies withing the region of confidence of the rollout.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-04/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+				\label{fig:pendulumRolloutL04}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}) as we postulated from the \ac{rmse} data that this is the boundary of diminishing returns, \ac{ie} it does not get much better with higher latent dimensionalities.~\autoref{fig:pendulumRolloutL10} shows the rollout of the model, where the dynamics of the system are captured really good with high confidence. Also the prediction is really good, so that it is hard to distinguish between true data, smoothed prediction and rollout.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-10/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 10\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+				\label{fig:pendulumRolloutL10}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: 14-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{210}) for which we got the smallest overall \ac{rmse}.~\autoref{fig:pendulumDampedRolloutL14} shows the rollout of the model. In comparison to the 10-dimensional latent, nothing has changed, fulfilling the expectation of diminishing returns with high latent dimensionality.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-14/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 14\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+				\label{fig:pendulumRolloutL14}
+			\end{figure}
 		% end
 	% end
 
 	\subsection{Damped Pendulum}
-		\todo{Results: Damped Pendulum}
+		\todo{Update this section with the complete data once the experiment has finished!}
+		\todo{Which error values are considered "good"?}
 
 		\subsubsection{Influence of the Latent Dimensionality}
-			\todo{Results: Damped Pendulum, Latent Dim.}
+			For the damped pendulum experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
+
+			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:pendulumDampedRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the damped pendulum dynamics. We see that the \ac{rmse} shrinks to near zero (less than \( 0.01 \)) for latent dimensionalities of \( k \geq 2 \). Even for \( k = 1 \), the error is only approx. \( 0.5 \).
+
+			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:pendulumDampedRmseComplete}, we see that there is a point of diminishing returns in terms of the latent dimensionality for \( k \geq 10 \), where we get decent errors (below \( 0.2 \)) for all latent dimensionalities. Looking at the parts the complete \ac{rmse} is composed of, the training and prediction error in~\autoref{fig:pendulumDampedRmseTrain} and~\autoref{fig:pendulumDampedRmsePred}, respectively, we see that the latent dimensionality affects both parts, the training and prediction error. However, the prediction error in generally smaller, which is mostly caused by the value of the state and hence the rollout being smaller.
+
+			In the next few sections we will look at some qualitative plots of the rollout to verify the results with a little bit of common sense rather than hard numbers.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-smoothed-mean-vs-latent-dim.pdf}
+				\caption{The \ac{rmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
+				\label{fig:pendulumDampedRmseSmoothed}
+			\end{figure}
+
+			\begin{figure}
+				\centering
+				\begin{subfigure}{0.7\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-mean-vs-latent-dim.pdf}
+					\caption{Error of the complete rollout on the damped pendulum environment.}
+					\label{fig:pendulumDampedRmseComplete}
+				\end{subfigure} \\
+				\begin{subfigure}{0.5\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-train-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the training data only on the damped pendulum environment.}
+					\label{fig:pendulumDampedRmseTrain}
+				\end{subfigure}%
+				~
+				\begin{subfigure}{0.5\linewidth}
+					\centering
+					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-prediction-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the prediction only on the damped pendulum environment.}
+					\label{fig:pendulumDampedRmsePred}
+				\end{subfigure}
+				\caption{Plot of the errors of the damped pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
+				\label{fig:pendulumDampedRmse}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout error should be quite high, but the smoothed trajectory should follow the true data really good.~\autoref{fig:pendulumDampedRolloutL02} shows that most trajectories are far off the true trajectory with low confidence, while the smoothed trajectory nearly perfectly matches the true data.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-02/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the damped pendulum environment for \(k = 2\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+				\label{fig:pendulumDampedRolloutL02}
+			\end{figure}
+		% end
+
+%		\subsubsection{Exemplary Evaluation: 4-Dimensional Latent}
+%			We will now look at an exemplary run for the latent dimensionality \( k = 4 \) (run \texttt{54}). This run is especially interesting for comparison with~\cite{mortonDeepVariationalKoopman2019a} which we will do in~\autoref{c:discussion}.~\autoref{fig:pendulumDampedRolloutL04} shows the rollout of the model learned for four latent dimensions. We see that the smoothed trajectory equals the true data as expected from the \ac{rmse}, while the rollout captures the energy loss of the system, but underestimates both the position and the velocity.
+%
+%			\begin{figure}
+%				\centering
+%				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-04/rollout-observations-N0.pdf}
+%				\caption{The rollout plot in the observation space of the damped pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+%				\label{fig:pendulumDampedRolloutL04}
+%			\end{figure}
+%		% end
+
+		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{60}). We chose this latent dimensionality as it is the boundary of diminishing returns in terms of the \ac{rmse}, \ac{ie} it does not get much better from now on.~\autoref{fig:pendulumDampedRolloutL10} shows the rollout of the model. In comparison to the four-dimensional latent, the behavior of the system is captured pretty good, but with low confidence. But the rollout diverges from the true data after the prediction boundary.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-10/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the damped pendulum environment for \(k = 10\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+				\label{fig:pendulumDampedRolloutL10}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: 24-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 24 \) (run \texttt{24}) for which we got the smallest overall \ac{rmse}.~\autoref{fig:pendulumDampedRolloutL24} shows the rollout of the model. In comparison to the ten-dimensional latent, the model is a lot more confident regarding the position and velocity of the damped pendulum.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-24/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the damped pendulum environment for \(k = 24\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+				\label{fig:pendulumDampedRolloutL24}
+			\end{figure}
 		% end
 	% end
 
 	\subsection{Gym Pendulum}
-		\todo{Results: Gym Pendulum}
+		\todo{Which error values are considered "good"?}
 
 		\subsubsection{Influence of the Latent Dimensionality}
+			% This environment crashed nearly every time, so we do not have usable results yet :/
+
 			\todo{Results: Gym Pendulum, Latent Dim.}
 		% end
 	% end
 
 	\subsection{Gym Cartpole}
-		\subsubsection{Influence of the Latent Dimensionality}
-			For the cartpole experiment, we tested \(100\) latent dimensionalities from \( k = 1 \) to \( k = 100 \). Towards the end of this interval, the data points we where able to collect shrink (sometimes even to zero), as the algorithm becomes more and more numerically brittle with higher latent dimensionality (see also~\autoref{sec:implementation} for comments on the numerical stability).
+		\todo{Which error values are considered "good"?}
 
-			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see which latent dimensionality we will need the least to get a model that is even slightly capable of learning the cartpole dynamics. We that the \ac{rmse} shrinks to near zero for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
+		\subsubsection{Influence of the Latent Dimensionality}
+			For the cartpole experiment, we tested \(100\) latent dimensionalities from \( k = 1 \) to \( k = 100 \). Towards the end of this interval, the data points we where able to collect shrink (sometimes even to zero), as the algorithm increasingly numerically brittle with higher latent dimensionality (see also~\autoref{sec:implementation} for comments on the numerical stability).
+
+			We will start by having a first look at the \ac{rmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{rmse} shrinks to near zero for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
 
 			Looking at the \ac{rmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the latent dimensionality does not really have an effect on how well we learn the dynamics. However, a look at the training and prediction \ac{rmse} plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, shows that the most errors is primarily caused by the prediction. Looking just at the training error, we see that we need at least \( k \geq 3 \) latent dimensions to push our training rollout below \(1\) and that \( k \geq 10 \) are needed to push the \ac{rmse} below \(0.1\). As the data is quite noisy due to initialization errors, we might reach this boundary before, but starting from \(k \geq 10\) latent dimensions, most of the data points lie on the zero-line, so it is fair to say that the other runs where "just unlucky" in the initialization. Looking at the prediction plot, however, we see total randomness in the \ac{rmse} with the average \ac{rmse} across all latents being quite high (approx. \( 6.93 \)). Hence, we can safely say that our algorithm does not generalize well on the cartpole environment (we will look at potential reasons for this in~\autoref{c:discussion}).
 
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-smoothed-mean-vs-latent-dim.pdf}
-				\caption{The \ac{rmse} of the smoothed trajectory from \( t = 1 \) to \( t = T_\train \), \ac{ie} on the training data. We can see that we need at least \( 2\) latent dimensions to get decent smoothing results.}
+				\caption{The \ac{rmse} of the smoothed trajectory on the training data of the cartpole environment.}
 				\label{fig:cartpoleRmseSmoothed}
 			\end{figure}
 
@@ -395,7 +566,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				\begin{subfigure}{0.7\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-rollout-mean-vs-latent-dim.pdf}
-					\caption{Error of the complete rollout from \( t = 1 \) to \( t = T \) on the cartpole environment.}
+					\caption{Error of the complete rollout from on the cartpole environment.}
 					\label{fig:cartpoleRmseComplete}
 				\end{subfigure} \\
 				\begin{subfigure}{0.5\linewidth}
@@ -411,19 +582,41 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 					\caption{Error of the rollout on the prediction only on the cartpole environment.}
 					\label{fig:cartpoleRmsePred}
 				\end{subfigure}
-				\caption{Plot of the errors of the cartpole environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation. The data points on the right side of the plot get more and more sparse as the algorithm gets more and more numerically brittle for higher latent dimensionalities.}
+				\caption{Plot of the errors of the cartpole environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation. The data points on the right side of the plot get increasingly sparse as the algorithm gets increasingly numerically brittle for higher latent dimensionalities.}
 				\label{fig:cartpoleRmse}
 			\end{figure}
 		% end
 
-		\subsubsection{Exemplary Evaluation: One-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 1 \). As we have already seen, this should not perform well and even the smoothed trajectory should be far off.
+		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{356}). As we have already seen, the rollout should not perform well, but the smoothed trajectory should be really accurate. Looking at~\autoref{fig:cartpoleRolloutL02}, we see that nearly all trajectories are far off the true trajectory. Only the smoothed trajectory fits the data perfectly (until the prediction boundary, of course).
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-01/rollout-observations-N0.pdf}
-				\caption{TODO} % TODO
-				\label{fig:cartpoleRolloutL01}
+				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-02/without-confidence/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 2\). The top left plot shows the cart position, the top right plot the cart velocity, the bottom left plot the pendulum angle and the bottom right plot the pendulum velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". Note that we have removed the confidence on this plot as it is really low, result in high variances. See~\autoref{fig:cartpoleRolloutL01Appendix} in~\autoref{app:remainingPlots} for the plot with confidence.}
+				\label{fig:cartpoleRolloutL02}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{462}). According to the \ac{rmse} of the training data, this should perform decent on the training data and, according to the \ac{rmse} on the prediction, bad on the prediction.~\autoref{fig:cartpoleRolloutL10} shows that the rollout and the smoothed trajectory actually follow the true data really good (with a a smoothed \ac{rmse} of \(0.005\) and a rollout training \ac{rmse} of \(0.015\)), while the rollout diverges from the true trajectory pretty fast after the prediction boundary. Also the variance in the training area around changes in the plot, \ac{ie} when the system actually moves or changes its velocity, is very high. Interestingly, the confidence in the pendulum position and velocity is a lot higher than in the cart position.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-10/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 10\). The top left plot shows the cart position, the top right plot the cart velocity, the bottom left plot the pendulum angle and the bottom right plot the pendulum velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation. As the variances in the top plots are very high, see~\autoref{fig:cartpoleRolloutL10Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
+				\label{fig:cartpoleRolloutL10}
+			\end{figure}
+		% end
+
+		\subsubsection{Exemplary Evaluation: 31-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 31 \) (run \texttt{31}), the run which had the lowest \ac{rmse} over the complete rollout data. Still, according to the \ac{rmse} of the prediction, we do not expect a good prediction.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-31/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 31\). The top left plot shows the cart position, the top right plot the cart velocity, the bottom left plot the pendulum angle and the bottom right plot the pendulum velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation. As the variances in the top plots are still very high, see~\autoref{fig:cartpoleRolloutL31Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
+				\label{fig:cartpoleRolloutL31}
 			\end{figure}
 		% end
 	% end
