@@ -70,6 +70,22 @@
   language = {en}
 }
 
+@article{beckerRecurrentKalmanNetworks2019a,
+  title = {Recurrent {{Kalman Networks}}: {{Factorized Inference}} in {{High}}-{{Dimensional Deep Feature Spaces}}},
+  shorttitle = {Recurrent {{Kalman Networks}}},
+  author = {Becker, Philipp and Pandya, Harit and Gebhardt, Gregor and Zhao, Cheng and Taylor, James and Neumann, Gerhard},
+  year = {2019},
+  month = may,
+  abstract = {In order to integrate uncertainty estimates into deep time-series modelling, Kalman Filters (KFs) (Kalman et al., 1960) have been integrated with deep learning models, however, such approaches typically rely on approximate inference techniques such as variational inference which makes learning more complex and often less scalable due to approximation errors. We propose a new deep approach to Kalman filtering which can be learned directly in an end-to-end manner using backpropagation without additional approximations. Our approach uses a high-dimensional factorized latent state representation for which the Kalman updates simplify to scalar operations and thus avoids hard to backpropagate, computationally heavy and potentially unstable matrix inversions. Moreover, we use locally linear dynamic models to efficiently propagate the latent state to the next time step. The resulting network architecture, which we call Recurrent Kalman Network (RKN), can be used for any time-series data, similar to a LSTM (Hochreiter \& Schmidhuber, 1997) but uses an explicit representation of uncertainty. As shown by our experiments, the RKN obtains much more accurate uncertainty estimates than an LSTM or Gated Recurrent Units (GRUs) (Cho et al., 2014) while also showing a slightly improved prediction performance and outperforms various recent generative models on an image imputation task.},
+  archivePrefix = {arXiv},
+  eprint = {1905.07357},
+  eprinttype = {arxiv},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/ZJGTK3VI/Becker et al. - 2019 - Recurrent Kalman Networks Factorized Inference in.pdf},
+  journal = {arXiv:1905.07357 [cs, stat]},
+  keywords = {Computer Science - Machine Learning,Statistics - Machine Learning},
+  primaryClass = {cs, stat}
+}
+
 @article{biermanSequentialSquareRoot1974,
   title = {Sequential Square Root Filtering and Smoothing of Discrete Linear Systems},
   author = {Bierman, Gerald J.},
@@ -528,21 +544,6 @@
   primaryClass = {cs, stat}
 }
 
-@article{paisleyVariationalBayesianInference2012b,
-  title = {Variational {{Bayesian Inference}} with {{Stochastic Search}}},
-  author = {Paisley, John and Blei, David and Jordan, Michael},
-  year = {2012},
-  month = jun,
-  abstract = {Mean-field variational inference is a method for approximate Bayesian posterior inference. It approximates a full posterior distribution with a factorized set of distributions by maximizing a lower bound on the marginal likelihood. This requires the ability to integrate a sum of terms in the log joint likelihood using this factorized distribution. Often not all integrals are in closed form, which is typically handled by using a lower bound. We present an alternative algorithm based on stochastic optimization that allows for direct optimization of the variational lower bound. This method uses control variates to reduce the variance of the stochastic search gradient, in which existing lower bounds can play an important role. We demonstrate the approach on two non-conjugate models: logistic regression and an approximation to the HDP.},
-  archivePrefix = {arXiv},
-  eprint = {1206.6430},
-  eprinttype = {arxiv},
-  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/2YQF84R9/Paisley et al. - 2012 - Variational Bayesian Inference with Stochastic Sea.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/N3XQDUN4/1206.html},
-  journal = {arXiv:1206.6430 [cs, stat]},
-  keywords = {Computer Science - Machine Learning,Statistics - Computation,Statistics - Machine Learning},
-  primaryClass = {cs, stat}
-}
-
 @incollection{paszkePyTorchImperativeStyle2019,
   title = {{{PyTorch}}: {{An Imperative Style}}, {{High}}-{{Performance Deep Learning Library}}},
   shorttitle = {{{PyTorch}}},
@@ -759,6 +760,21 @@
   abstract = {The Koopman operator has recently garnered much attention for its value in dynamical systems analysis and data-driven model discovery. However, its application has been hindered by the computational complexity of extended dynamic mode decomposition; this requires a combinatorially large basis set to adequately describe many nonlinear systems of interest, e.g. cyber-physical infrastructure systems, biological networks, social systems, and fluid dynamics. Often the dictionaries generated for these problems are manually curated, requiring domain-specific knowledge and painstaking tuning. In this paper we introduce a computational framework for learning Koopman operators of nonlinear dynamical systems using deep learning. We show that this novel method automatically selects efficient deep dictionaries, requiring much lower dimensional dictionaries while outperforming state-of-the-art methods. We benchmark this method on partially observed nonlinear systems, including the glycolytic oscillator and show it is able to predict on test data quantitatively 100 steps into the future, using only a single timepoint as an initial condition, and quantitative oscillatory behavior 400 steps into the future.},
   file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/FXYMB2MH/Yeung et al. - 2019 - Learning Deep Neural Network Representations for K.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/AQNUXP6J/8815339.html;/home/fdamken/snap/zotero-snap/common/Zotero/storage/XWCLGWYK/8815339.html},
   keywords = {biological networks,computational complexity,control engineering computing,cyber-physical infrastructure systems,data-driven model discovery,deep dictionaries,deep learning,deep neural network representations,domain-specific knowledge,dynamical systems analysis,extended dynamic mode decomposition,fluid dynamics,glycolytic oscillator,Koopman operator,Koopman operator learning,learning (artificial intelligence),neural nets,nonlinear dynamical systems,painstaking tuning,partially observed nonlinear systems,social systems}
+}
+
+@inproceedings{zhangSOLARDeepStructured2019a,
+  title = {{{SOLAR}}: {{Deep Structured Representations}} for {{Model}}-{{Based Reinforcement Learning}}},
+  shorttitle = {{{SOLAR}}},
+  booktitle = {International {{Conference}} on {{Machine Learning}}},
+  author = {Zhang, Marvin and Vikram, Sharad and Smith, Laura and Abbeel, Pieter and Johnson, Matthew and Levine, Sergey},
+  year = {2019},
+  month = may,
+  pages = {7444--7453},
+  publisher = {{PMLR}},
+  issn = {2640-3498},
+  abstract = {Model-based reinforcement learning (RL) has proven to be a data efficient approach for learning control tasks but is difficult to utilize in domains with complex observations such as images. In thi...},
+  file = {/home/fdamken/snap/zotero-snap/common/Zotero/storage/EDC3DWVC/Zhang et al. - 2019 - SOLAR Deep Structured Representations for Model-B.pdf;/home/fdamken/snap/zotero-snap/common/Zotero/storage/AFMMMLZD/zhang19m.html},
+  language = {en}
 }
 
 
