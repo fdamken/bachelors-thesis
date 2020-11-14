@@ -1,2 +1,2 @@
 Run 356 of latent-dim experiment.
-Chosen because of smallest RMSE with latent_dim = 2 where the smoothed RMSE is near zero.
+Chosen because of smallest RMSE with latent_dim = 2.

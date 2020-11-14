@@ -1,2 +1,2 @@
 Run 462 of latent-dim experiment.
-Chosen because of smallest RMSE with latent_dim = 10, when first reaching training RMSE < 0.01.
+Chosen because of smallest RMSE with latent_dim = 10.
