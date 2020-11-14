@@ -391,11 +391,14 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 	Each exemplary evaluation also contains the ID of the run containing the data we used and the raw data of the runs is added to the GitHub repository along with the code. The documentation for how to generate the plots and so on is also there.
 
 	\subsection{Proof-of-Concept: LGDS}
-		\todo{Results: LGDS}
-	% end
+		For the \ac{lgds} environment, we did not run multiple latent dimensionalities as we already know how many states we have.~\autoref{fig:lgdsRollout} shows the rollout plot for \( k = 3 \) latent dimensions. As expected, the both the rollout and the smoothed states perfectly match the true data, even in the prediction time span.
 
-	\subsection{Proof-of-Concept: Polynomial}
-		\todo{Results: Polynomial}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/results/lgds/rollout-observations-N0.pdf}
+			\caption{The rollout plot in the observation space of the \ac{lgds} environment for \(k = 3\). The left plot shows the first dimension, the right plot the second dimension. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+			\label{fig:lgdsRollout}
+		\end{figure}
 	% end
 
 	\subsection{Pendulum}
@@ -462,6 +465,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
+			\label{subsubsec:pendulumL10}
+
 			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}) as we postulated from the \ac{nrmse} data that this is the boundary of diminishing returns, \ac{ie} it does not get much better with higher latent dimensionalities.~\autoref{fig:pendulumRolloutL10} shows the rollout of the model, where the dynamics of the system are captured really good with high confidence. Also the prediction is really good, so that it is hard to distinguish between true data, smoothed prediction and rollout.
 
 			\begin{figure}
@@ -473,6 +478,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 14-Dimensional Latent}
+			\label{subsubsec:pendulumL14}
+
 			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{210}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumDampedRolloutL14} shows the rollout of the model. In comparison to the 10-dimensional latent, nothing has changed, fulfilling the expectation of diminishing returns with high latent dimensionality.
 
 			\begin{figure}
