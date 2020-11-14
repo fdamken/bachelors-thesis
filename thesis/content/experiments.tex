@@ -480,7 +480,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Exemplary Evaluation: 14-Dimensional Latent}
 			\label{subsubsec:pendulumL14}
 
-			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{210}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumDampedRolloutL14} shows the rollout of the model. In comparison to the 10-dimensional latent, nothing has changed, fulfilling the expectation of diminishing returns with high latent dimensionality.
+			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{210}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumRolloutL14} shows the rollout of the model. In comparison to the 10-dimensional latent, nothing has changed, fulfilling the expectation of diminishing returns with high latent dimensionality.
 
 			\begin{figure}
 				\centering
@@ -544,6 +544,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
+			\label{subsubsec:pendulumDampedL10}
+
 			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{110}). We chose this latent dimensionality as it is the boundary of diminishing returns in terms of the \ac{nrmse}, \ac{ie} it does not get much better from now on.~\autoref{fig:pendulumDampedRolloutL10} shows the rollout of the model. In comparison to the four-dimensional latent, the behavior of the system is captured pretty good, with a decent confidence. Also the prediction is at nearly the same amplitude as the real data. But the rollout gets phase-shifted in comparison to the true data further in the rollout horizon.
 
 			\begin{figure}
