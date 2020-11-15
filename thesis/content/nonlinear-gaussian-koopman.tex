@@ -189,7 +189,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		\subsubsection{Issues with Numerical Integration}
 			\label{subsubsec:integrationProblems}
 
-			We should note that some environments we run experiments on are described by stiff differential equations, \ac{eg} the pendulum or the cartpole environment. As stiff \acp{ode} can not be integrated well with explicit solution methods, implicit methods should be preferred throughout the data generation. For some environments in OpenAI's Gym~\cite{brockmanOpenAIGym2016}, this has to be explicitly configured, \ac{eg} for the cartpole environment with \lstinline|env.kinematics_integrator = 'implicit-euler'|. Do not changing the integrator leads to catastrophic data. In case of the cartpole, using the explicit Euler method causes the pole to build up energy and to get faster over time.
+			We should note that some environments we run experiments on are described by stiff differential equations, \ac{eg} the pendulum or the cartpole environment. As stiff \acp{ode} can not be integrated well with explicit solution methods, implicit methods should be preferred throughout the data generation. For some environments in OpenAI's Gym~\cite{brockmanOpenAIGym2016}, this has to be explicitly configured, \ac{eg} for the cartpole environment with \lstinline|env.kinematics_integrator = 'implicit-euler'|. Not changing the integrator leads to catastrophic data. In case of the cartpole, using the explicit Euler method causes the pole to build up energy and to get faster over time.
 		% end
 	% end
 
