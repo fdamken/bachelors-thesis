@@ -44,59 +44,6 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 			\end{figure}
 		% end
 
-%		\subsubsection{Proof-of-Concept: Polynomial}
-%			\label{subsubsec:polynomial}
-%
-%			\begin{itemize}
-%				\item Experiment ID: \texttt{polynomial}
-%			\end{itemize}
-%
-%			This is our second proof-of-concept and the first that actually proofs our concept of learning nonlinear dynamics with a linear embedding. For this environments we use a dynamical system with the state \( \vec{y} \coloneqq \begin{bmatrix} x_1 & x_2 \end{bmatrix}^T \) that is described by the polynomial dynamics
-%			\begin{align*}
-%				\dot{x}_1 &= \mu x_1 \\
-%				\dot{x}_2 &= \lambda (x_2 - x_1^2)
-%			\end{align*}
-%			with parameters \( \mu \), \( \lambda \). We set \( \mu = -0.05 \) and \( \lambda = -1 \), for which the system is stable and does not exhibit exponential growth. The initial state is sampled from a Gaussian with mean \( \begin{bmatrix} 0.4 & 0.5 \end{bmatrix} \) and covariance \( \diag(0.1, 0.1) \). The system is integrated using the implicit Runge-Kutta Radau~IIA~\cite{guglielmiImplementingRadauIIA2001} method with an evaluation interval of \( h = 0.02 \) for \( T = 100 \) time steps where only the first \( T_\train = 50 \) steps are used for training and the remaining \(50\) are used for validation. The raw data is shown in~\autoref{fig:envPolynomial}.
-%
-%			We chose this as a proof-of-concept environment as it is one of the few systems where the Koopman operator and the Koopman eigenfunctions can be derived analytically~\cite{bruntonKoopmanInvariantSubspaces2016}. The eigenfunctions are then given as
-%			\begin{align*}
-%				\varphi_1(x_1, x_2) &= x_1 \\
-%				\varphi_2(x_1, x_2) &= x_2 \\
-%				\varphi_3(x_1, x_2) &= x_1^2
-%			\end{align*}
-%			with the finite-dimensional "Koopman matrix":
-%			\begin{equation*}
-%				\mat{K} =
-%					\begin{bmatrix}
-%						\mu & 0       & 0        \\
-%						0   & \lambda & -\lambda \\
-%						0   & 0       & 2\mu
-%					\end{bmatrix}
-%				=
-%					\begin{bmatrix}
-%						-0.05 & 0  & 0    \\
-%						0     & -1 & 1    \\
-%						0     & 0  & -0.1
-%					\end{bmatrix}
-%			\end{equation*}
-%			We therefore should be able to find an appropriate embedding and inverse observation functions to perfectly model this polynomial environment.
-%
-%			\begin{figure}
-%				\centering
-%				\begin{subfigure}{0.5\linewidth}
-%					\centering
-%					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-polynomial-N0-D0.pdf}
-%				\end{subfigure}%
-%				~
-%				\begin{subfigure}{0.5\linewidth}
-%					\centering
-%					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-polynomial-N0-D1.pdf}
-%				\end{subfigure}
-%				\caption{Plot of the raw data used for training the proof-of-concept polynomial environment. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
-%				\label{fig:envPolynomial}
-%			\end{figure}
-%		% end
-
 		\subsubsection{(Damped) Pendulum}
 			\begin{itemize}
 				\item Experiment ID: \texttt{pendulum} and \texttt{pendulum\_damped}
@@ -108,34 +55,18 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 			\end{equation*}
 			that is solved using the Radau~IIA~\cite{guglielmiImplementingRadauIIA2001} \ac{ivp} integrator (after transforming the \ac{ode} in a first-order \ac{ode} system). The initial velocity is set to \(0\) and the initial position is sampled from a Gaussian with mean \( \pi/36 \) and variance \( \pi/8 \). This puts the pendulum in motion as it falls down from its initial position. For the undamped pendulum, we set \( d = 0 \). For both environments, we use an evaluation interval of \( h = 0.1 \) for \( T = 1000 \) time steps where only the first \( T_\train = 500 \) steps are used for training and the remaining \(500\) are used for validation. The raw data is shown in~\autoref{fig:envPendulum} for the undamped and~\autoref{fig:envPendulumDamped} for the damped pendulum.
 
-			The damped pendulum is especially interesting as the system looses energy (\ac{ie} the sum of the kinetic and potential energy decreases over time) and Koopman theory in general has problems with finding embeddings that are able to encode energy loss\todo{citation needed}.
+			The damped pendulum is especially interesting as the system looses energy (\ac{ie} the sum of the kinetic and potential energy decreases over time) and the embedding has to encode this behavior.
 
 			\begin{figure}
 				\centering
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-N0-D0.pdf}
-				\end{subfigure}%
-				~
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-N0-D1.pdf}
-				\end{subfigure}
-				\caption{Plot of the raw data used for training the undamped pendulum environment. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-N0.pdf}
+				\caption{Plot of the raw data used for training the undamped pendulum environment. The left plot shows the displacement and the right plot the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envPendulum}
 			\end{figure}
 			\begin{figure}
 				\centering
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-damped-N0-D0.pdf}
-				\end{subfigure}%
-				~
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-damped-N0-D1.pdf}
-				\end{subfigure}
-				\caption{Plot of the raw data used for training the damped pendulum environment. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-damped-N0.pdf}
+				\caption{Plot of the raw data used for training the damped pendulum environment. The left plot shows the displacement and the right plot the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envPendulumDamped}
 			\end{figure}
 
@@ -169,17 +100,8 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 
 			\begin{figure}
 				\centering
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-gym-N0-D0.pdf}
-				\end{subfigure}%
-				~
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-gym-N0-D1.pdf}
-				\end{subfigure} \\
-				\includegraphics[width=0.5\linewidth]{figures/experiments/environments/observations-pendulum-gym-N0-D2.pdf}
-				\caption{Plot of the raw data used for training the Gym pendulum environment. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-gym-N0.pdf}
+				\caption{Plot of the raw data used for training the Gym pendulum environment. The top row shows the cosine/sine of the displacement of the pendulum and the bottom plot shows the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envPendulumGym}
 			\end{figure}
 		% end
@@ -206,7 +128,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 				\ddot{\theta} &= \frac{g \sin\theta + \cos\theta \Big(\! \frac{-F - m_p \ell \dot{\theta}^2 \sin\theta}{m_c + m_p} \!\Big)}{\ell \Big(\! \frac{4}{3} - \frac{m_p \cos^2\theta}{m_c + m_p} \!\Big)} \\
 				\ddot{x} &= \frac{F + m_p \ell \big( \dot{\theta}^2 \sin\theta - \ddot{\theta} \cos\theta \big)}{m_c + m_p}
 			\end{align*}
-			where \( g = \SI{9.81}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_p = \SI{0.1}{\kilogram} \) and \( m_c = \SI{1}{\kilogram} \) are the masses of the pole and cart, respectively, \( 2\ell = \SI{1}{\meter} \) is the pole length and \( [F] = \si{\newton} \) is the external (control) force acting on the cart that we set to \( \SI{0}{\newton} \). The Gym environment uses the Euler method for integrating the \ac{ode} with a step size of \( h = 0.02 \). We generate \( T = 300 \) time steps of which we use \( T_\train = 150 \) for training and the remaining \(150\) steps for validation. The raw data is shown in~\autoref{fig:envCartpoleGym}.
+			where \( g = \SI{9.81}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_p = \SI{0.1}{\kilogram} \) and \( m_c = \SI{1}{\kilogram} \) are the masses of the pole and cart, respectively, \( 2\ell = \SI{1}{\meter} \) is the pole length and \( [F] = \si{\newton} \) is the external (control) force acting on the cart that we set to \( \SI{0}{\newton} \). The Gym environment uses an implicit Euler method\footnote{As we already said in~\autoref{subsubsec:integrationProblems}, this has to be set manually with \lstinline|env.kinematics_integrator = 'implicit-euler'|.} for integrating the \ac{ode} with a step size of \( h = 0.02 \). We generate \( T = 300 \) time steps of which we use \( T_\train = 150 \) for training and the remaining \(150\) steps for validation. The raw data is shown in~\autoref{fig:envCartpoleGym}.
 
 			\begin{lstlisting}[caption={Modification of Gym's cartpole environment to get an uncontrolled cartpole.}, label=lst:uncontrolledCartPole]
 from gym.envs.classic_control import CartPoleEnv
@@ -227,25 +149,8 @@ class UncontrolledCartPole(CartPoleEnv):
 
 			\begin{figure}
 				\centering
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-cartpole-gym-N0-D0.pdf}
-				\end{subfigure}%
-				~
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-cartpole-gym-N0-D1.pdf}
-				\end{subfigure} \\
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-cartpole-gym-N0-D2.pdf}
-				\end{subfigure}%
-				~
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-cartpole-gym-N0-D3.pdf}
-				\end{subfigure}
-				\caption{Plot of the raw data used for training the Gym cartpole environment. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-cartpole-gym-N0.pdf}
+				\caption{Plot of the raw data used for training the Gym cartpole environment. The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envCartpoleGym}
 			\end{figure}
 		% end
@@ -298,34 +203,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 			\begin{figure}
 				\centering
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0-D0.pdf}
-				\end{subfigure}%
-				~
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0-D1.pdf}
-				\end{subfigure} \\
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0-D2.pdf}
-				\end{subfigure}%
-				~
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0-D3.pdf}
-				\end{subfigure} \\
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0-D4.pdf}
-				\end{subfigure}%
-				~
-				\begin{subfigure}{0.5\linewidth}
-					\centering
-					\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0-D5.pdf}
-				\end{subfigure}
-				\caption{Plot of the raw data used for training the Gym double pendulum environment. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0.pdf}
+				\caption{Plot of the raw data used for training the Gym double pendulum environment. The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envDoublePendulumGym}
 			\end{figure}
 		% end
@@ -349,7 +228,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\label{tab:experimentSetup}
 		\end{table}
 
-%		For the proof-of-concept environments (the linear system and the polynomial system), we used slightly different setups as those environments are a lot simpler. For the linear system, we used a zero-layer neural network with no activation function, \ac{ie} a learnable matrix/linear transformation. We also fix the latent dimensionality to be \(2\) for the linear system as we only have two states. For the polynomial system, we know the exact form of the Koopman operator (see~\autoref{subsubsec:polynomial}), hence we fix the latent dimensionality to be \(3\). However, as we seek the \emph{inverse} Koopman observations, we chose a single hidden layer neural network with \(10\) hidden neurons and \(\tanh\) activation function and \(10000\) maximum \(\vec{g}\)-optimization iterations.
 		For the proof-of-concept environment (the linear system), we used a slightly different setup as the environment is a lot simpler. We used a zero-layer neural network with no activation function, \ac{ie} a learnable matrix/linear transformation. We also fix the latent dimensionality to be \(2\) for the linear system as we only have two states.
 	% end
 
@@ -368,6 +246,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 \section{Results}
 	\label{sec:results}
+
+	\todo{Update all results with the latest results from the GPU!}
 
 	In this section we will look at the results of the experiments described above. We organized the section into the different environments and will take a look at both the hyper-experiments first and then the individual results for optimized hyperparameters.
 
@@ -626,7 +506,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-02/without-confidence/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 2\). The top left plot shows the cart position, the top right plot the cart velocity, the bottom left plot the pendulum angle and the bottom right plot the pendulum velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". Note that we have removed the confidence on this plot as it is really low, result in high variances. See~\autoref{fig:cartpoleRolloutL02Appendix} in~\autoref{app:remainingPlots} for the plot with confidence.}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 2\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". Note that we have removed the confidence on this plot as it is really low, result in high variances. See~\autoref{fig:cartpoleRolloutL02Appendix} in~\autoref{app:remainingPlots} for the plot with confidence.}
 				\label{fig:cartpoleRolloutL02}
 			\end{figure}
 		% end
@@ -637,7 +517,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-10/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 10\). The top left plot shows the cart position, the top right plot the cart velocity, the bottom left plot the pendulum angle and the bottom right plot the pendulum velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation. As the variances in the top plots are very high, see~\autoref{fig:cartpoleRolloutL10Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 10\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation. As the variances in the top plots are very high, see~\autoref{fig:cartpoleRolloutL10Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
 				\label{fig:cartpoleRolloutL10}
 			\end{figure}
 		% end
@@ -648,7 +528,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-14/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 14\). The top left plot shows the cart position, the top right plot the cart velocity, the bottom left plot the pendulum angle and the bottom right plot the pendulum velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation. As the variances in the top plots are still very high, see~\autoref{fig:cartpoleRolloutL14Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 14\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation. As the variances in the top plots are still very high, see~\autoref{fig:cartpoleRolloutL14Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
 				\label{fig:cartpoleRolloutL14}
 			\end{figure}
 		% end
@@ -703,7 +583,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/acrobot-gym/run-latent-dim-03/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the double pendulum environment for \(k = 3\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the two angular velocity with the inner pendulum on the left and the outer pendulum on the right. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
+				\caption{The rollout plot in the observation space of the double pendulum environment for \(k = 3\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ac{ie} two times the standard deviation.}
 				\label{fig:acrobotRolloutL03}
 			\end{figure}
 		% end

@@ -1,10 +1,10 @@
-\chapter{The Nonlinear Gaussian Koopman Algorithm}  % TODO: Find better name.
+\chapter{The Koopman Inference Algorithm}
 \label{c:nonlinearGaussianKoopman}
 \IMRADlabel{methods}
 
 
 
-In this chapter we will introduce out contribution and the theoretical background of the \algname algorithm that we will implement as a proof of concept in~\autoref{c:experiments}. We will start by introducing the ideas that lead to the idea, then formulate and also solve the arising (approximate) inference problem.
+In this chapter we will introduce out contribution and the theoretical background of the Koopman inference algorithm that we will implement as a proof of concept in~\autoref{c:experiments}. We will start by introducing the ideas that lead to the idea, then formulate and also solve the arising (approximate) inference problem.
 
 By looking at the graphical model for an \ac{lgds} and the state transition model for a Koopman dynamical system in~\autoref{fig:lgdsKoopmanRelation}, we can see that there are lots of similarities. The first and most interesting similarity is that both systems assume a latent state that transitions linearly, either with a state dynamics matrix \(\mat{A}\) for the \ac{lgds} or with the Koopman operator\footnote{From now on, we assume a finite-dimensional matrix approximation \(\mat{K}\) of the Koopman operator \(\mathcal{K}\).} \(\mat{K}\). The greatest difference is that measurements in classic \ac{lgds} are taken linearly with an observation matrix \( \mat{C} \) and nonlinear in the Koopman system with the measurement function \( \vec{h}(\cdot) \).
 
@@ -36,24 +36,16 @@ that can equivalently be formulated as
 	\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
 	\vec{y}_t       &\sim \normal\big(\vec{g}(\vec{s}_t), \mat{R}\big)
 \end{align*}
-We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \emph{latent space} with dimensionality \(k\), \( \vec{y}_t \) the \emph{observation variables} or \emph{observations} in the \emph{observation space} with dimensionality \(p\), \( \vec{g} : \R^k \to \R^p \) the \emph{observation function} mapping latents to observations, \( \mat{A} \) the \emph{(state) dynamics matrix}, \( \mat{Q} \) the state covariance matrix and \( \mat{R} \) the observation covariance matrix.
+We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \emph{latent space} with dimensionality \(k\), \( \vec{y}_t \) the \emph{observation variables} or \emph{observations} in the \emph{observation space} with dimensionality \(p\), \( \vec{g} : \R^k \to \R^p \) the \emph{observation function} mapping latents to observations, \( \mat{A} \) the \emph{(state) dynamics matrix}, \( \mat{Q} \) the state covariance matrix and \( \mat{R} \) the observation covariance matrix. Note that we also assume the Gaussian additive the noise to be uncorrelated, \ac{ie} we assume diagonal covariance matrices \( \mat{Q} \) and \( \mat{R} \).
 
 \begin{figure}
 	\centering
 	\tikzNonlinearGaussianKoopman
-	\caption{The graphical model of the \algname model. Given an observation sequence \( \vec{y}_{1:T} \), we seek the latent dynamics and the corresponding nonlinear mapping \( \vec{g}(\cdot) \) from the latent space to the observations.}
+	\caption{The graphical model of the Koopman inference model. Given an observation sequence \( \vec{y}_{1:T} \), we seek the latent dynamics and the corresponding nonlinear mapping \( \vec{g}(\cdot) \) from the latent space to the observations.}
 	\label{fig:nonlinearGaussianKoopman}
 \end{figure}
 
-%\section{Formulating and Solving the Nonlinear Approximate Inference Problem using an Approximate EM Algorithm}
 \section{Formulating and Solving the Inference Problem using an EM Algorithm}
-	% Formulate likelihood, expected likelihood.
-	% Shortly outline how to do the derivation and reference appendix.
-	% Summarize M-step equations.
-	% Combine ideas from ch. 2 (cubature and sqrt) and summarize.
-
-	%Instead of tackling the inference problem with some kind of \ac{vae}, we choose to use an \ac{em} algorithm as it requires less training because of putting more prior knowledge and assumptions into the model, like the Gaussian noise or the specific
-
 	We seek to find the matrices \(\mat{A}\), \(\mat{Q}\) and \(\mat{R}\) and the observation function \( \vec{g}_{\vec{\theta}}(\cdot) \), parameterized by \(\vec{\theta}\) and the initial state distribution \( \vec{s}_1 \sim \normal(\vec{m}_0, \mat{V}_0) \) that maximize the likelihood
 	\begin{equation*}
 		p(\vec{s}_{1:T}, \vec{y}_{1:T}) = p(\vec{s}_1) \prod_{t = 2}^{T} p(\vec{s}_t \given \vec{s}_{t - 1}) \prod_{t = 1}^{T} p(\vec{y}_t \given \vec{s}_t)
@@ -78,7 +70,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	\end{align*}
 	with the abbreviation \( \vec{g}_t \coloneqq \vec{g}(\vec{s}_t) \).
 
-	But maximizing this quantity is impossible as we do not have the latent states \( \vec{s}_{1:T} \). Hence, as usual in \ac{em} \todo{see section xy}, we instead maximize the expected log-likelihood and estimate the latent states based on out previous guess for the state dynamics. These two steps form our E- and M-step of the \algname algorithm:
+	But maximizing this quantity is impossible as we do not have the latent states \( \vec{s}_{1:T} \). Hence, as usual in \ac{em} (see~\autoref{sec:em}), we instead maximize the expected log-likelihood and estimate the latent states based on out previous guess for the state dynamics. These two steps form our E- and M-step of the Koopman inference algorithm:
 	\begin{itemize}
 		\item E-Step: Estimate the latent states \( \vec{s}_{1:T} \).
 		\item M-Step: Maximize the expected log-likelihood \ac{wrt} the state dynamics and observation function parameters.
@@ -128,7 +120,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		\mat{P}_{t, t - 1}^{(n)} &= \hat{\mat{J}}_{t - 1} \hat{\mat{V}}_t - \hat{\vec{s}}_{t}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T}
 	\end{align*}
 
-	The whole \algname algorithm is outline in~\autoref{alg:ngk}.
+	The whole Koopman inference algorithm is outline in~\autoref{alg:ngk}.
 
 	\begin{algorithm}  \DontPrintSemicolon
 		\KwData{\(N\) observation sequences \( \vec{y}_{1:T}^{(n)} \in \R^{p \times T} \).}
@@ -146,7 +138,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 			\eqmakebox[ngkmstep][r]{\( \displaystyle \vec{m}_0 \gets \)} \( \displaystyle \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_1^{(n)} \) \;
 			\eqmakebox[ngkmstep][r]{\( \displaystyle \mat{V}_0 \gets \)} \( \displaystyle \mat{P}_1 - \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \) \;
 		}
-		\caption{\algname}
+		\caption{Koopman Inference}
 		\label{alg:ngk}
 	\end{algorithm}
 % end
@@ -154,7 +146,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 \section{Implementation}
 	\label{sec:implementation}
 
-	We implemented the \algname algorithm in Python using the popular array processing library NumPy~\cite{harrisArrayProgrammingNumPy2020} throughout the whole implementation, the deep learning library PyTorch~\cite{paszkePyTorchImperativeStyle2019} for the numerical optimization of \(\vec{\theta}\) and Sacred~\cite{greffSacredInfrastructureComputational2017} for experiment management. The whole implementation can be found on GitHub\footnote{See \href{https://github.com/fdamken/bachelors-thesis_code}{\texttt{https://github.com/fdamken/bachelors-thesis\_code}}.}.
+	We implemented the Koopman inference algorithm in Python using the popular array processing library NumPy~\cite{harrisArrayProgrammingNumPy2020} throughout the whole implementation, the deep learning library PyTorch~\cite{paszkePyTorchImperativeStyle2019} for the numerical optimization of \(\vec{\theta}\) and Sacred~\cite{greffSacredInfrastructureComputational2017} for experiment management. The whole implementation can be found on GitHub\footnote{See \href{https://github.com/fdamken/bachelors-thesis_code}{\texttt{https://github.com/fdamken/bachelors-thesis\_code}}.}.
 
 	During the implementation we focused on making the algorithm as reusable as possible, separating all data generation and investigation code from the actual implementation. Separating the data generation also has the advantage that we can run benchmarks on the exact same data to compare model performance. We have separated the optimization of \(\vec{\theta}\) as much as possible (as outlined in~\autoref{alg:ngk}) and made it possible for the user of the algorithm to easily change the optimization algorithm to use in conjunction with the parameters of the algorithm like the learning rate (defaulting to Adam~\cite{kingmaAdamMethodStochastic2017} with a learning rate of \( 0.01 \)). We also made all of the following configurable:
 	\begin{itemize}
@@ -165,7 +157,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	\end{itemize}
 	These are only the parameters that can be configured directly on the \ac{em} algorithm, but the user is also able to specify how to initialize everything, \ac{ie} the matrices \( \mat{A} \), \( \mat{Q} \), \( \mat{R} \), \( \mat{V}_0 \), \( \vec{m}_0 \) and the parameters \( \vec{\theta} \) of the observation function \( \vec{g}_{\vec{\theta}} \). Speaking of the observation function, we used a neural network with \( \tanh \) activation function and a single hidden layer for all experiments (see~\autoref{c:experiments} for more information about the experiment setup). We made it also possible to pass arbitrary Torch modules as the function approximator that can be learned via a \ac{gd}-like algorithm (\ac{ie} they must be differentiable and expose parameters).
 
-	For learning multiple observation sequences, as outlined in the derivation of the \algname algorithm in~\autoref{c:nonlinearGaussianKoopman}, it turns out to be useful to add noise to the training data which has the effect of regularizing the algorithm a bit. This effect is visible in smoother log-likelihood curves as we will see in~\autoref{c:experiments}.
+	For learning multiple observation sequences, as outlined in the derivation of the Koopman inference algorithm in~\autoref{c:nonlinearGaussianKoopman}, it turns out to be useful to add noise to the training data which has the effect of regularizing the algorithm a bit. This effect is visible in smoother log-likelihood curves as we will see in~\autoref{c:experiments}.
 
 	\subsection{Insights, Problems and Solutions}
 		In this section we will focus on interesting insights and problems we found during the implementation and how to (possibly) solve them.
@@ -175,7 +167,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		% end
 
 		\subsubsection{Diagonal Covariance}
-			As we assumed the noise to be independent\todo{Include that assumption in the theoretical section!}, we can safely omit the non-diagonal entries of the covariance \( \mat{Q} \), \( \mat{R} \) and \( \mat{V}_0 \). That way we further reduce the computational overhead that would other wise be generated as we still (even with square-root filtering) have to compute the Cholesky decomposition of \( \mat{Q} \) and \( \mat{R} \). We can now just take the square-root of the diagonal entries and get the Cholesky decomposition around ten times faster\todo{Cite something or add experiment?}.
+			As we assumed the noise to be independent, we can safely omit the non-diagonal entries of the covariance \( \mat{Q} \), \( \mat{R} \) and \( \mat{V}_0 \). That way we further reduce the computational overhead that would other wise be generated as we still (even with square-root filtering) have to compute the Cholesky decomposition of \( \mat{Q} \) and \( \mat{R} \). We can now just take the square-root of the diagonal entries and get the Cholesky decomposition around ten times faster\footnote{We ran a small experiment on \(1000\) random \( 1000 \times 1000 \) matrices on NumPy's~\cite{harrisArrayProgrammingNumPy2020} Cholesky decomposition and square-root implementation. Decomposing all matrices took approx. \SI{5.1}{\second}, taking the square-root took approx. \SI{0.5}{\second}.}.
 
 			% >>> As = [np.diag(np.random.random(size=(1000,)) ** 2) for n in range(1000)]
 			% >>> timeit.timeit(lambda: [np.linalg.cholesky(A) for A in As], number=10)
@@ -189,9 +181,15 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		\subsubsection{Regularization and Learning Cholesky Decompositions}
 			There are also a few points where our code is extensible to make it faster, improve numerical stability and so on (see also~\autoref{sec:futureWork}). The main points are regularization and/or learning the Cholesky decomposition directly.
 
-			As we will see in~\autoref{c:experiments}, having singular and non-positive definite matrices is a big problem that should be assessed. We already implemented the square-root smoothing that increased the numerical stability through the smoothing by not allowing non-positive definite matrices to be produced by the smoothing at all (as we directly learn the Cholesky decomposition). Additional regularization might make sense at the computation of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\). Another approach would be to learn the Cholesky decomposition of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\) directly by replacing the explicit formulas with a \ac{gd} algorithm that directly learn the Cholesky or the square-root diagonal. As the optimization problem is still convex\todo{This is a hot take.}, finding the global optimum should be easily possible.
+			As we will see in~\autoref{c:experiments}, having singular and non-positive definite matrices is a big problem that should be assessed. We already implemented the square-root smoothing that increased the numerical stability through the smoothing by not allowing non-positive definite matrices to be produced by the smoothing at all (as we directly learn the Cholesky decomposition). Additional regularization might make sense at the computation of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\). Another approach would be to learn the Cholesky decomposition of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\) directly by replacing the explicit formulas with a \ac{gd} algorithm that directly learn the Cholesky or the square-root diagonal. As the optimization problem may still be convex or close to convex, finding the global optimum should be easily possible.
 
 			However we sadly did not have more time to look into this idea.
+		% end
+
+		\subsubsection{Issues with Numerical Integration}
+			\label{subsubsec:integrationProblems}
+
+			We should note that some environments we run experiments on are described by stiff differential equations, \ac{eg} the pendulum or the cartpole environment. As stiff \acp{ode} can not be integrated well with explicit solution methods, implicit methods should be preferred throughout the data generation. For some environments in OpenAI's Gym~\cite{brockmanOpenAIGym2016}, this has to be explicitly configured, \ac{eg} for the cartpole environment with \lstinline|env.kinematics_integrator = 'implicit-euler'|. Do not changing the integrator leads to catastrophic data. In case of the cartpole, using the explicit Euler method causes the pole to build up energy and to get faster over time.
 		% end
 	% end
 
