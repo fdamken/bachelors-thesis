@@ -12,7 +12,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 	In this section we will introduce the experiment setup and all the different environments we used for evaluation.
 
 	\subsection{Environments}
-		This section covers the different environments we used and changed we might have applied to them. Do generate the data, you have to run the file \texttt{src/data.py} with the desired experiment ID as the first argument, \eg \texttt{python src/data.py pendulum\_damped}. If no argument is given, a regeneration of the data from all experiments is triggered. For each of the following environments we summarize the most important data about the environment at the start of the subsection, including the experiment ID.
+		This section covers the different environments we used and changes we might have applied to them. To generate the data, you have to run the file \texttt{src/data.py} with the desired experiment ID as the first argument, \eg \texttt{python src/data.py pendulum\_damped}. If no argument is given, a regeneration of the data from all experiments is triggered. For each of the following environments we summarize the most important data about the environment at the start of the subsection, including the experiment ID.
 
 		\subsubsection{Proof-of-Concept: Classic LGDS}
 			\begin{itemize}
@@ -26,7 +26,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 			\end{align*}
 			The initial state \( \vec{s}_1 \) is sampled from a Gaussian with mean \( \begin{bmatrix} 0.1 & 0.2 \end{bmatrix}^T \) and covariance \( \diag\big(10^{-5}, 10^{-5}\big) \). The system is integrated using the implicit Runge-Kutta Radau~IIA~\cite{guglielmiImplementingRadauIIA2001} method with an evaluation interval of \( h = 0.1 \) for \( T = 240 \) time steps where only the first \( T_\train = 120 \) steps are used for training and the remaining \(120\) are used for validation. The raw data is shown in~\autoref{fig:envLgds}.
 
-			As the system's eigenvalues \( -i \), \( i \) are purely imaginary, the integrated system rings around the equilibrium \( \begin{bmatrix} 0 & 0 \end{bmatrix}^T \) infinitely.
+			As the system's eigenvalues \( -i \), \( i \) are purely imaginary, the integrated system rings around the equilibrium \( \begin{bmatrix} 0 & 0 \end{bmatrix}^T \) indefinitely.
 
 			\begin{figure}
 				\centering
@@ -120,7 +120,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 				\ddot{\theta} &= \frac{g \sin\theta + \cos\theta \Big(\! \frac{-F - m_p \ell \dot{\theta}^2 \sin\theta}{m_c + m_p} \!\Big)}{\ell \Big(\! \frac{4}{3} - \frac{m_p \cos^2\theta}{m_c + m_p} \!\Big)} \\
 				\ddot{x} &= \frac{F + m_p \ell \big( \dot{\theta}^2 \sin\theta - \ddot{\theta} \cos\theta \big)}{m_c + m_p}
 			\end{align*}
-			where \( g = \SI{9.81}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_p = \SI{0.1}{\kilogram} \) and \( m_c = \SI{1}{\kilogram} \) are the masses of the pole and cart, respectively, \( 2\ell = \SI{1}{\meter} \) is the pole length and \( [F] = \si{\newton} \) is the external (control) force acting on the cart that we set to \( \SI{0}{\newton} \). The Gym environment uses an implicit Euler method\footnote{As we already said in~\autoref{subsubsec:integrationProblems}, this has to be set manually with \lstinline|env.kinematics_integrator = 'implicit-euler'|.} for integrating the \ac{ode} with a step size of \( h = 0.02 \). We generate \( T = 300 \) time steps of which we use \( T_\train = 150 \) for training and the remaining \(150\) steps for validation. The raw data is shown in~\autoref{fig:envCartpoleGym}.
+			where \( g = \SI{9.8}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_p = \SI{0.1}{\kilogram} \) and \( m_c = \SI{1}{\kilogram} \) are the masses of the pole and cart, respectively, \( 2\ell = \SI{1}{\meter} \) is the pole length and \( [F] = \si{\newton} \) is the external (control) force acting on the cart that we set to \( \SI{0}{\newton} \). The Gym environment uses an implicit Euler method\footnote{As we already said in~\autoref{subsubsec:integrationProblems}, this has to be set manually with \lstinline|env.kinematics_integrator = 'implicit-euler'|.} for integrating the \ac{ode} with a step size of \( h = 0.02 \). We generate \( T = 300 \) time steps of which we use \( T_\train = 150 \) for training and the remaining \(150\) steps for validation. The raw data is shown in~\autoref{fig:envCartpoleGym}.
 
 			\begin{lstlisting}[caption={Modification of Gym's cartpole environment to get an uncontrolled cartpole.}, label=lst:uncontrolledCartPole]
 from gym.envs.classic_control import CartPoleEnv
@@ -152,7 +152,7 @@ class UncontrolledCartPole(CartPoleEnv):
 				\item Experiment ID: \texttt{acrobot\_gym}
 			\end{itemize}
 
-			The last environment we test is the double pendulum, implemented in Gym as the \emph{acrobot} (as for the cartpole, we removed all control inputs and modified the initial state to start on top rather than hanging straight down, see~\autoref{lst:topAcrobot}). The double pendulum consists of a pendulum on a fixed joint and a second pendulum attached to the end of the first pendulum. This creates highly nonlinear coupling and is the most common example of a chaotic system~\cite{shinbrotChaosDoublePendulum1992}. We observe the state vector
+			The last environment we test on is the double pendulum, implemented in Gym as the \emph{acrobot} (as for the cartpole, we removed all control inputs and modified the initial state to start on top rather than hanging straight down, see~\autoref{lst:topAcrobot}). The double pendulum consists of a pendulum on a fixed joint and a second pendulum attached to the end of the first pendulum. This creates highly nonlinear coupling and is the most common example of a chaotic system~\cite{shinbrotChaosDoublePendulum1992}. We observe the state vector
 			\begin{equation*}
 				\vec{y} \coloneqq
 					\begin{bmatrix}
@@ -164,7 +164,7 @@ class UncontrolledCartPole(CartPoleEnv):
 						\dot{\varphi}_2
 					\end{bmatrix}
 			\end{equation*}
-			where \(\varphi_1\) and \(\varphi_2\) are the displacement of the first and second joint, respectively. See~\autoref{fig:envDoublePendulumGymSketch}) for a sketch of the double pendulum. The governing equations of motion are given as:´
+			where \(\varphi_1\) and \(\varphi_2\) are the displacement of the first and second joint, respectively. See~\autoref{fig:envDoublePendulumGymSketch}) for a sketch of the double pendulum. The governing equations of motion are given as:
 			\begin{align*}
 				\ddot{\varphi}_1 &= \frac{g (\sin\varphi_2 \, \cos\varphi_\Delta - \mu \sin\varphi_1) - (\ell_2 \dot{\varphi}_2^2 + \ell_1 \dot{\varphi}_1^2 \cos\varphi_\Delta) \sin\varphi_\Delta}{\ell_1 (\mu - \cos^2\varphi_\Delta)} \\
 				\ddot{\varphi}_2 &= \frac{g \mu (\sin\varphi_2 \, \cos\varphi_\Delta - \mu \sin\varphi_1) + (\mu \ell_1 \dot{\varphi}_1^2 + \ell_2 \dot{\varphi}_2^2 \cos\varphi_\Delta) \sin\varphi_\Delta}{\ell_2 (\mu - \cos^2\varphi_\Delta)}
@@ -224,14 +224,14 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 	% end
 
 	\subsection{Hyper-Experiments}
-		Besides the performance on specific environments, we where interested in how hyperparameters like the latent dimensionality affect the performance of the system. In this section we will discuss and present our experiment setup for the "hyper-experiments". All hyperparameters that are not part of the experiment where set to the ones listed in~\autoref{tab:experimentSetup}.
+		Besides the performance on specific environments, we were interested in how hyperparameters like the latent dimensionality affect the performance of the system. In this section we will discuss and present our experiment setup for the "hyper-experiments". All hyperparameters that are not part of the experiment where set to the ones listed in~\autoref{tab:experimentSetup}.
 
 		If not stated differently, we always ran the experiment with five different seeds\footnote{Namely, we used the seeds \(0\), \(11\), \(42\), \(1234\) and \(1997\) that where chosen on a random basis.} to average out initialization noise.
 
 		\subsubsection{Influence of the Latent Dimensionality}
 			\label{subsec:experimentLatentDim}
 
-			As the latent dimensionality directly influences how well the Koopman matrix can approximate the infinite-dimensional operator, it is one of the most interesting hyperparameters we evaluated. Hence, we evaluated lots of different latent dimensionalities from \( k = 1 \) to \( k = 50 \) (for cartpole, we did \( k = 1, 2, \rangedots, 100 \)).
+			As the latent dimensionality directly influences how well the Koopman matrix can approximate the infinite-dimensional operator, it is one of the most interesting hyperparameters we evaluate. Hence, we evaluate lots of different latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 		% end
 	% end
 % end
@@ -277,7 +277,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Influence of the Latent Dimensionality}
 			For the pendulum experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 
-			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:pendulumRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the pendulum dynamics. We see that the \ac{nrmse} shrinks to near zero (less than \( 0.01 \)). Even for \( k = 1 \), the error is only approx. \( 0.18 \).
+			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:pendulumRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the pendulum dynamics. We see that the \ac{nrmse} shrinks to near zero (less than \( 0.01 \)). Even for \( k = 1 \), the error is only approx. \( 0.18 \).
 
 			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:pendulumRmseComplete}, we see that the error is quite noisy due to initialization. Nevertheless, the error shrinks until \( k \geq 10 \) and then stabilizes around an error of approx. \(0.15\). Comparing the complete rollout error with the training and prediction \ac{nrmse} in~\autoref{fig:pendulumRmseTrain} and~\autoref{fig:pendulumRmsePred}, respectively, we see that the training error falls until \( k \geq 10 \) and then stabilizes around \(0.08\). For the prediction error, we see a similar connection to \( k \geq 10 \), but the error does not shrink as much and always is around \(0.20\).
 
@@ -369,9 +369,9 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Influence of the Latent Dimensionality}
 			For the damped pendulum experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 
-			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:pendulumDampedRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the damped pendulum dynamics. We see that the \ac{nrmse} shrinks to near zero (less than \( 0.01 \)) for latent dimensionalities of \( k \geq 2 \). Even for \( k = 1 \), the error is only approx. \( 0.09 \).
+			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:pendulumDampedRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the damped pendulum dynamics. We see that the \ac{nrmse} shrinks to near zero (less than \( 0.01 \)) for latent dimensionalities of \( k \geq 2 \). Even for \( k = 1 \), the error is only approx. \( 0.09 \).
 
-			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:pendulumDampedRmseComplete}, we see that there is a point of diminishing returns in terms of the latent dimensionality for \( k \geq 10 \), where we get decent errors (around \( 0.05 \)) for all latent dimensionalities. Looking at the parts the complete \ac{nrmse} is composed of, the training and prediction error in~\autoref{fig:pendulumDampedRmseTrain} and~\autoref{fig:pendulumDampedRmsePred}, respectively, we see that the latent dimensionality affects both parts, the training and prediction error. However, the prediction error in generally smaller, which is mostly caused by the value of the state and hence the rollout being smaller.
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:pendulumDampedRmseComplete}, we see that there is a point of diminishing returns in terms of the latent dimensionality for \( k \geq 10 \), where we get decent errors (around \( 0.05 \)) for all latent dimensionalities. Looking at the parts the complete \ac{nrmse} is composed of, the training and prediction error in~\autoref{fig:pendulumDampedRmseTrain} and~\autoref{fig:pendulumDampedRmsePred}, respectively, we see that the latent dimensionality affects both parts, the training and prediction error. However, the prediction error is generally smaller, which is mostly caused by the value of the state and hence the rollout being smaller.
 
 			\begin{figure}
 				\centering
@@ -407,7 +407,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout error should be quite high, but the smoothed trajectory should follow the true data really good.~\autoref{fig:pendulumDampedRolloutL02} shows that most trajectories are far off the true trajectory with low confidence, while the smoothed trajectory nearly perfectly matches the true data.
+			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout error should be quite high, but the smoothed trajectory should follow the true data really good.~\autoref{fig:pendulumDampedRolloutL02} shows that most trajectories are far off the true trajectory with low confidence, while the smoothed trajectory almost perfectly matches the true data.
 
 			\begin{figure}
 				\centering
@@ -457,11 +457,11 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\todo{Update this section with new results...!}
 
 		\subsubsection{Influence of the Latent Dimensionality}
-			For the cartpole experiment, we tested \(100\) latent dimensionalities from \( k = 1 \) to \( k = 100 \). Towards the end of this interval, the data points we where able to collect shrink (sometimes even to zero), as the algorithm increasingly numerically brittle with higher latent dimensionality (see also~\autoref{sec:implementation} for comments on the numerical stability).
+			For the cartpole experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \). Towards the end of this interval, the data points we were able to collect shrink (sometimes even to zero), as the algorithm becomes increasingly numerically brittle with higher latent dimensionality (see also~\autoref{sec:implementation} for comments on the numerical stability).
 
-			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{nrmse} shrinks to near zero for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
+			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{nrmse} shrinks to near zero for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
 
-			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the latent dimensionality does not really have an effect on how well we learn the dynamics. However, a look at the training and prediction \ac{nrmse} plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, shows that the most errors is primarily caused by the prediction. Looking just at the training error, we see that we need at least \( k \geq 10 \) to get a nearly perfect error on the training data (below \(0.01\). As the data is quite noisy due to initialization errors, we might reach this boundary before, but starting from \(k \geq 10\) latent dimensions, most of the data points lie on the zero-line, so it is fair to say that the other runs where "just unlucky" in the initialization. Looking at the prediction plot, however, we see total randomness in the \ac{nrmse} with the average \ac{nrmse} across all latents being quite high (approx. \(0.44\)). Hence, we can safely say that our algorithm does not generalize well on the cartpole environment (we will look at potential reasons for this in~\autoref{c:discussion}).
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the latent dimensionality does not really have an effect on how well we learn the dynamics. However, a look at the training and prediction \ac{nrmse} plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, shows that the most errors are primarily caused by the prediction. Looking just at the training error, we see that we need at least \( k \geq 10 \) to get a nearly perfect error on the training data (below \(0.01\). As the data is quite noisy due to initialization errors, we might reach this boundary before, but starting from \(k \geq 10\) latent dimensions, most of the data points lie on the zero-line, so it is fair to say that the other runs where "just unlucky" in the initialization. Looking at the prediction plot, however, we see total randomness in the \ac{nrmse} with the average \ac{nrmse} across all latents being quite high (approx. \(0.44\)). Hence, we can safely say that our algorithm does not generalize well on the cartpole environment (we will look at potential reasons for this in~\autoref{c:discussion}).
 
 			\begin{figure}
 				\centering
@@ -502,7 +502,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-02/without-confidence/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 2\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". Note that we have removed the confidence on this plot as it is really low, result in high variances. See~\autoref{fig:cartpoleRolloutL02Appendix} in~\autoref{app:remainingPlots} for the plot with confidence.}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 2\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". Note that we have removed the confidence on this plot as it is really low, resulting in high variances. See~\autoref{fig:cartpoleRolloutL02Appendix} in~\autoref{app:remainingPlots} for the plot with confidence.}
 				\label{fig:cartpoleRolloutL02}
 			\end{figure}
 		% end
@@ -536,9 +536,9 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Influence of the Latent Dimensionality}
 			For the double pendulum experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 
-			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:acrobotRmseSmoothed} to see how many latent dimensions we need the least to get a model that is even slightly capable of learning the double pendulum dynamics. We see that the \ac{nrmse} shrinks below \(0.05\) for latent dimensionalities of \( k \geq 3 \), so we need at least \(3\) latent dimensions to get a decent model.
+			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:acrobotRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the double pendulum dynamics. We see that the \ac{nrmse} shrinks below \(0.05\) for latent dimensionalities of \( k \geq 3 \), so we need at least \(3\) latent dimensions to get a decent model.
 
-			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:acrobotRmseComplete}, we see that the error shrinks until \( k \geq 6 \) latent dimensions and than stabilizes to an error around \( 0.27 \), not shrinking much anymore. Looking at the training and prediction error in~\autoref{fig:acrobotRmseTrain} and~\autoref{fig:acrobotRmsePred}, we see that mostly only the training error shrinks while the prediction errors seems to random noise. For the training error, however, see see that the rror shrinks until \( k \geq 18 \) and then stabilized around \( 0.17 \). Hence, we can assume that our model does not generalize well (we will assess this in~\autoref{c:discussion}). On the other hand, our rollout on the training data should be a good fit.
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:acrobotRmseComplete}, we see that the error shrinks until \( k \geq 6 \) latent dimensions and than stabilizes to an error around \( 0.27 \), not shrinking much anymore. Looking at the training and prediction error in~\autoref{fig:acrobotRmseTrain} and~\autoref{fig:acrobotRmsePred}, we see that mostly only the training error shrinks while the prediction errors seems to random noise. For the training error, however, see see that the error shrinks until \( k \geq 18 \) and then stabilized around \( 0.17 \). Hence, we can assume that our model does not generalize well (we will assess this in~\autoref{c:discussion}). On the other hand, our rollout on the training data should be a good fit.
 
 			\begin{figure}
 				\centering
@@ -578,7 +578,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=\linewidth]{figures/results/acrobot-gym/run-latent-dim-03/rollout-observations-N0.pdf}
+				\includegraphics[width=0.9\linewidth]{figures/results/acrobot-gym/run-latent-dim-03/rollout-observations-N0.pdf}
 				\caption{The rollout plot in the observation space of the double pendulum environment for \(k = 3\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:acrobotRolloutL03}
 			\end{figure}
@@ -589,7 +589,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=\linewidth]{figures/results/acrobot-gym/run-latent-dim-18/rollout-observations-N0.pdf}
+				\includegraphics[width=0.9\linewidth]{figures/results/acrobot-gym/run-latent-dim-18/rollout-observations-N0.pdf}
 				\caption{The rollout plot in the observation space of the double pendulum environment for \(k = 18\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:acrobotRolloutL18}
 			\end{figure}
@@ -600,7 +600,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=\linewidth]{figures/results/acrobot-gym/run-latent-dim-30/rollout-observations-N0.pdf}
+				\includegraphics[width=0.9\linewidth]{figures/results/acrobot-gym/run-latent-dim-30/rollout-observations-N0.pdf}
 				\caption{The rollout plot in the observation space of the double pendulum environment for \(k = 18\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:acrobotRolloutL30}
 			\end{figure}

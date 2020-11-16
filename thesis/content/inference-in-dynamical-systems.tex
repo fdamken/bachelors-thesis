@@ -6,11 +6,11 @@
 Our second contribution is to take a probabilistic perspective on "classical" Koopman theory as presented in various publications~\cite{bruntonKoopmanInvariantSubspaces2016,hanDeepLearningKoopman2020,kaiserDatadrivenDiscoveryKoopman2020,luschDeepLearningUniversal2018,williamsDataDrivenApproximation2015}. In this chapter we will build the groundwork for variational inference to combine them to the single \algname algorithm presented in~\autoref{c:nonlinearGaussianKoopman}.
 
 \section{Hidden Markov Models and LGDS}
-	\acp{hmm} are simple Bayesian networks described by a non-observable (\emph{hidden}) Markov chain. This non-observable discrete chain can be indirectly observed with measurements that are emitted by every state. One of the key features of a Markov chain is that a state does only depend on the previous state, but not on the second previous, third previous, and so on, state. That is, knowing only the previous state is sufficient and no more information can be gathered by knowing every other state before. This is described by the state transition distribution
+	\acp{hmm} are simple Bayesian networks described by a non-observable (\emph{hidden}) Markov chain. This non-observable discrete chain can be indirectly observed with observations that are emitted by every state. One of the key features of a Markov chain is that a state does only depend on the previous state, but not on the second previous, third previous, and so on, state. That is, knowing only the previous state is sufficient and no more information can be gathered by knowing every other state before. This is described by the state transition distribution
 	\begin{equation*}
 		s_{k + 1} \sim p(s_{k + 1} \given s_k)
 	\end{equation*}
-	being only dependent on the previous state \(s_k\). Analogous, a measurement \(\vec{y}_k\) of a state \(s_k\) is only dependent on that specific state:
+	being only dependent on the previous state \(s_k\). Analogous, a observation \(\vec{y}_k\) of a state \(s_k\) is only dependent on that specific state:
 	\begin{equation*}
 		\vec{y}_k \sim p(\vec{y}_k \given s_k)
 	\end{equation*}
@@ -27,7 +27,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{equation*}
 		\vec{s}_{t + 1} = \mat{A} \vec{s}_t + \vec{w}_t,\quad \vec{w}_t \sim \normal(\vec{0}, \mat{Q})
 	\end{equation*}
-	with covariance matrix \(\mat{Q}\). Similarly, the measurements \( \vec{y}_t = \mat{C} \vec{s}_t + \vec{v}_t \) underlie a Gaussian noise \( \vec{v}_t \sim \normal(\vec{0}, \mat{R}) \) too. Together they form the probabilistic model
+	with covariance matrix \(\mat{Q}\). Similarly, the observations \( \vec{y}_t = \mat{C} \vec{s}_t + \vec{v}_t \) underlie a Gaussian noise \( \vec{v}_t \sim \normal(\vec{0}, \mat{R}) \) too. Together they form the probabilistic model
 	\begin{align*}
 		\vec{s}_{t + 1} &= p(\mat{A} \vec{s}_t, \vec{Q}) \\
 		\vec{y}_t &= p(\mat{C} \vec{s}_t, \mat{R})
@@ -38,7 +38,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 	\end{equation*}
 	Note that we write \( \vec{s}_{t_0:t_1} \) for the sequence \( \big( \vec{s}_{t_0}, \vec{s}_{t_0 + 1}, \rangedots, \vec{s}_{t_1} \big) \) and analogous for the observation sequence \( \vec{y}_{t_0:t_1} \). The probabilistic model of a \ac{lgds} is shown in~\autoref{fig:lgds}.
 
-	This system is similar to a \ac{hmm} and in fact a \ac{lgds} really is an \ac{hmm}, just with continuous states \( \vec{s}_t \in \R^k \) and measurements \( \vec{y}_t \in \R^p \).
+	This system is similar to a \ac{hmm} and in fact a \ac{lgds} really is an \ac{hmm}, just with continuous states \( \vec{s}_t \in \R^k \) and observations \( \vec{y}_t \in \R^p \).
 
 	\begin{figure}
 		\centering
@@ -58,19 +58,19 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 		\item Filtering: \tabto{2.5cm} \( p(\vec{s}_t \given \vec{y}_{1:t}) \)
 		\item Smoothing: \tabto{2.5cm} \( p(\vec{s}_t \given \vec{y}_{1:T}) \)
 	\end{itemize}
-	That is, the filtered distribution only depends on the measurements \emph{to that time} where in contrast the smoothed distribution has used all data to the last time step \(T\) to estimate the latent states. An intermediate step in the filtering algorithm is called \emph{prediction} where the distribution \( p(\vec{s}_t \given \vec{y}_{1:t - 1}) \) is being calculated, using only the data to the previous time step. The differences between what data is used in the three steps is shown in~\autoref{fig:predictionFilteringSmoothing}.
+	That is, the filtered distribution only depends on the observations \emph{to that time} where in contrast the smoothed distribution has used all data to the last time step \(T\) to estimate the latent states. An intermediate step in the filtering algorithm is called \emph{prediction} where the distribution \( p(\vec{s}_t \given \vec{y}_{1:t - 1}) \) is being calculated, using only the data to the previous time step. The differences between what data is used in the three steps is shown in~\autoref{fig:predictionFilteringSmoothing}.
 
 	We will now take a look on the most used filter, the well-known \emph{Kalman Filter} and its colleague, the \emph{Rauch-Tung-Striebel Smoother}, which is also sometimes called the \emph{Kalman Smoother} as it requires a run of the Kalman filter first.
 
 	\begin{figure}
 		\centering
 		\tikzPredictionFilteringSmoothing
-		\caption{This diagram shows the main differences between prediction, filtering and smoothing. The shaded region describes the measurements that has been used to estimate the state at time step \(t\), indicated by a solid line. The dotted line represents time step \(t - 1\), to which all measurements are used in all three procedures. \\ Adopted from~\cite{solinCubatureIntegrationMethods2010}.}
+		\caption{This diagram shows the main differences between prediction, filtering and smoothing. The shaded region describes the observations that have been used to estimate the state at time step \(t\), indicated by a solid line. The dotted line represents time step \(t - 1\), to which all observations are used in all three procedures. \\ Adopted from~\cite{solinCubatureIntegrationMethods2010}.}
 		\label{fig:predictionFilteringSmoothing}
 	\end{figure}
 
 	\subsection{Kalman Filter}
-		The Kalman filter as originally introduced by R.~Kalman in 1960~\cite{kalmanNewApproachLinear1960} in the context of signal processing to predict random signals, separate the signals from noise and detect signals of known form in the presence of noise~\cite{kalmanNewApproachLinear1960}. The normal Kalman filter assumes an underlying model of the form of an \ac{lgds} where the measurements are detected and the state is to be estimated from the data. The process of estimated the states is done in a two-step fashion:
+		The Kalman filter was originally introduced by R.~Kalman in 1960~\cite{kalmanNewApproachLinear1960} in the context of signal processing to predict random signals, separate the signals from noise and detect signals of known form in the presence of noise~\cite{kalmanNewApproachLinear1960}. The normal Kalman filter assumes an underlying model of the form of an \ac{lgds} where the observations are detected and the state has to be estimated from the data. The process of estimating the states is done in a two-step fashion:
 		\begin{enumerate}
 			\item Prediction: \tabto{2.5cm} Estimate the distribution \( p(\vec{s}_t \given \vec{y}_{1:t - 1}) \)
 			\item Correction: \tabto{2.5cm} Estimate the distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \)
@@ -101,7 +101,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 		\begin{equation*}
 			p(\vec{s}_t \given \vec{y}_{1:T})
 		\end{equation*}
-		which uses all measurements (see again~\autoref{fig:predictionFilteringSmoothing} for an illustration). With letting the Kalman filter "run" beforehand, we have the filtered distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \) at hand. Then we have the smoothing equations as
+		which uses all observations (see again~\autoref{fig:predictionFilteringSmoothing} for an illustration). With letting the Kalman filter "run" beforehand, we have the filtered distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \) at hand. Then we have the smoothing equations as
 		\begin{align}
 			\hat{\vec{s}}_{t \subgiven T} &= \hat{\vec{s}}_{t \subgiven t} + \mat{J}_t (\hat{\vec{s}}_{t + 1 \subgiven T} - \hat{\vec{s}}_{t + 1 \subgiven t})  \label{eqn:rtsState} \\
 			\hat{\mat{V}}_{t \subgiven T} &= \hat{\mat{V}}_{t \subgiven t} + \mat{J}_t (\hat{\mat{V}}_{t + 1 \subgiven T} - \hat{\mat{V}}_{t + 1 \subgiven t}) \mat{J}_t^T  \label{eqn:rtsCov}
@@ -110,7 +110,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 
 		Hence, we need the Kalman filter before using the \ac{rts} smoother. Due to this hard wiring between the two algorithms, the \ac{rts} smoother is also often referred to as the Kalman smoother.
 
-		Note that these equations only depend on the state dynamics matrix \( \mat{A} \), so a system that is linear in the state and nonlinear in the measurements can still use the standard \ac{rts} smoother and no further modification is required.
+		Note that these equations only depend on the state dynamics matrix \( \mat{A} \), so a system that is linear in the state and nonlinear in the observations can still use the standard \ac{rts} smoother and no further modification is required.
 	% end
 % end
 
@@ -119,7 +119,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 
 	As we have already discussed, the plain Kalman filter not applicable to nonlinear systems without modifications. In this section we want to motivate the need for \emph{cubature rules} and outline their derivation and how to apply them.
 
-	Often when deriving probabilistic algorithms like \ac{em} or the Kalman filter, we face us to evaluate expectations \( \E_{\vec{x} \sim p(\vec{x})}\big[ \vec{f}(\vec{x}) \big] \) and hence integrals of the form
+	Often when deriving probabilistic algorithms like \ac{em} or the Kalman filter, we have to evaluate expectations \( \E_{\vec{x} \sim p(\vec{x})}\big[ \vec{f}(\vec{x}) \big] \) and hence integrals of the form
 	\begin{equation*}
 		\E_{\vec{x} \sim p(\vec{x})}\big[ \vec{f}(\vec{x}) \big] = \int\! \vec{f}(\vec{x}) p(\vec{x}) \dd{\vec{x}}
 	\end{equation*}
@@ -210,11 +210,11 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 			\eqmakebox[ckfinit][r]{\( \hat{\mat{V}}_{0 \subgiven 0} \gets \)} \( \mat{V}_0 \) \;
 			\For{\( t = 1, 2, \rangedots, T \)}{
 				\( \vec{\xi}_i \gets \sqrt{n} [\vec{1}]_i \) \;
-				\textbf{Prediction:} \;
+				\tcp{\textbf{Prediction:}} \vspace{-0.2cm}
 				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t - 1 \subgiven t - 1} \gets \)} \( \hat{\mat{V}}_{t - 1 \subgiven t - 1}^{1/2} \vec{\xi}_i + \hat{\vec{s}}_{t - 1 \subgiven t - 1} \) \;
 				\quad\eqmakebox[ckf][r]{\( \hat{\vec{s}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \)  \label{algline:ckfStatePre} \;
 				\quad\eqmakebox[ckf][r]{\( \hat{\mat{V}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\vec{x}_{i, t - 1 \subgiven t - 1}) \vec{f}^T(\vec{x}_{i, t - 1 \subgiven t - 1}) - \hat{\vec{s}}_{t \subgiven t - 1} \hat{\vec{s}}_{t \subgiven t - 1}^T + \mat{Q} \)  \label{algline:ckfCovPre} \;
-				\textbf{Correction:} \;
+				\tcp{\textbf{Correction:}} \vspace{-0.2cm}
 				\quad\eqmakebox[ckf][r]{\( \vec{x}_{i, t \subgiven t - 1} \gets \)} \( \hat{\mat{V}}_{t \subgiven t - 1}^{1/2} + \hat{\vec{s}}_{t \subgiven t - 1} \) \;
 				\quad\eqmakebox[ckf][r]{\( \hat{\vec{y}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{g}(\vec{x}_{i, t \subgiven t - 1}) \)  \label{algline:ckfInno} \;
 				\quad\eqmakebox[ckf][r]{\( \mat{S}_t \gets \)} \( \frac{1}{2n} \sum_{i = 1}^{2n} \vec{g}(\vec{x}_{i, t \subgiven t - 1}) \vec{g}^T(\vec{x}_{i, t \subgiven t - 1}) - \hat{\vec{y}}_{t \subgiven t - 1} \hat{\vec{y}}_{t \subgiven t - 1}^T + \mat{R} \)  \label{algline:ckfResCov} \;
@@ -311,21 +311,19 @@ Y = np.linalg.qr(Y.T).T
 				\eqmakebox[sqrtckf][r]{\( \hat{\vec{y}}_{t \subgiven t - 1} \gets \)} \( \frac{1}{2k} \sum_{i = 1}^{2k} \mat{\mathcal{X}}_{t \subgiven t - 1, i}^y \) \;
 				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^s \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^s - \hat{\vec{s}}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
 				\eqmakebox[sqrtckf][r]{\( \mat{\mathcal{Y}}_{t \subgiven t - 1, i}^y \gets \)} \( \big(\mat{\mathcal{X}}_{t \subgiven t - 1, i}^y - \hat{\vec{y}}_{t \subgiven t - 1}\big)/\sqrt{2k} \) \;
-				\begin{minipage}{\linewidth}
-					Find \( \mat{S}_t^{1/2} \), \( \mat{J}_t \) and \( \hat{\mat{V}}_{t \subgiven t}^{1/2} \) using the QR decomposition: \\
-					\null\hspace{1cm} \(
-						\begin{bmatrix}
-							\mat{\mathcal{Y}}_{t \subgiven t - 1}^y \\
-							\mat{\mathcal{Y}}_{t \subgiven t - 1}^s
-						\end{bmatrix}
-						\mat{\Theta}
-						=
-						\begin{bmatrix}
-							\mat{S}_t^{1/2} & \mat{O} & \mat{O} \\
-							\mat{J}_t       & \hat{\mat{V}}_{t \subgiven t}^{1/2} & \mat{O}
-						\end{bmatrix}
-					\)
-				\end{minipage} \; \vspace{-0.5cm}
+				\tcp{Find \( \mat{S}_t^{1/2} \), \( \mat{J}_t \) and \( \hat{\mat{V}}_{t \subgiven t}^{1/2} \) using the QR decomposition:}
+				\(
+					\begin{bmatrix}
+						\mat{\mathcal{Y}}_{t \subgiven t - 1}^y \\
+						\mat{\mathcal{Y}}_{t \subgiven t - 1}^s
+					\end{bmatrix}
+					\mat{\Theta}
+					=
+					\begin{bmatrix}
+						\mat{S}_t^{1/2} & \mat{O} & \mat{O} \\
+						\mat{J}_t       & \hat{\mat{V}}_{t \subgiven t}^{1/2} & \mat{O}
+					\end{bmatrix}
+				\) \;
 				\eqmakebox[sqrtckf][r]{\( \mat{K}_t \gets \)} \( \mat{J}_t \mat{S}_t^{-1/2} \) \;
 				\eqmakebox[sqrtckf][r]{\( \hat{\vec{s}}_{t \subgiven t} \gets \)} \( \hat{\vec{s}}_{t \subgiven t - 1} + \mat{K}_t (\vec{y}_t - \hat{\vec{y}}_{t \subgiven t - 1}) \) \;
 			}
@@ -337,36 +335,32 @@ Y = np.linalg.qr(Y.T).T
 			\KwData{All values from the Kalman filter.}
 			\For{\( t = T - 1, T - 2, \rangedots, 1 \)}{
 				\eqmakebox[sqrtcrts][r]{\( \mat{\mathcal{Y}}_{t \subgiven t, i}^s \gets \)} \( (\mat{\mathcal{X}}_{t \subgiven t, i} - \hat{\vec{s}}_{t \subgiven t}) \) \;
-				\begin{minipage}{\linewidth}
-					Find \( \mat{D}_t \) and \( \mat{Z}_t \) using the QR decomposition: \\
-					\null\hspace{1cm} \(
-						\begin{bmatrix}
-							\mat{\mathcal{Y}}_{t + 1 \subgiven t}^s \\
-							\mat{\mathcal{Y}}_{t \subgiven t}^s
-						\end{bmatrix}
-						\mat{\Theta}
-						=
-						\begin{bmatrix}
-							\hat{\mat{V}}_{t + 1 \subgiven t}^{1/2} & \mat{O}   & \mat{O} \\
-							\mat{D}_t                               & \mat{Z}_t & \mat{O}
-						\end{bmatrix}
-					\)
-				\end{minipage} \; \vspace{-0.5cm}
+				\tcp{Find \( \mat{D}_t \) and \( \mat{Z}_t \) using the QR decomposition:}
+				\(
+					\begin{bmatrix}
+						\mat{\mathcal{Y}}_{t + 1 \subgiven t}^s \\
+						\mat{\mathcal{Y}}_{t \subgiven t}^s
+					\end{bmatrix}
+					\mat{\Theta}
+					=
+					\begin{bmatrix}
+						\hat{\mat{V}}_{t + 1 \subgiven t}^{1/2} & \mat{O}   & \mat{O} \\
+						\mat{D}_t                               & \mat{Z}_t & \mat{O}
+					\end{bmatrix}
+				\) \;
 				\eqmakebox[sqrtcrts][r]{\( \mat{J}_t \gets \)} \( \mat{D}_t \hat{\mat{V}}_{t + 1 \subgiven t}^{-1/2} \) \;
 				\eqmakebox[sqrtcrts][r]{\( \hat{\vec{s}}_{t \subgiven T} \gets \)} \( \hat{\vec{s}}_{t \subgiven t} + \mat{J}_t (\hat{\vec{s}}_{t + 1 \subgiven T} - \hat{\vec{s}}_{t + 1 \subgiven t}) \) \;
-				\begin{minipage}{\linewidth}
-					Find \( \hat{\mat{V}}_{t \subgiven T}^{1/2} \) using the QR decomposition: \\
-					\null\hspace{1cm} \(
-						\begin{bmatrix}
-							\mat{Z}_t & \mat{J}_t \hat{\mat{V}}_{t + 1 \subgiven T}^{1/2}
-						\end{bmatrix}
-						\mat{\Theta}
-						=
-						\begin{bmatrix}
-							\hat{\mat{V}}_{t \subgiven T}^{1/2} & \mat{O}
-						\end{bmatrix}
-					\)
-				\end{minipage} \; \vspace{-0.5cm}
+				\tcp{Find \( \hat{\mat{V}}_{t \subgiven T}^{1/2} \) using the QR decomposition:}
+				\(
+					\begin{bmatrix}
+						\mat{Z}_t & \mat{J}_t \hat{\mat{V}}_{t + 1 \subgiven T}^{1/2}
+					\end{bmatrix}
+					\mat{\Theta}
+					=
+					\begin{bmatrix}
+						\hat{\mat{V}}_{t \subgiven T}^{1/2} & \mat{O}
+					\end{bmatrix}
+				\) \;
 			}
 			\caption{Square-Root Cubature Rauch-Tung-Striebel Smoother}
 			\label{alg:sqrtCubatureRtsSmoother}
