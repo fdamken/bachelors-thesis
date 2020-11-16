@@ -1,2 +1,0 @@
-Run 14 of latent-dim experiment.
-Chosen because of smallest overall RMSE.

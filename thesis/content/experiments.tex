@@ -453,15 +453,13 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 	% end
 
-	\subsection{Gym Cartpole}
-		\todo{Update this section with new results...!}
-
+	\subsection{Gym Cartpole} % Finished!
 		\subsubsection{Influence of the Latent Dimensionality}
-			For the cartpole experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \). Towards the end of this interval, the data points we were able to collect shrink (sometimes even to zero), as the algorithm becomes increasingly numerically brittle with higher latent dimensionality (see also~\autoref{sec:implementation} for comments on the numerical stability).
+			For the cartpole experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 
-			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{nrmse} shrinks to near zero for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
+			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{nrmse} shrinks to near zero (approx. \(0.001\)) for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
 
-			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the latent dimensionality does not really have an effect on how well we learn the dynamics. However, a look at the training and prediction \ac{nrmse} plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, shows that the most errors are primarily caused by the prediction. Looking just at the training error, we see that we need at least \( k \geq 10 \) to get a nearly perfect error on the training data (below \(0.01\). As the data is quite noisy due to initialization errors, we might reach this boundary before, but starting from \(k \geq 10\) latent dimensions, most of the data points lie on the zero-line, so it is fair to say that the other runs where "just unlucky" in the initialization. Looking at the prediction plot, however, we see total randomness in the \ac{nrmse} with the average \ac{nrmse} across all latents being quite high (approx. \(0.44\)). Hence, we can safely say that our algorithm does not generalize well on the cartpole environment (we will look at potential reasons for this in~\autoref{c:discussion}).
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the error does not shrink much any more for latent dimensionalities of \( k \geq 10 \), where the error stabilizes around \(0.23\). Looking at the training and prediction plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, we see that the training error falls a lot until \( k \geq 10 \) latent dimensions where the error stabilized near zero, while the prediction error does not fall much after the first few latent dimensionalities. Hence, we can predict that our model learns the training rollout well but does not generalize behind the prediction boundary.
 
 			\begin{figure}
 				\centering
@@ -497,7 +495,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{356}). As we have already seen, the rollout should not perform well, but the smoothed trajectory should be really accurate. Looking at~\autoref{fig:cartpoleRolloutL02}, we see that nearly all trajectories are far off the true trajectory. Only the smoothed trajectory fits the data perfectly (until the prediction boundary, of course).
+			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). As we have already seen, the rollout should not perform too god, but the smoothed trajectory should be really accurate. Looking at~\autoref{fig:cartpoleRolloutL02}, we see that nearly all trajectories are off the true trajectory. Only the smoothed trajectory fits the data perfectly (until the prediction boundary). We can also see that the rollout starts to go near the true data, learning roughly how the true data looks.
 
 			\begin{figure}
 				\centering
@@ -508,7 +506,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{462}). According to the \ac{nrmse} of the training data, this should perform decent on the training data and, according to the \ac{nrmse} on the prediction, bad on the prediction.~\autoref{fig:cartpoleRolloutL10} shows that the rollout and the smoothed trajectory actually follow the true data really good, while the rollout diverges from the true trajectory pretty fast after the prediction boundary. Also the variance in the training area around changes in the plot, \ie when the system actually moves or changes its velocity, is very high. Interestingly, the confidence in the pendulum position and velocity is a lot higher than in the cart position.
+			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}). According to the \ac{nrmse} of the training data, this should perform decent on the training data and, according to the \ac{nrmse} on the prediction, bad on the prediction.~\autoref{fig:cartpoleRolloutL10} shows that the rollout and the smoothed trajectory actually follow the true data really good, while the rollout does not match the true data after the prediction boundary, but roughly forecasts the qualitative behavior. Interestingly, the confidence in the rollout of the pendulum displacement and velocity is a lot higher than the confidence in the rollout of the cart position and velocity.
 
 			\begin{figure}
 				\centering
@@ -518,19 +516,19 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\end{figure}
 		% end
 
-		\subsubsection{Exemplary Evaluation: 14-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{14}), the run which had the lowest \ac{nrmse} over the complete rollout data. Still, according to the \ac{nrmse} of the prediction, we do not expect a good prediction.~\autoref{fig:cartpoleRolloutL14} confirms this, as the rollout on the training data follows the true data closely while the prediction is off the true trajectory.
+		\subsubsection{Exemplary Evaluation: 16-Dimensional Latent}
+			We will now look at an exemplary run for the latent dimensionality \( k = 16 \) (run \texttt{166}), the run which had the lowest \ac{nrmse} over the complete rollout data. Still, according to the \ac{nrmse} of the prediction, we do not expect a good prediction.~\autoref{fig:cartpoleRolloutL16} confirms this, as the rollout on the training data follows the true data closely while the prediction is off the true trajectory. Compared to the 14-dimensional latent, we do not see much improvement in the prediction.
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-14/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 14\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation. As the variances in the top plots are still very high, see~\autoref{fig:cartpoleRolloutL14Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
-				\label{fig:cartpoleRolloutL14}
+				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-16/rollout-observations-N0.pdf}
+				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 14\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation. As the variances in the top plots are still very high, see~\autoref{fig:cartpoleRolloutL16Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
+				\label{fig:cartpoleRolloutL16}
 			\end{figure}
 		% end
 	% end
 
-	\subsection{Gym Double Pendulum} % This one is finished!
+	\subsection{Gym Double Pendulum} % Finished!
 		\todo{Gym Acrobot: If there is time, run again with k = 51 to k = 100.}
 
 		\subsubsection{Influence of the Latent Dimensionality}
