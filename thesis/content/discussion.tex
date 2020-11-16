@@ -64,7 +64,7 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 	\subsection{Damped Pendulum}
 		As for the undamped pendulum, we have seen in the experiment with different latent dimensionalities that we need at least ten latent dimensions. For ten dimensions, we get a decent \ac{nrmse} on both training and prediction. We have seen this behavior in~\autoref{subsubsec:pendulumDampedL10} and in the rollout plot in~\autoref{fig:pendulumDampedRolloutL10}. In contrast to the undamped pendulum, the amplitudes of the oscillations are now on the correct heights, so we definitely learn the energy loss of the system. We can also see this behavior in the plot of the total, kinetic and potential energy in~\autoref{fig:pendulumDampedEnergyL10}. We see in the total and the kinetic and potential energy that the damped pendulum model is really close to the real energy levels, in all energy types. This supports the first interpretation of the rollout that we really learn the energy loss. On the other hand, the rollout is phase-shifted to the real trajectory, sometimes even predicting the pendulum to be on the opposite side of a swing. Looking at the rollout in the latent space in~\autoref{fig:pendulumDampedLatentRolloutL10}, we see a similar behavior in the latent space, so our learned observation function seems to be correct, but the latent dynamics are a bit off.
 
-		Improving this might be possible by fixing the observation function and optimizing just the state dynamics matrix on its own. This reduces the parameters the algorithm has to learn by a lot, possibly yielding a more accurate rollout. But overall we are happy with this result as we learn the energy loss and get a confidence that is not too high such that the real position is still in the region of variance. As for the undamped pendulum, we get higher variances in regions where the pendulum turns over.
+		Improving this might be possible by fixing the observation function and optimizing just the state dynamics matrix on its own. This reduces the parameters the algorithm has to learn by a lot, possibly yielding a more accurate rollout. But overall we are happy with this result as we learn the energy loss and get a confidence that is not too high such that the real position is still in the region of variance. As for the undamped pendulum, we get higher variances in regions where the pendulum turns over. As the rollout is generated from a linear system in the background, it makes sense that energy-loosing systems can modeled easier: Taming a linear system to keep its energy for a long time is a lot harder as "letting it converge to zero". A stable non-zero system corresponds to eigenvalues that are approximately one (as \( \lim_{k \to \infty} 1^k = 1 \) and \( \lim_{k \to \infty} x^k = 0 \) for \( \lvert x \rvert < 1 \), but \( \lim_{k \to \infty} x^k \to \infty \) for \( x > 0 \)). Systems close with eigenvalues close to one just have to be disturbed a little (\ac{eg} by inaccuracies) and the system diverges.
 
 		\begin{figure}
 			\centering
@@ -101,7 +101,9 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 	% end
 
 	\subsection{Gym Double Pendulum}
-		% TODO
+		As we have seen in the experiment with different latent dimensionalities, we need at least 18 latent dimensions to model the double pendulum adequately in the training rollout. As expected from the \ac{nrmse}, we get a decent fit on the rollout for 18 latent dimensions (see~\autoref{fig:acrobotRolloutL18}), but the prediction is far off the true trajectory. The prediction does not even capture the dynamics roughly and also it is pretty certain on its wrong trajectory. This matches our expectations as the double pendulum is a chaotic environment with nonlinear coupling that is really hard to learn.
+
+		Improving the performance on the double pendulum might be possible by using a shorter integration interval \(h\) to provide the algorithm more information between the states such that it can better extrapolate from the data. But overall we are happy that we managed to learn at least the rollout on the training data even in a chaotic system.
 	% end
 
 	\subsection{Summary and Numerical Stability}
@@ -117,4 +119,42 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 	% Probably more qualitative comparisons with Sequential VAE or DVBF (Karl et al.).
 
 	\todo{Exp: Comparison}
+% end
+
+\section{Control}  % Only if there is time left!
+	% Introduce approach to control.
+	% Show results of LGDS control which is working.
+	% Highlight difficulties.
+
+	\todo{Discussion: Control}
+% end
+
+\section{Future Work}
+	\label{sec:futureWork}
+
+	We will now discuss and propose future work and ideas that can be tried based on the results of this thesis.
+
+	\subsection{Control}
+		In this thesis we presented a method for learning a dynamical system with no control inputs. The next extension would be to add control inputs to the latent space in an additive fashion \( \vec{s}_{t + 1} = \mat{A} \vec{s}_t + \mat{B} \vec{u}_t \) with a learnable control matrix \(\mat{B}\). With this approach it might be possible to actually perform \ac{mpc} and uncertainty-aware control like in~\cite{mortonDeepVariationalKoopman2019a}, but with a simpler model. Our first approach to this would be to test this method on a simple environment like the pendulum and firstly learn the control rollout and afterwards perform a stabilization task and try the swing-up of the pendulum.
+
+		Looking into this was not possible for us as it is beyond the scope of this thesis and we ran out of time.
+	% end
+
+	\subsection{Full Bayesian}
+		Another extension would be to go full Bayesian and treat \ac{eg} the state dynamics matrix, covariance matrices and so on as random variables. This would allow to gauge the uncertainty on the dynamics itself and would allow to restrict the matrices to small ones by placing a prior on them. The approach would be to replace the \ac{ml} estimator with a \ac{map} estimator.
+	% end
+
+	\subsection{Automatic Relevance Determination (ARD)}
+		In combination with going full Bayesian on the model goes the implementation of \emph{automatic relevance determination} of latent dimensions as proposed in~\cite{bealVariationalKalmanSmoother2000} for linear systems. Choosing a zero-mean prior might lead to a determination of non-relevant latent states, driving the state dynamics matrix to zero. Implementing this could solve the problems described in~\autoref{subsec:discussPerformanceNumerics} that the algorithm does "not know what to do" with some latent dimensions.
+	% end
+
+	\subsection{Better Regularization and Learning the Cholesky Decomposition}
+		As already outlined in~\autoref{subsubsec:implRegularization}, it might be beneficial for numerical stability to directly learn the Cholesky decomposition of the covariance matrices by using numerical optimization instead of closed-form optimization. Another approach could be to impose better regularization on the matrices if they become negative (semi-) determinant. However, while giving this a short first shot during our implementation, we found out that just adding some values to the diagonal does not lead to better model performance but rather drives the likelihood to negative infinity.
+
+		As for control, we did not look further into this as we ran out of time and beyond the scope of this thesis. It should, however, not be too hard to implement.
+	% end
+
+	\subsection{Speed Improvements by Full PyTorch or Enhanced QR Decomposition}
+		As the square-root smoothing heavily uses QR decompositions which are faster on the CPU but the M-step uses backpropagation which is faster on the GPU, we had to copy the data over in every \ac{em} iteration. It might be beneficial to implement a more advanced QR decomposition (\ac{eg}~\cite{andersonCommunicationAvoidingQRDecomposition2011a}) and run the whole algorithm in the GPU.
+	% end
 % end

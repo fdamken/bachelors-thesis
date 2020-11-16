@@ -46,6 +46,8 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 \end{figure}
 
 \section{Formulating and Solving the Inference Problem using an EM Algorithm}
+	\label{sec:ngkDerivation}
+
 	We seek to find the matrices \(\mat{A}\), \(\mat{Q}\) and \(\mat{R}\) and the observation function \( \vec{g}_{\vec{\theta}}(\cdot) \), parameterized by \(\vec{\theta}\) and the initial state distribution \( \vec{s}_1 \sim \normal(\vec{m}_0, \mat{V}_0) \) that maximize the likelihood
 	\begin{equation*}
 		p(\vec{s}_{1:T}, \vec{y}_{1:T}) = p(\vec{s}_1) \prod_{t = 2}^{T} p(\vec{s}_t \given \vec{s}_{t - 1}) \prod_{t = 1}^{T} p(\vec{y}_t \given \vec{s}_t)
@@ -78,16 +80,16 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	We will proceed with deriving the M-step and finish this section off by deriving the E-step. Please be aware that we only briefly touch the derivation here and focus on the important steps. See~\autoref{app:fullNgkDerivation} for the complete derivation with explanations throughout every step.
 
 	For the M-step, we first need the expected log-likelihood \( Q \coloneqq \E_{\vec{s}_{1:T}}\big[ p(\vec{s}_{1:T}, \vec{y}_{1:T}) \big] \) as stated previously. This quantity depends on three expectations that be estimate in the E-step:
-	\begin{align*}
-		\hat{\vec{s}}_{t \subgiven t_0}^{(n)}  & \coloneqq \E\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t_0}\Big]                             & \hat{\vec{s}}_{t \subgiven t_0}           & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t_0}^{(n)}  \\
-		\mat{P}_{t \subgiven t_0}^{(n)}        & \coloneqq \E\Big[\vec{s}_t^{(n)} \vec{s}_t^{(n), T} \bigggiven \vec{y}_{1:t_0}\Big]       & \mat{P}_{t \subgiven t_0}        & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t \subgiven t_0}^{(n)}        \\
-		\mat{P}_{t, t - 1 \subgiven t_0}^{(n)} & \coloneqq \E\Big[\vec{s}_t^{(n)} \vec{s}_{t - 1}^{(n), T} \bigggiven \vec{y}_{1:t_0}\Big] & \mat{P}_{t, t - 1 \subgiven t_0} & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t, t - 1 \subgiven t_0}^{(n)}
-	\end{align*}
+	\begin{align}
+		\hat{\vec{s}}_{t \subgiven t_0}^{(n)}  &\coloneqq \E\Big[\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t_0}\Big]                             & \hat{\vec{s}}_{t \subgiven t_0}           & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \hat{\vec{s}}_{t \subgiven t_0}^{(n)}  \label{eq:stateSmoothed} \\
+		\mat{P}_{t \subgiven t_0}^{(n)}        &\coloneqq \E\Big[\vec{s}_t^{(n)} \vec{s}_t^{(n), T} \bigggiven \vec{y}_{1:t_0}\Big]       & \mat{P}_{t \subgiven t_0}        & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t \subgiven t_0}^{(n)}  \label{eq:selfCorrelation} \\
+		\mat{P}_{t, t - 1 \subgiven t_0}^{(n)} &\coloneqq \E\Big[\vec{s}_t^{(n)} \vec{s}_{t - 1}^{(n), T} \bigggiven \vec{y}_{1:t_0}\Big] & \mat{P}_{t, t - 1 \subgiven t_0} & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t, t - 1 \subgiven t_0}^{(n)}  \label{eq:crossCorrelation}
+	\end{align}
 	These expectations are called the expected state, the self-correlation and the cross-correlation, respectively. We also silently introduced an upper index, \( \cdot^{(n)} \), which indicated which observation sequence our observation is from, because the algorithm can simultaneously learn on \(N\) observation sequences. For brevity, we may write \( \hat{\vec{s}}_t \) instead of \( \hat{\vec{s}}_{t \subgiven T} \) (analogous for all other values). Additionally, we have to define two quantities for the expectations of the nonlinear observation function \( \vec{g} \) that we cannot evaluate in closed form:
-	\begin{align*}
-		\hat{\vec{g}}_t^{(n)} &\coloneqq \E\Big[\vec{g}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big] \\
-		\mat{G}_t^{(n)}       &\coloneqq \E\Big[\vec{g}_t^{(n)} \vec{g}_t^{(n), T} \Biggiven \vec{y}_{1:T}\Big]
-	\end{align*}
+	\begin{align}
+		\hat{\vec{g}}_t^{(n)} &\coloneqq \E\Big[\vec{g}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big]  \label{eq:expectedMeasurement} \\
+		\mat{G}_t^{(n)}       &\coloneqq \E\Big[\vec{g}_t^{(n)} \vec{g}_t^{(n), T} \Biggiven \vec{y}_{1:T}\Big]  \label{eq:expectedMeasurementMat}
+	\end{align}
 	We can now evaluate the expected log-likelihood depending on the above quantities using the trace-trick\footnote{The trace of a product of matrices/vectors is invariant under even permutations of the matrices/vectors within the trace.}, giving the following (enormous) quantity:
 	\begin{align*}
 		Q
@@ -114,7 +116,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	\end{align}
 	This concludes the derivation of the M-step, where we do not have explicit formulas for the observation parameters \(\vec{\theta}\) as we do learn these using a numerical optimizer.
 
-	Deriving the E-step is quite straightforward given the groundwork we developed in~\autoref{sec:filteringSmoothing} and~\autoref{subsec:cubatureFiltering}. As we heavily employ cubature rules in the M-step (in fact, in every \ac{gd} iteration in the M-step), we chose to use a square-root Kalman filter and a square-root \ac{rts} smoother to directly get the Cholesky decomposition of the used covariance matrices. We apply~\autoref{alg:sqrtCubatureKalmanFilter} after afterwards~\autoref{alg:sqrtCubatureRtsSmoother} with the state dynamics function \( \vec{f} : \R^k \to \R^k : \vec{s} \mapsto \mat{A} \vec{s} \) and the observations function \( \vec{g}_{\vec{\theta}} \). Additionally to the covariances, we have to compute the self- and cross-correlation. Following~\cite{minkaHiddenMarkovModels1999}, they are given as
+	Deriving the E-step is quite straightforward given the groundwork we developed in~\autoref{sec:filteringSmoothing} and~\autoref{subsec:cubatureFiltering}. As we heavily employ cubature rules in the M-step (in fact, in every \ac{gd} iteration in the M-step), we chose to use a square-root Kalman filter and a square-root \ac{rts} smoother (see~\autoref{subsec:sqrtSmoothing}) to directly get the Cholesky decomposition of the used covariance matrices. We apply~\autoref{alg:sqrtCubatureKalmanFilter} after afterwards~\autoref{alg:sqrtCubatureRtsSmoother} with the state dynamics function \( \vec{f} : \R^k \to \R^k : \vec{s} \mapsto \mat{A} \vec{s} \) and the observations function \( \vec{g}_{\vec{\theta}} \). Additionally to the covariances, we have to compute the self- and cross-correlation. Following~\cite{minkaHiddenMarkovModels1999}, they are given as
 	\begin{align*}
 		\mat{P}_t^{(n)} &= \hat{\mat{V}}_t^{(n)} - \hat{\vec{s}}_t^{(n)} \hat{\vec{s}}_t^{(n), T} \\
 		\mat{P}_{t, t - 1}^{(n)} &= \hat{\mat{J}}_{t - 1} \hat{\mat{V}}_t - \hat{\vec{s}}_{t}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T}
@@ -179,6 +181,8 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		% end
 
 		\subsubsection{Regularization and Learning Cholesky Decompositions}
+			\label{subsubsec:implRegularization}
+
 			There are also a few points where our code is extensible to make it faster, improve numerical stability and so on (see also~\autoref{sec:futureWork}). The main points are regularization and/or learning the Cholesky decomposition directly.
 
 			As we will see in~\autoref{c:experiments}, having singular and non-positive definite matrices is a big problem that should be assessed. We already implemented the square-root smoothing that increased the numerical stability through the smoothing by not allowing non-positive definite matrices to be produced by the smoothing at all (as we directly learn the Cholesky decomposition). Additional regularization might make sense at the computation of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\). Another approach would be to learn the Cholesky decomposition of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\) directly by replacing the explicit formulas with a \ac{gd} algorithm that directly learn the Cholesky or the square-root diagonal. As the optimization problem may still be convex or close to convex, finding the global optimum should be easily possible.

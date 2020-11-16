@@ -268,6 +268,8 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	% end
 
 	\subsection{Square-Root Filtering/Smoothing}
+		\label{subsec:sqrtSmoothing}
+
 		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \hat{\mat{V}}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not exhibit valid covariance matrices, \ac{ie} positive definite and symmetric ones. One approach for solving this problem is producing the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look at it now.
 
 		We will mostly follow the derivation in~\cite{ruttenSquarerootUnscentedFiltering2013} and only shortly outline the key results. With the sigma points \( \mat{\mathcal{X}} \) from the \ac{ut} equation~\eqref{eqn:utSigmaPoints} and the corresponding weights, we can define the transformed sigma points

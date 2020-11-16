@@ -1,2 +1,2 @@
-Run 103 of latent-dim experiment.
+Run 153 of latent-dim experiment.
 Chosen because of smallest RMSE with latent_dim = 3.
