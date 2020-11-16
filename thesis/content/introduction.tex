@@ -4,7 +4,7 @@
 
 
 
-A dynamical system often describes some kind of physical process, \eg a pendulum swinging around a fixed point or two pendulums together. However, these systems often exhibit complicated and tedious movements, in some cases even chaotic movement. In (optimal) control theory, we try do (optimally) control these systems to \eg stand upright. As for complex systems we do not necessarily have the motions of equation (\eg with friction models), we have to learn the model in a process called \emph{model learning}.
+A dynamical system often describes some kind of physical process, \eg a pendulum swinging around a fixed point or two pendulums together. However, these systems often exhibit complicated and tedious movements, in some cases even chaotic movement. In (optimal) control theory, we try to (optimally) control these systems, \eg stand upright. As for complex systems we do not necessarily have the motions of equation (\eg with friction models), we have to learn the model in a process called \emph{model learning}.
 
 \paragraph{Motivation}
 	Unfortunately, learning nonlinear models is a tedious task. For (optimal) control, there are highly evolved control methods like \ac{lqr} to get an optimal trajectory. Unfortunately, such evolved solution theory does not exist for nonlinear models, even if we would have perfect models. Most methods used for control, \eg \ac{mpc} and \ac{ilqr}, use approximations and locally linear dynamics models.
@@ -17,7 +17,7 @@ A dynamical system often describes some kind of physical process, \eg a pendulum
 % end
 
 \paragraph{Contribution}
-	Our contribution is an extension of the well-known model learning algorithm for \acp{lgds}~\cite{ghahramaniParameterEstimationLinear1996,minkaHiddenMarkovModels1999} by using nonlinear measurements. Backed from Koopman theory~\cite{koopmanHamiltonianSystemsTransformation1931} and results from prior work~\cite{luschDeepLearningUniversal2018}, we assume the existence on a measurement function that maps from a linear Koopman embedding to the nonlinear state space, allowing model forecasting.
+	Our contribution is an extension of the well-known model learning algorithm for \acp{lgds}~\cite{ghahramaniParameterEstimationLinear1996,minkaHiddenMarkovModels1999} by using nonlinear measurements. Backed from Koopman theory~\cite{koopmanHamiltonianSystemsTransformation1931} and results from prior work~\cite{luschDeepLearningUniversal2018}, we assume the existence of an observation function that maps from a linear Koopman embedding to the nonlinear state space, allowing model forecasting.
 
 	We evaluate our model on well-known environments like the (damped) pendulum, cartpole and a double pendulum. Finally, we examine the model performance on an error-basis and explore the influence of hyperparameters to the performance.
 % end
