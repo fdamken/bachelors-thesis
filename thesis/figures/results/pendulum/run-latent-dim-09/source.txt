@@ -1,2 +1,0 @@
-Run 58 of latent-dim experiment.
-Chosen because to compare with latent_dim = 10.
