@@ -7,8 +7,6 @@
 In this chapter we analyze the results from~\autoref{c:experiments} and set them into context with results from related work. We will split all the discussion on the different environments first and then discuss the overall performance of the \algname algorithm.
 
 \section{Model Performance}
-	% TODO: Energieverlust besser als Energiezunahme ergibt Sinn, da lineare Systeme gegen Null oder Unendlich gehen (exponential decay).
-
 	\subsection{Proof-of-Concept: LGDS}
 		As we have seen in~\autoref{fig:lgdsRollout}, the \ac{lgds} proof-of-concept environment works pretty well and the true data is perfectly predicted. Applying the \ac{nrmse} to the smoothed trajectory and the rollout, the model has an error of approximately \( 0.0001 \) for every metric.
 
@@ -62,9 +60,13 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 	% end
 
 	\subsection{Damped Pendulum}
+		\label{subsec:discussDampedPendulum}
+
 		As for the undamped pendulum, we have seen in the experiment with different latent dimensionalities that we need at least ten latent dimensions. For ten dimensions, we get a decent \ac{nrmse} on both training and prediction. We have seen this behavior in~\autoref{subsubsec:pendulumDampedL10} and in the rollout plot in~\autoref{fig:pendulumDampedRolloutL10}. In contrast to the undamped pendulum, the amplitudes of the oscillations are now on the correct heights, so we definitely learn the energy loss of the system. We can also see this behavior in the plot of the total, kinetic and potential energy in~\autoref{fig:pendulumDampedEnergyL10}. We see in the total and the kinetic and potential energy that the damped pendulum model is really close to the real energy levels, in all energy types. This supports the first interpretation of the rollout that we really learn the energy loss. On the other hand, the rollout is phase-shifted to the real trajectory, sometimes even predicting the pendulum to be on the opposite side of a swing. Looking at the rollout in the latent space in~\autoref{fig:pendulumDampedLatentRolloutL10}, we see a similar behavior in the latent space, so our learned observation function seems to be correct, but the latent dynamics are a bit off.
 
-		Improving this might be possible by fixing the observation function and optimizing just the state dynamics matrix on its own. This reduces the parameters the algorithm has to learn by a lot, possibly yielding a more accurate rollout. But overall we are happy with this result as we learn the energy loss and get a confidence that is not too high such that the real position is still in the region of variance. As for the undamped pendulum, we get higher variances in regions where the pendulum turns over. As the rollout is generated from a linear system in the background, it makes sense that energy-loosing systems can be modeled easier: Taming a linear system to keep its energy for a long time is a lot harder as "letting it converge to zero". A stable non-zero system corresponds to eigenvalues that are approximately one (as \( \lim_{k \to \infty} 1^k = 1 \) and \( \lim_{k \to \infty} x^k = 0 \) for \( \lvert x \rvert < 1 \), but \( \lim_{k \to \infty} x^k \to \infty \) for \( x > 0 \)). Systems with eigenvalues close to one just have to be disturbed a little (\eg by inaccuracies) and the system diverges.
+		Improving this might be possible by fixing the observation function and optimizing just the state dynamics matrix on its own. This reduces the parameters the algorithm has to learn by a lot, possibly yielding a more accurate rollout. But overall we are satisfied with this result as we learn the energy loss and get a confidence that is not too high such that the real position is still in the region of variance. As for the undamped pendulum, we get higher variances in regions where the pendulum turns over.
+
+		As the rollout is generated from a linear system in the background, it makes sense that energy-loosing systems can be modeled easier: Taming a linear system to keep its energy for a long time is a lot harder as "letting it converge to zero". A stable non-zero system corresponds to eigenvalues that are approximately one (as \( \lim_{k \to \infty} 1^k = 1 \) and \( \lim_{k \to \infty} x^k = 0 \) for \( \lvert x \rvert < 1 \), but \( \lim_{k \to \infty} x^k \to \infty \) for \( x > 0 \)). Systems with eigenvalues close to one just have to be disturbed a little (\eg by inaccuracies) and the system diverges.
 
 		\begin{figure}
 			\centering
@@ -80,7 +82,7 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-10/energy-R110-N0-potential.pdf}
 			\end{subfigure}
-			\caption{Total energy of the pendulum composed of the kinetic energy on the bottom left and the potential energy on the bottom right. The blue line represents the true energy, calculated from the training and validation data. The orange line is the energy calculated from the rollout. As usual, the red line is the prediction boundary until all training data was used and the rest is prediction.}
+			\caption{Total energy of the damped pendulum composed of the kinetic energy on the bottom left and the potential energy on the bottom right. The blue line represents the true energy, calculated from the training and validation data. The orange line is the energy calculated from the rollout. As usual, the red line is the prediction boundary until all training data was used and the rest is prediction.}
 			\label{fig:pendulumDampedEnergyL10}
 		\end{figure}
 
@@ -93,7 +95,26 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 	% end
 
 	\subsection{Gym Pendulum}
-		% TODO
+		\label{subsec:discussGymPendulum}
+
+		As we have seen in the experiment with different latent dimensionalities in~\autoref{subsubsec:gymPendulumLatents}, we need at seven latent dimensions to get a decent \ac{nrmse} on the training rollout. However, we noticed that we get better results in one run for four latent dimensions (see~\autoref{subsubsec:gymPendulumL04}) which we looked at for a comparison with~\cite{mortonDeepVariationalKoopman2019a}. This shows that our algorithm is extremely sensitive on the initialization as the neural network is initialized randomly. Looking at the rollout of the seven-dimensional latent run in~\autoref{subsubsec:gymPendulumL07}, we see that the latent "stops to change" after the prediction boundary in comparison to the four-dimensional latent where the rollout still moves (and roughly captures the dynamics). By taking a look at the rollout in the latent space in~\autoref{fig:gymPendulumLatentRolloutL04} and~\autoref{fig:gymPendulumLatentRolloutL07} for the four- and seven-dimensional run, we see completely different time behaviors.
+
+		As we have already outlined in~\autoref{subsec:discussDampedPendulum}, it is hard for a linear system to be stable when not converging to zero. We see such a behavior in the latent rollout: While the latents of the four-dimensional run all rise exponentially after the prediction horizon, causing movement in the observation space, approximately half of the latents in the seven-dimensional exponentially increase while the other half decreases exponentially. This seems to lead to vanishing numbers withing the neural network, explaining the non-movement in the observation space. This behavior might be improved by regularizing the latent dynamics to a system with eigenvalues really close to one, leading to more stable dynamics. Another idea would be to make the latent dynamics time-dependent so compensate for the exploding states by by adding an extra latent state just representing the time step. However, this would impose other difficulties and would make the system non-autonomous which is quite handy.
+
+		Another interesting result of the Gym pendulum experiment is that it performs a lot worse than the simple angular pendulum. We have two possible reasons for this behavior: Firstly, the sine/cosine terms add more nonlinearity to the system (with small angle approximations it is possible to model the pendulum for small displacements, this is not possible using the sine/cosine of the angle). Secondly, taking the sine/cosine of the angle is actually a nonlinear feature transformation typically used to implicitly encode the symmetries in a polar coordinate environment like the pendulum. That is, the equality of \( 0 = 2\pi \) (swinging the pendulum around one time does not increase the angle by \(2\pi\), instead the pendulum works congruence class generalized to \(\R\)). Hence, we can also use the inverse feature transformation and recover the angle from the cosine/sine data and get similar performance as for the angular pendulum.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/results/pendulum-gym/run-latent-dim-04/rollout-latents-N0.pdf}
+			\caption{Rollout of the latent dimensions of the Gym pendulum environment for \( k = 6 \) latents.}
+			\label{fig:gymPendulumLatentRolloutL04}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/results/pendulum-gym/run-latent-dim-07/rollout-latents-N0.pdf}
+			\caption{Rollout of the latent dimensions of the Gym pendulum environment for \( k = 7 \) latents.}
+			\label{fig:gymPendulumLatentRolloutL07}
+		\end{figure}
 	% end
 
 	\subsection{Gym Cartpole}
@@ -103,7 +124,7 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 	\subsection{Gym Double Pendulum}
 		As we have seen in the experiment with different latent dimensionalities, we need at least 18 latent dimensions to model the double pendulum adequately in the training rollout. As expected from the \ac{nrmse}, we get a decent fit on the rollout for 18 latent dimensions (see~\autoref{fig:acrobotRolloutL18}), but the prediction is far off the true trajectory. The prediction does not even capture the dynamics roughly and also it is pretty certain on its wrong trajectory. This matches our expectations as the double pendulum is a chaotic environment with nonlinear coupling that is really hard to learn.
 
-		Improving the performance on the double pendulum might be possible by using a shorter integration interval \(h\) to provide the algorithm more information between the states such that it can better extrapolate from the data. But overall we are happy that we managed to learn at least the rollout on the training data even in a chaotic system.
+		Improving the performance on the double pendulum might be possible by using a shorter integration interval \(h\) to provide the algorithm more information between the states such that it can better extrapolate from the data. Another idea, similar to the one outlined in~\autoref{subsec:discussGymPendulum}, would be to apply an inverse feature transform on the sine/cosine of the angles to reduce the dimensionality of the observation space and let "the model discover the symmetries". But overall we are satisfied that we managed to learn at least the rollout on the training data even in a chaotic system.
 	% end
 
 	\subsection{Summary and Numerical Stability}
@@ -121,13 +142,13 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 	\todo{Exp: Comparison}
 % end
 
-\section{Control}  % Only if there is time left!
-	% Introduce approach to control.
-	% Show results of LGDS control which is working.
-	% Highlight difficulties.
-
-	\todo{Discussion: Control}
-% end
+%\section{Control}  % Only if there is time left!
+%	% Introduce approach to control.
+%	% Show results of LGDS control which is working.
+%	% Highlight difficulties.
+%
+%	\todo{Discussion: Control}
+%% end
 
 \section{Future Work}
 	\label{sec:futureWork}
