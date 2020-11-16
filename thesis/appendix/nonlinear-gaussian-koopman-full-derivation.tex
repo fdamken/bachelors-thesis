@@ -344,10 +344,10 @@
 \section{Exactness for Linear Observations}
 	\label{app:ngkExactness}
 
-	If we restrict the previous generalization of the nonlinear observation function \( \vec{g}_{\vec{\theta}} : \R^k \to \R^p \) to a linear function \( \vec{g}(\vec{s}) = \mat{C} \vec{s} \) where \( \vec{\theta} = \{ \mat{C} \} \), we can show that the approximations for \( \hat{\vec{g}}_t^{(n)} \), \( \mat{G}_t^{(n)} \), \( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \), \( \mat{S}_{t \subgiven t - 1}^{(n)} \) and \( \mat{K}_{t \subgiven t - 1}^{(n)} \) are exact, \ac{ie} they match the real expectation/covariance value.
+	If we restrict the previous generalization of the nonlinear observation function \( \vec{g}_{\vec{\theta}} : \R^k \to \R^p \) to a linear function \( \vec{g}(\vec{s}) = \mat{C} \vec{s} \) where \( \vec{\theta} = \{ \mat{C} \} \), we can show that the approximations for \( \hat{\vec{g}}_t^{(n)} \), \( \mat{G}_t^{(n)} \), \( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \), \( \mat{S}_{t \subgiven t - 1}^{(n)} \) and \( \mat{K}_{t \subgiven t - 1}^{(n)} \) are exact, \ie they match the real expectation/covariance value.
 
 	\begin{theorem}
-		The spherical-radial cubature approximations for, \( \hat{\vec{g}}_t^{(n)} \), \( \mat{G}_t^{(n)} \), \( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \), \( \mat{S}_{t \subgiven t - 1} \) and \( \mat{K}_{t \subgiven t - 1} \) are exact (\ac{ie} they equal the analytical result) if the observation function is linear.
+		The spherical-radial cubature approximations for, \( \hat{\vec{g}}_t^{(n)} \), \( \mat{G}_t^{(n)} \), \( \hat{\vec{y}}_{t \subgiven t - 1}^{(n)} \), \( \mat{S}_{t \subgiven t - 1} \) and \( \mat{K}_{t \subgiven t - 1} \) are exact (\ie they equal the analytical result) if the observation function is linear.
 	\end{theorem}
 	\begin{proof}
 		Let \( \mat{C} \in \R^{p \times k} \) be a matrix such that \( \vec{g}(\cdot) \) is linear and given as \( \vec{g}(\vec{s}) = \mat{C} \vec{s} \). Firstly, we will evaluate the analytical values of the given quantities.

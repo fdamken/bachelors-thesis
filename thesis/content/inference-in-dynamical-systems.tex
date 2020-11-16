@@ -14,7 +14,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{equation*}
 		\vec{y}_k \sim p(\vec{y}_k \given s_k)
 	\end{equation*}
-	These assumptions are called the \emph{Markov property} and a system fulfilling this property is called \emph{Markovian}. These conditional distributions can be written in a graphical model as shown in~\autoref{fig:hiddenMarkovModel}. Note that, in general, no assumption has to be made on the "type" of state/observation (\ac{ie} whether it is a scalar, a vector or something completely different). Also, no assumption is made on the specific transition distributions, \acp{hmm} can also be used to model deterministic transitions using a Dirac delta distribution.
+	These assumptions are called the \emph{Markov property} and a system fulfilling this property is called \emph{Markovian}. These conditional distributions can be written in a graphical model as shown in~\autoref{fig:hiddenMarkovModel}. Note that, in general, no assumption has to be made on the "type" of state/observation (\ie whether it is a scalar, a vector or something completely different). Also, no assumption is made on the specific transition distributions, \acp{hmm} can also be used to model deterministic transitions using a Dirac delta distribution.
 
 	\begin{figure}
 		\centering
@@ -75,7 +75,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 			\item Prediction: \tabto{2.5cm} Estimate the distribution \( p(\vec{s}_t \given \vec{y}_{1:t - 1}) \)
 			\item Correction: \tabto{2.5cm} Estimate the distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \)
 		\end{enumerate}
-		For a simple linear system with Gaussian noise, \ac{ie} an \ac{lgds}, the equations for both the prediction and the correction can be given in closed form and are fairly straightforward. For the prediction step, the equations are given as
+		For a simple linear system with Gaussian noise, \ie an \ac{lgds}, the equations for both the prediction and the correction can be given in closed form and are fairly straightforward. For the prediction step, the equations are given as
 		\begin{align}
 			\hat{\vec{s}}_{t \subgiven t - 1} &= \mat{A} \hat{\vec{s}}_{t - 1 \subgiven t - 1}  \label{eqn:kfStatePre} \\
 			\hat{\mat{V}}_{t \subgiven t - 1} &= \mat{A} \hat{\mat{V}}_{t - 1 \subgiven t - 1} \mat{A}^T + \mat{Q}  \label{eqn:kfCovPre}
@@ -97,7 +97,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	% end
 
 	\subsection{Rauch-Tung-Striebel/Kalman Smoother}
-		The \ac{rts} smoother has been introduced five years after the original Kalman filter in the 1965 by H.~E.~Rauch, F.~Tung and C.~T.~Striebel~\cite{rauchMaximumLikelihoodEstimates1965} exhibiting the equations for optimal smoothing of linear systems with Gaussian noise, \ac{ie} \ac{lgds}. With the smoother, we want to estimate the smoothed distribution, also called the \emph{posterior}
+		The \ac{rts} smoother has been introduced five years after the original Kalman filter in the 1965 by H.~E.~Rauch, F.~Tung and C.~T.~Striebel~\cite{rauchMaximumLikelihoodEstimates1965} exhibiting the equations for optimal smoothing of linear systems with Gaussian noise, \ie \ac{lgds}. With the smoother, we want to estimate the smoothed distribution, also called the \emph{posterior}
 		\begin{equation*}
 			p(\vec{s}_t \given \vec{y}_{1:T})
 		\end{equation*}
@@ -133,7 +133,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{equation*}
 		\int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \approx \sum_{i = 1}^{m} w_i \vec{f}(\vec{x}_i)
 	\end{equation*}
-	In this thesis we utilize the spherical-radial cubature rule~\cite{solinCubatureIntegrationMethods2010} which is a third-degree approximation for Gaussian integrals. A third-degree approximation means that "this rule exact for all monomials up to degree three"~\cite[p. 18]{solinCubatureIntegrationMethods2010}. In this cubature rule, the approximation a finite sum over \( 2n \) points, where \( n \) is the dimensionality of \(\vec{x}\), \ac{ie} \( \vec{x} \in \R^n \). With \( \mat{\Sigma}^{1/2} \) being the Cholesky decomposition of \( \mat{\Sigma} \), so \( \mat{\Sigma} = \mat{\Sigma}^{1/2} \mat{\Sigma}^{1/2, T} \), the approximation is given as
+	In this thesis we utilize the spherical-radial cubature rule~\cite{solinCubatureIntegrationMethods2010} which is a third-degree approximation for Gaussian integrals. A third-degree approximation means that "this rule exact for all monomials up to degree three"~\cite[p. 18]{solinCubatureIntegrationMethods2010}. In this cubature rule, the approximation a finite sum over \( 2n \) points, where \( n \) is the dimensionality of \(\vec{x}\), \ie \( \vec{x} \in \R^n \). With \( \mat{\Sigma}^{1/2} \) being the Cholesky decomposition of \( \mat{\Sigma} \), so \( \mat{\Sigma} = \mat{\Sigma}^{1/2} \mat{\Sigma}^{1/2, T} \), the approximation is given as
 	\begin{equation*}
 		\int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\mat{\Sigma}^{1/2} \vec{\xi}_i - \vec{\mu})
 	\end{equation*}
@@ -191,13 +191,13 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 			w_0^{(m)} &\coloneqq \frac{\lambda}{n + \lambda} & w_0^{(c)} &\coloneqq \frac{\lambda}{n + \lambda} + (1 - \alpha^2 + \beta) \\
 			w_i^{(m)} &\coloneqq \frac{1}{2(n + \lambda)}    & w_i^{(c)} &\coloneqq \frac{1}{2(n + \lambda)}
 		\end{align*}
-		where \(\beta\) is another parameter of the \ac{ut}. To get back the spherical radial cubature rule, where all weights \( w_i = \flatfrac{1}(2n) \) are the same for each sigma point and the sigma point \( \mat{\mathcal{X}}_0 \) has a weight of \(0\), \ac{ie} the mean is ignored, we have to set \( \lambda = 0 \). Hence, the spherical-radial cubature rule is a special case of the \ac{ut} with the parameters set as \( \alpha = \pm 1 \), \( \beta = \kappa = 0 \). That means we can apply all theory developed for the \ac{ut} to the cubature rule by setting the parameters accordingly.
+		where \(\beta\) is another parameter of the \ac{ut}. To get back the spherical radial cubature rule, where all weights \( w_i = \flatfrac{1}(2n) \) are the same for each sigma point and the sigma point \( \mat{\mathcal{X}}_0 \) has a weight of \(0\), \ie the mean is ignored, we have to set \( \lambda = 0 \). Hence, the spherical-radial cubature rule is a special case of the \ac{ut} with the parameters set as \( \alpha = \pm 1 \), \( \beta = \kappa = 0 \). That means we can apply all theory developed for the \ac{ut} to the cubature rule by setting the parameters accordingly.
 	% end
 
 	\subsection{Cubature Kalman Filtering and Smoothing}
 		\label{subsec:cubatureFiltering}
 
-		Following~\cite{deisenrothProbabilisticPerspectiveGaussian2011,solinCubatureIntegrationMethods2010}, we can use the spherical-radial cubature rule to extend the Kalman filter and \ac{rts} smoother to nonlinear systems with Gaussian noise, \ac{ie}
+		Following~\cite{deisenrothProbabilisticPerspectiveGaussian2011,solinCubatureIntegrationMethods2010}, we can use the spherical-radial cubature rule to extend the Kalman filter and \ac{rts} smoother to nonlinear systems with Gaussian noise, \ie
 		\begin{align*}
 			\vec{s}_{t + 1} &\sim \normal\big( \vec{f}(\vec{s}_t), \mat{Q} \big) \\
 			\vec{y}_t &\sim \normal\big( \vec{g}(\vec{s}_t), \mat{R} \big)
@@ -270,7 +270,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\subsection{Square-Root Filtering/Smoothing}
 		\label{subsec:sqrtSmoothing}
 
-		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \hat{\mat{V}}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not exhibit valid covariance matrices, \ac{ie} positive definite and symmetric ones. One approach for solving this problem is producing the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look at it now.
+		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \hat{\mat{V}}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not exhibit valid covariance matrices, \ie positive definite and symmetric ones. One approach for solving this problem is producing the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look at it now.
 
 		We will mostly follow the derivation in~\cite{ruttenSquarerootUnscentedFiltering2013} and only shortly outline the key results. With the sigma points \( \mat{\mathcal{X}} \) from the \ac{ut} equation~\eqref{eqn:utSigmaPoints} and the corresponding weights, we can define the transformed sigma points
 		\begin{equation*}

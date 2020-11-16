@@ -20,7 +20,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\end{equation}
 	which establishes a connection between the state itself and its time derivatives. We call a function \( \vec{x}(t) \) a \emph{solution} of an \ac{ode} if its derivatives fulfill the given \ac{ode}~\eqref{eq:ode}. In all of the following, we assume to have explicit, autonomous, first order \acp{ode}. This is valid because we can transform every explicit higher order \ac{ode} into a system of first order \acp{ode} as well as we can introduce another "clock state" which makes our \ac{ode} autonomous.
 
-	The solution theory for linear \acp{ode} is highly evolved and solutions exist for nearly every possible \ac{ode}. But for nonlinear \acp{ode}, the world looks different. With the exception of some rare cases, nonlinear \acp{ode} are not tractable. Hence, we often need approximations for the nonlinear case. Some well-known approaches for these approximations are \ac{eg} \emph{small angle approximation} for Sines and Cosines. In small angle approximations, we Taylor-expand \( \sin \)/\( \cos \) at \( \varphi_a = 0 \) and cut all higher order terms:
+	The solution theory for linear \acp{ode} is highly evolved and solutions exist for nearly every possible \ac{ode}. But for nonlinear \acp{ode}, the world looks different. With the exception of some rare cases, nonlinear \acp{ode} are not tractable. Hence, we often need approximations for the nonlinear case. Some well-known approaches for these approximations are \eg \emph{small angle approximation} for Sines and Cosines. In small angle approximations, we Taylor-expand \( \sin \)/\( \cos \) at \( \varphi_a = 0 \) and cut all higher order terms:
 	\begin{gather*}
 		\sin(\varphi) = \varphi - \underbrace{\frac{\varphi^3}{3!} + \frac{\varphi^5}{5!} + \cdots}_\text{higher order terms} \approx \varphi \\
 		\cos(\varphi) = 1 - \underbrace{\frac{\varphi^2}{2!} + \frac{\varphi^4}{4!} - \frac{\varphi^6}{6!} + \cdots}_\text{higher order terms} \approx 1
@@ -89,7 +89,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 		\begin{equation}
 			\ddot{\varphi} = \sin(\varphi)  \label{eq:inversePendulum}
 		\end{equation}
-		it is not tractable analytically (\ac{ie} there exists no solution in closed form).
+		it is not tractable analytically (\ie there exists no solution in closed form).
 
 		Still, we can apply the small angle approximation introduced before (in this case, \( \sin(\varphi) \approx \varphi \)) which yields the simple \ac{ode}
 		\begin{equation}
@@ -147,16 +147,16 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\begin{equation*}
 		\vec{x}_{t + 1} = \vec{F}(\vec{x}_t),\quad \vec{F} : \R^k \to \R^k
 	\end{equation*}
-	and observations \( \vec{h} : \R^p \to \R^p \) of this system, \ac{ie} \( \vec{y}_t \coloneqq \vec{h}(\vec{x}_t) \), the infinite-dimensional \emph{Koopman operator} \(\mathcal{K}\) advances all of the measurements forward in time. This relation can also be expressed as the composition
+	and observations \( \vec{h} : \R^p \to \R^p \) of this system, \ie \( \vec{y}_t \coloneqq \vec{h}(\vec{x}_t) \), the infinite-dimensional \emph{Koopman operator} \(\mathcal{K}\) advances all of the measurements forward in time. This relation can also be expressed as the composition
 	\begin{equation*}
 		\mathcal{K} \, \vec{h} \coloneqq \vec{h} \circ \vec{F} \qquad\iff\qquad \mathcal{K} \, \vec{h}(\vec{x}_t) = \vec{h}\big( \vec{F}(\vec{x}_t) \big) = \vec{h}(\vec{x}_{t + 1})
 	\end{equation*}
-	and can be visualized as a transition diagram between the states (see~\autoref{fig:koopman}). This relation is true for every possible measurement function \( \vec{h} \) at any point of the system space \( \R^k \)~\cite{bruntonKoopmanInvariantSubspaces2016}. All possible measurement functions \( \vec{h} \) span an infinite-dimensional Hilbert space \( \mathcal{H} \). A finite set of measurements \( \vec{h}_1, \vec{h}_2, \cdots, \vec{h}_p \) that span an invariant subspace \( \hat{\mathcal{H}} \subset \mathcal{H} \), \ac{ie} applying the Koopman operator to a linear combination of these functions keeps them in the subspace
+	and can be visualized as a transition diagram between the states (see~\autoref{fig:koopman}). This relation is true for every possible measurement function \( \vec{h} \) at any point of the system space \( \R^k \)~\cite{bruntonKoopmanInvariantSubspaces2016}. All possible measurement functions \( \vec{h} \) span an infinite-dimensional Hilbert space \( \mathcal{H} \). A finite set of measurements \( \vec{h}_1, \vec{h}_2, \cdots, \vec{h}_p \) that span an invariant subspace \( \hat{\mathcal{H}} \subset \mathcal{H} \), \ie applying the Koopman operator to a linear combination of these functions keeps them in the subspace
 	\begin{align*}
 		\vec{h} &= \alpha_1 \vec{h}_1 + \alpha_2 \vec{h}_2 + \cdots + \alpha_p \vec{g}_p \\
 		\mathcal{K} \, \vec{h} &= \beta_1 \vec{h}_1 + \beta_2 \vec{h}_2 + \cdots + \beta_p \vec{h}_p
 	\end{align*}
-	can be considered as a basis of that subspace. If that is possible, we can restrict the Koopman operator onto \( \hat{\mathcal{H}} \). Functions that both span the subspace \(\hat{\mathcal{H}}\) and do only scale when applying the Koopman operator, \ac{ie} \( \mathcal{K} \, \vec{\varphi} = \lambda \vec{\varphi} \) are called \emph{eigenfunctions} of the Koopman operator. Finding these eigenfunctions is extremely desirable, as it allows us to get a finite Koopman operator matrix \( \mat{K} \) globally linearizing the dynamical system \( \vec{F} \). However, for this thesis, we do not seek the eigenfunctions directly but an approximation of the \emph{inverse} observation function to forecast the dynamical system.
+	can be considered as a basis of that subspace. If that is possible, we can restrict the Koopman operator onto \( \hat{\mathcal{H}} \). Functions that both span the subspace \(\hat{\mathcal{H}}\) and do only scale when applying the Koopman operator, \ie \( \mathcal{K} \, \vec{\varphi} = \lambda \vec{\varphi} \) are called \emph{eigenfunctions} of the Koopman operator. Finding these eigenfunctions is extremely desirable, as it allows us to get a finite Koopman operator matrix \( \mat{K} \) globally linearizing the dynamical system \( \vec{F} \). However, for this thesis, we do not seek the eigenfunctions directly but an approximation of the \emph{inverse} observation function to forecast the dynamical system.
 
 	\begin{figure}
 		\centering
@@ -201,7 +201,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\begin{align*}
 		\int\! q(\vec{x} \given \vec{y}) \dd{\vec{x}} = 1
 	\end{align*}
-	We can incorporate this into the maximization, \ac{eg} using Lagrange multipliers. Using a bit of variational calculus, it can be shown~\cite{bealVariationalAlgorithmsApproximate2003a} that the maximization is gained by choosing the auxiliary distribution \(q(\vec{x} \given \vec{y})\) to be the same as the distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \). That is, we set
+	We can incorporate this into the maximization, \eg using Lagrange multipliers. Using a bit of variational calculus, it can be shown~\cite{bealVariationalAlgorithmsApproximate2003a} that the maximization is gained by choosing the auxiliary distribution \(q(\vec{x} \given \vec{y})\) to be the same as the distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \). That is, we set
 	\begin{align*}
 		q^{(n + 1)}(\vec{x} \given \vec{y}) = p\big(\vec{x} \biggiven \vec{y}, \vec{\theta}^{(n)}\big)
 	\end{align*}
