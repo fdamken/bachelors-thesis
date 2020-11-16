@@ -1,4 +1,4 @@
-all: clean build
+all: clean build rename-to-hash
 
 clean:
 	./clean.sh
@@ -10,4 +10,7 @@ build:
 	lualatex thesis.tex
 	lualatex thesis.tex
 	lualatex thesis.tex
-	mv thesis.pdf thesis_commit-$(git rev-parse HEAD).pdf
+
+rename-to-hash: GIT_COMMIT=$(shell git rev-parse HEAD)
+rename-to-hash:	
+	mv thesis.pdf thesis_commit-$(GIT_COMMIT).pdf
