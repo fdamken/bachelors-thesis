@@ -10,3 +10,4 @@ build:
 	lualatex thesis.tex
 	lualatex thesis.tex
 	lualatex thesis.tex
+	mv thesis.pdf thesis_commit-$(git rev-parse HEAD).pdf

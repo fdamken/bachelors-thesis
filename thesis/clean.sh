@@ -24,6 +24,7 @@ clean() {
 	rm -f drawroom.pdf
 	rm -f **/pdfa.xmpi
 	rm -f thesis.pdf
+	rm -f thesis_commit-*.pdf
 }
 
 clean &>/dev/null
