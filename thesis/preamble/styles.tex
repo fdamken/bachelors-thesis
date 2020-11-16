@@ -91,8 +91,6 @@
 %\bibliographystyle{ieeetr}
 \bibliographystyle{alpha}
 
-% Penalties.
-
 % TikZ-related stuff.
 \tikzset{> = { Latex[length = 2mm] }}
 
@@ -128,6 +126,10 @@
 	style             = base,
 	tabsize           = 4
 }
+
+% Ignore well-known acronyms in write-first-long rule.
+\newcommand{\eg}{\acrshort{eg}\xspace}
+\newcommand{\ie}{\acrshort{ie}\xspace}
 
 
 
