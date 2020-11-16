@@ -3,10 +3,10 @@
 
 
 
-Out second contribution is to take a probabilistic perspective on "classical" Koopman theory as presented in various publications~\cite{bruntonKoopmanInvariantSubspaces2016,hanDeepLearningKoopman2020,kaiserDatadrivenDiscoveryKoopman2020,luschDeepLearningUniversal2018,williamsDataDrivenApproximation2015}. In this chapter we will build the groundwork for variational inference to combine them to the single \algname algorithm presented in~\autoref{c:nonlinearGaussianKoopman}.
+Our second contribution is to take a probabilistic perspective on "classical" Koopman theory as presented in various publications~\cite{bruntonKoopmanInvariantSubspaces2016,hanDeepLearningKoopman2020,kaiserDatadrivenDiscoveryKoopman2020,luschDeepLearningUniversal2018,williamsDataDrivenApproximation2015}. In this chapter we will build the groundwork for variational inference to combine them to the single \algname algorithm presented in~\autoref{c:nonlinearGaussianKoopman}.
 
 \section{Hidden Markov Models and LGDS}
-	\acp{hmm} are simple Bayesian networks described by a non-observable (\emph{hidden}) Markov chain. This non-observable discrete chain can be indirectly observed with measurements that are emitted by every state. One of the key features of a Markov chain is that a state does only depend on the previous state, but not on the second previous, third previous, and so on, states. That is, knowing only the previous state is sufficient and no more information can be gathered by knowing every other state before. This is described by the state transition distribution
+	\acp{hmm} are simple Bayesian networks described by a non-observable (\emph{hidden}) Markov chain. This non-observable discrete chain can be indirectly observed with measurements that are emitted by every state. One of the key features of a Markov chain is that a state does only depend on the previous state, but not on the second previous, third previous, and so on, state. That is, knowing only the previous state is sufficient and no more information can be gathered by knowing every other state before. This is described by the state transition distribution
 	\begin{equation*}
 		s_{k + 1} \sim p(s_{k + 1} \given s_k)
 	\end{equation*}
@@ -19,7 +19,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{figure}
 		\centering
 		\tikzHiddenMarkovModel
-		\caption{Illustration of a completely general Hidden Markov Model with states \(s_k\) and emissions/observations \(\vec{y}_k\).}
+		\caption{Illustration of a completely general Hidden Markov Model with states \(s_k\) and emis\-sions/observations \(\vec{y}_k\).}
 		\label{fig:hiddenMarkovModel}
 	\end{figure}
 
@@ -51,9 +51,9 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 \section{Inference: Filtering and Smoothing}
 	\label{sec:filteringSmoothing}
 
-	When looking at an \ac{lgds}, one of the first problems that one might consider is how to get the states (also called \emph{latent states} as we cannot observe) them back? This procedure is called \emph{inference}. In this section we will give an overview on how to perform inference on an \ac{lgds}, so on a linear system that behaves Markovian.
+	When looking at an \ac{lgds}, one of the first problems that one might consider is how to get the states (also called \emph{latent states} as we cannot observe) back? This procedure is called \emph{inference}. In this section we will give an overview on how to perform inference on an \ac{lgds}.
 
-	For time-series data, the inference procedure is widely know as \emph{filtering} ans \emph{smoothing}, where the following distributions on the latent states \( \vec{s}_t \) are calculated:
+	For time-series data, the inference procedure is widely know as \emph{filtering} and \emph{smoothing}, where the following distributions on the latent states \( \vec{s}_t \) are calculated:
 	\begin{itemize}
 		\item Filtering: \tabto{2.5cm} \( p(\vec{s}_t \given \vec{y}_{1:t}) \)
 		\item Smoothing: \tabto{2.5cm} \( p(\vec{s}_t \given \vec{y}_{1:T}) \)
@@ -70,7 +70,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\end{figure}
 
 	\subsection{Kalman Filter}
-		The Kalman filter as originally introduced by R.~Kalman in 1960~\cite{kalmanNewApproachLinear1960} in the context of signal processing to predict random signals, separate them signals from noise and detect signals of known form in the presence of noise~\cite{kalmanNewApproachLinear1960}. The normal Kalman filter assumes an underlying model of the form of an \ac{lgds} where the measurements are detected and the state is to be estimated from the data. The process of estimated the states is done in a two-step fashion:
+		The Kalman filter as originally introduced by R.~Kalman in 1960~\cite{kalmanNewApproachLinear1960} in the context of signal processing to predict random signals, separate the signals from noise and detect signals of known form in the presence of noise~\cite{kalmanNewApproachLinear1960}. The normal Kalman filter assumes an underlying model of the form of an \ac{lgds} where the measurements are detected and the state is to be estimated from the data. The process of estimated the states is done in a two-step fashion:
 		\begin{enumerate}
 			\item Prediction: \tabto{2.5cm} Estimate the distribution \( p(\vec{s}_t \given \vec{y}_{1:t - 1}) \)
 			\item Correction: \tabto{2.5cm} Estimate the distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \)
@@ -93,10 +93,10 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\end{align}
 		known as the innovation, residual covariance and Kalman gain. The resulting estimates \( \hat{\vec{s}}_{t \subgiven t} \) and \( \hat{\mat{V}}_{t \subgiven t} \) then form the mean and covariance of the filtered distribution \( p(\vec{s}_t \given \vec{y}_{1:t}) \), respectively. These equations form a recursive algorithm "forward in time" starting off with initial state estimates \( \hat{\vec{s}}_{0 \subgiven 0} = \vec{m}_0 \) and \( \hat{\mat{V}}_{0 \subgiven 0} = \mat{V}_0 \) that have to be determined in another way.
 
-		But these equations only work for linear systems. Lots of extensions of the regular Kalman filter have been proposed to extend the filter to nonlinear systems. The most used one is the \ac{ekf} which assumes locally linear dynamics and uses first-order Taylor expansions to linearize them. Throughout this thesis we will use the cubature Kalman filter, which we will introduce later in~\autoref{sec:cubatureFiltering}.
+		But these equations only work for linear systems. Lots of extensions of the regular Kalman filter have been proposed to extend the filter to nonlinear systems. The most used one is the \ac{ekf} which assumes locally linear dynamics and uses first-order Taylor expansions to linearize them. Throughout this thesis we will use the cubature Kalman filter, which we will introduce later in~\autoref{subsec:cubatureFiltering}.
 	% end
 
-	\subsection{Rauch-Tung-Striebel/Kalman Smoother}
+	\subsection{Rauch-Tung-Striebel\,/\,Kalman Smoother}
 		The \ac{rts} smoother has been introduced five years after the original Kalman filter in the 1965 by H.~E.~Rauch, F.~Tung and C.~T.~Striebel~\cite{rauchMaximumLikelihoodEstimates1965} exhibiting the equations for optimal smoothing of linear systems with Gaussian noise, \ie \ac{lgds}. With the smoother, we want to estimate the smoothed distribution, also called the \emph{posterior}
 		\begin{equation*}
 			p(\vec{s}_t \given \vec{y}_{1:T})
@@ -117,7 +117,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 \section{Cubature Rules and Filtering}
 	\label{sec:cubatureRules}
 
-	As we have already discussed is the plain Kalman filter not applicable to nonlinear systems without modifications. In this section we want to motivate the need for \emph{cubature rules} and outline their derivation and how to apply them.
+	As we have already discussed, the plain Kalman filter not applicable to nonlinear systems without modifications. In this section we want to motivate the need for \emph{cubature rules} and outline their derivation and how to apply them.
 
 	Often when deriving probabilistic algorithms like \ac{em} or the Kalman filter, we face us to evaluate expectations \( \E_{\vec{x} \sim p(\vec{x})}\big[ \vec{f}(\vec{x}) \big] \) and hence integrals of the form
 	\begin{equation*}
@@ -133,7 +133,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{equation*}
 		\int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \approx \sum_{i = 1}^{m} w_i \vec{f}(\vec{x}_i)
 	\end{equation*}
-	In this thesis we utilize the spherical-radial cubature rule~\cite{solinCubatureIntegrationMethods2010} which is a third-degree approximation for Gaussian integrals. A third-degree approximation means that "this rule exact for all monomials up to degree three"~\cite[p. 18]{solinCubatureIntegrationMethods2010}. In this cubature rule, the approximation a finite sum over \( 2n \) points, where \( n \) is the dimensionality of \(\vec{x}\), \ie \( \vec{x} \in \R^n \). With \( \mat{\Sigma}^{1/2} \) being the Cholesky decomposition of \( \mat{\Sigma} \), so \( \mat{\Sigma} = \mat{\Sigma}^{1/2} \mat{\Sigma}^{1/2, T} \), the approximation is given as
+	In this thesis we utilize the spherical-radial cubature rule~\cite{solinCubatureIntegrationMethods2010} which is a third-degree approximation for Gaussian integrals. A third-degree approximation means that "this rule is exact for all monomials up to degree three"~\cite[p. 18]{solinCubatureIntegrationMethods2010}. In this cubature rule, the approximation a finite sum over \( 2n \) points, where \( n \) is the dimensionality of \(\vec{x}\), \ie \( \vec{x} \in \R^n \). With \( \mat{\Sigma}^{1/2} \) being the Cholesky decomposition of \( \mat{\Sigma} \), so \( \mat{\Sigma} = \mat{\Sigma}^{1/2} \mat{\Sigma}^{1/2, T} \), the approximation is given as
 	\begin{equation*}
 		\int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}(\mat{\Sigma}^{1/2} \vec{\xi}_i - \vec{\mu})
 	\end{equation*}
@@ -170,7 +170,7 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 	\end{figure}
 
 	\subsection{The Unscented Transform}
-		The \emph{unscented\footnote{The name "unscented", meaning "without perfume", was given by Uhlmann as he did not want people to call the corresponding filter the "Uhlmann Filter"~\cite{FirstHandUnscentedTransform}.} transform}, originally introduced by S.~J.~Julier and J.~K.~Uhlmann in 1995~\cite{julierNewApproachFiltering1995} is another method for approximating nonlinear Gaussian integrals with a parameterized transformation, the \ac{ut}. As shown by~\cite{solinCubatureIntegrationMethods2010}, the spherical-radial cubature rule is just a special case of the more general \ac{ut}. We will follows Solins derivation of this fact here. For \ac{ut}, \( 2n + 1 \) sigma points are formed as a matrix
+		The \emph{unscented\footnote{The name "unscented", meaning "without perfume", was given by Uhlmann as he did not want people to call the corresponding filter the "Uhlmann Filter"~\cite{FirstHandUnscentedTransform}.} transform}, originally introduced by S.~J.~Julier and J.~K.~Uhlmann in 1995~\cite{julierNewApproachFiltering1995} is another method for approximating nonlinear Gaussian integrals with a parameterized transformation, the \ac{ut}. As shown by~\cite{solinCubatureIntegrationMethods2010}, the spherical-radial cubature rule is just a special case of the more general \ac{ut}. We will follow Solins derivation of this fact here. For \ac{ut}, \( 2n + 1 \) sigma points are formed as a matrix
 		\begin{equation}
 			\mat{\mathcal{X}} =
 				\begin{bmatrix}
@@ -228,15 +228,15 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\end{algorithm}
 		\begin{table}
 			\centering
-			\begin{tabular}{c|c|c}
-				   \textbf{Name}     &     \textbf{Code Line}      & \textbf{Linear Equation} \\ \hline
-				  Predicted State    &  \ref{algline:ckfStatePre}  &  \eqref{eqn:kfStatePre}  \\
+			\begin{tabular}{l|c|c}
+				\textbf{Name}        &     \textbf{Code Line}      & \textbf{Linear Equation} \\ \hline
+				Predicted State      &  \ref{algline:ckfStatePre}  &  \eqref{eqn:kfStatePre}  \\
 				Predicted Covariance &   \ref{algline:ckfCovPre}   &   \eqref{eqn:kfCovPre}   \\
-				   Filtered State    & \ref{algline:ckfStatePost}  & \eqref{eqn:kfStatePost}  \\
+				Filtered State       & \ref{algline:ckfStatePost}  & \eqref{eqn:kfStatePost}  \\
 				Filtered Covariance  &  \ref{algline:ckfCovPost}   &  \eqref{eqn:kfCovPost}   \\
-				     Innovation      &    \ref{algline:ckfInno}    &    \eqref{eqn:kfInno}    \\
+				Innovation           &    \ref{algline:ckfInno}    &    \eqref{eqn:kfInno}    \\
 				Residual Covariance  &   \ref{algline:ckfResCov}   &   \eqref{eqn:kfResCov}   \\
-				    Kalman Gain      & \ref{algline:ckfKalmanGain} & \eqref{eqn:kfKalmanGain}
+				Kalman Gain          & \ref{algline:ckfKalmanGain} & \eqref{eqn:kfKalmanGain}
 			\end{tabular}
 			\caption{This table shows how the code lines of the cubature Kalman filer relate to the corresponding linear Kalman filter equations.}
 			\label{tab:cubatureKalmanFilter}
@@ -257,9 +257,9 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\end{algorithm}
 		\begin{table}
 			\centering
-			\begin{tabular}{c|c|c}
-				   \textbf{Name}    &   \textbf{Code Line}    & \textbf{Linear Equation} \\ \hline
-				  Smoothed State    & \ref{algline:crtsState} &   \eqref{eqn:rtsState}   \\
+			\begin{tabular}{l|c|c}
+				\textbf{Name}       &   \textbf{Code Line}    & \textbf{Linear Equation} \\ \hline
+				Smoothed State      & \ref{algline:crtsState} &   \eqref{eqn:rtsState}   \\
 				Smoothed Covariance &  \ref{algline:crtsCov}  &   \eqref{eqn:rtsState}
 			\end{tabular}
 			\caption{This table shows how the code lines of the cubature \ac{rts} smoother relate to the corresponding linear \ac{rts} smoother equations.}
@@ -267,10 +267,10 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\end{table}
 	% end
 
-	\subsection{Square-Root Filtering/Smoothing}
+	\subsection{Square-Root Filtering\,/\,Smoothing}
 		\label{subsec:sqrtSmoothing}
 
-		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \hat{\mat{V}}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not exhibit valid covariance matrices, \ie positive definite and symmetric ones. One approach for solving this problem is producing the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look at it now.
+		While cubature rules are extremely handy, they require the Cholesky decomposition of the covariance \( \mat{\Sigma} \). The Cholesky decomposition might lead to numerical instabilities if the matrix is ill-conditioned or even not positive definite, in which case no Cholesky decomposition exists. As we will see in~\autoref{c:nonlinearGaussianKoopman}, we need the Cholesky decomposition of every smoothed covariance \( \hat{\mat{V}}_{t \subgiven T} \), \( t = 1, 2, \rangedots, T \), leading to numerical instabilities if the cubature approximation in the filtering does not "create" valid covariance matrices, \ie positive definite and symmetric matrices. One approach for solving this problem is estimating the Cholesky decomposition directly, without explicitly decomposing the matrix. Such filtering/smoothing is known as \emph{square-root filtering/smoothing}~\cite{vandermerweSquarerootUnscentedKalman2001,ruttenSquarerootUnscentedFiltering2013} and we will look into it now.
 
 		We will mostly follow the derivation in~\cite{ruttenSquarerootUnscentedFiltering2013} and only shortly outline the key results. With the sigma points \( \mat{\mathcal{X}} \) from the \ac{ut} equation~\eqref{eqn:utSigmaPoints} and the corresponding weights, we can define the transformed sigma points
 		\begin{equation*}
@@ -288,7 +288,11 @@ Out second contribution is to take a probabilistic perspective on "classical" Ko
 		\begin{equation*}
 			\hat{\mat{\Sigma}} = \mat{\mathcal{Y}} \mat{\mathcal{Y}}^T = \mat{\mathcal{Y}} \mat{\Theta} \mat{\Theta}^T \mat{\mathcal{Y}} = \begin{bmatrix} \mat{B} & \mat{O}_{k \times (k + 1)} \end{bmatrix} \begin{bmatrix} \mat{B}^T \\ \mat{O}_{(k + 1) \times n} \end{bmatrix} = \mat{B} \mat{B}^T
 		\end{equation*}
-		so \( \mat{B} \) is the Cholesky decomposition of \( \hat{\mat{\Sigma}} \). But the equation~\eqref{eqn:sqrtFilteringQR}, where we neither now the orthogonal matrix \( \mat{\Theta} \) nor the right side of the equation, is exactly the type of matrix decomposition known as the \emph{QR decomposition} that is numerically more stable than the Cholesky decomposition as it does not require any special structure like positive definiteness of the matrix. In NumPy~\cite{harrisArrayProgrammingNumPy2020}, we can easily compute the matrix \( \mat{B} \) from \( \mathbb{\mathcal{Y}} \) using \lstinline|Y = np.linalg.qr(Y.T).T|. By applying this argumentation in an analogous way to every covariance computation in the cubature Kalman filter and \ac{rts} smoother, we find a complete square-root filtering and smoothing propagating the Cholesky decomposition of the covariance matrices \( \hat{\mat{V}}_{t \subgiven t - 1} \), \( \hat{\mat{V}}_{t \subgiven t} \) and \( \hat{\mat{V}}_{t \subgiven T} \).
+		so \( \mat{B} \) is the Cholesky decomposition of \( \hat{\mat{\Sigma}} \). But the equation~\eqref{eqn:sqrtFilteringQR}, where we neither now the orthogonal matrix \( \mat{\Theta} \) nor the right side of the equation, is exactly the type of matrix decomposition known as the \emph{QR decomposition} that is numerically more stable than the Cholesky decomposition as it does not require any special structure like positive definiteness of the matrix. In NumPy~\cite{harrisArrayProgrammingNumPy2020}, we can easily compute the matrix \( \mat{B} \) from \( \mathbb{\mathcal{Y}} \) with
+		\begin{lstlisting}
+Y = np.linalg.qr(Y.T).T
+		\end{lstlisting}
+		By applying this argumentation in an analogous way to every covariance computation in the cubature Kalman filter and \ac{rts} smoother, we find a complete square-root filtering and smoothing algorithm propagating the Cholesky decomposition of the covariance matrices \( \hat{\mat{V}}_{t \subgiven t - 1} \), \( \hat{\mat{V}}_{t \subgiven t} \) and \( \hat{\mat{V}}_{t \subgiven T} \).
 
 		The square-root cubature Kalman filter is summarized in~\autoref{alg:sqrtCubatureKalmanFilter} and the square-root cubature \ac{rts} smoother is summarized in~\autoref{alg:sqrtCubatureRtsSmoother}.
 

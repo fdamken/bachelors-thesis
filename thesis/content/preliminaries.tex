@@ -3,14 +3,14 @@
 
 
 
-In this chapter we will introduce the basics of this work both to clarify notation and to introduce the reader to probably unknown concepts and methodologies. We will start by having a look at dynamical systems that form the basis of this thesis
+In this chapter we will introduce the basics of this work both to clarify notation and to introduce the reader to potentially unknown concepts and methodologies. We will start by having a look at dynamical systems that form the basis of this thesis
 
 \section{Dynamical Systems}
-	A \emph{dynamical system}~\cite{birkhoffDynamicalSystems1927} is a (physical) system that evolves over time \(t\) and is completely defined by the values of \(n\) real variables
+	A \emph{dynamical system}~\cite{birkhoffDynamicalSystems1927} is a (physical) system that evolves over time \(t\) and is completely defined by the values of \(m\) real variables
 	\begin{equation*}
-		x_1, x_2, \,\cdots\!, x_n \quad\longleftrightarrow\quad \vec{x} = \begin{bmatrix} x_1 & x_2 & \cdots & x_m \end{bmatrix}^T
+		x_1, x_2, \,\cdots\!, x_m \quad\longleftrightarrow\quad \vec{x} = \begin{bmatrix} x_1 & x_2 & \cdots & x_m \end{bmatrix}^T
 	\end{equation*}
-	called the \emph{state} and often written in vector form (right). Given the differentiability of these values, we can also study their rate of change (often referred to as the "velocity") and the rate of change of the rate of change (often referred to as the "acceleration"):
+	called the \emph{state} and often written in vector form (right). Given the differentiability of these values, we can also study their rate of change (often referred to as the "velocity") and the rate of change of the velocity (often referred to as the "acceleration"):
 	\begin{equation*}
 		\dot{\vec{x}} = \dv{\vec{x}}{t} \qquad \ddot{\vec{x}} = \dv[2]{\vec{x}}{t}
 	\end{equation*}
@@ -20,7 +20,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\end{equation}
 	which establishes a connection between the state itself and its time derivatives. We call a function \( \vec{x}(t) \) a \emph{solution} of an \ac{ode} if its derivatives fulfill the given \ac{ode}~\eqref{eq:ode}. In all of the following, we assume to have explicit, autonomous, first order \acp{ode}. This is valid because we can transform every explicit higher order \ac{ode} into a system of first order \acp{ode} as well as we can introduce another "clock state" which makes our \ac{ode} autonomous.
 
-	The solution theory for linear \acp{ode} is highly evolved and solutions exist for nearly every possible \ac{ode}. But for nonlinear \acp{ode}, the world looks different. With the exception of some rare cases, nonlinear \acp{ode} are not tractable. Hence, we often need approximations for the nonlinear case. Some well-known approaches for these approximations are \eg \emph{small angle approximation} for Sines and Cosines. In small angle approximations, we Taylor-expand \( \sin \)/\( \cos \) at \( \varphi_a = 0 \) and cut all higher order terms:
+	The solution theory for linear \acp{ode} is highly evolved and solutions exist for nearly every possible \ac{ode}. But for nonlinear \acp{ode}, we do not have such solution theories. With the exception of some rare cases, nonlinear \acp{ode} are not tractable. Hence, we often need approximations for the nonlinear case. Some well-known approaches for these approximations are \eg \emph{small angle approximation} for Sines and Cosines. In small angle approximations, we Taylor-expand \( \sin \)/\( \cos \) at \( \varphi_a = 0 \) and cut all higher order terms:
 	\begin{gather*}
 		\sin(\varphi) = \varphi - \underbrace{\frac{\varphi^3}{3!} + \frac{\varphi^5}{5!} + \cdots}_\text{higher order terms} \approx \varphi \\
 		\cos(\varphi) = 1 - \underbrace{\frac{\varphi^2}{2!} + \frac{\varphi^4}{4!} - \frac{\varphi^6}{6!} + \cdots}_\text{higher order terms} \approx 1
@@ -44,7 +44,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 		\label{fig:smallAngleApproximation}
 	\end{figure}
 
-	We now look at two examples of dynamical systems, one of which is linear and one that is not.
+	We now look at two examples of dynamical systems, firstly at a linear one and secondly at a nonlinear one.
 
 	\paragraph{Harmonic Oscillator}
 		\label{subsec:harmonicOscillator}
@@ -69,7 +69,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 		with the amplitude \(A\) and the phase \(\varphi\) (see~\autoref{app:harmonicOscillatorSolution} for the derivation of the solution). As neither gravity nor damping or other external forces are involved in the dynamical system, the motion continues forever with a non-changing amplitude.
 	% end
 
-	\paragraph{Simple Pendulum}
+	\paragraph{Inverse Pendulum}
 		\label{subsec:simplePendulum}
 
 		\begin{figure}
@@ -151,12 +151,12 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\begin{equation*}
 		\mathcal{K} \, \vec{h} \coloneqq \vec{h} \circ \vec{F} \qquad\iff\qquad \mathcal{K} \, \vec{h}(\vec{x}_t) = \vec{h}\big( \vec{F}(\vec{x}_t) \big) = \vec{h}(\vec{x}_{t + 1})
 	\end{equation*}
-	and can be visualized as a transition diagram between the states (see~\autoref{fig:koopman}). This relation is true for every possible measurement function \( \vec{h} \) at any point of the system space \( \R^k \)~\cite{bruntonKoopmanInvariantSubspaces2016}. All possible measurement functions \( \vec{h} \) span an infinite-dimensional Hilbert space \( \mathcal{H} \). A finite set of measurements \( \vec{h}_1, \vec{h}_2, \cdots, \vec{h}_p \) that span an invariant subspace \( \hat{\mathcal{H}} \subset \mathcal{H} \), \ie applying the Koopman operator to a linear combination of these functions keeps them in the subspace
+	and can be visualized as a transition diagram between the states (see~\autoref{fig:koopman}). This relation is true for every possible measurement function \( \vec{h} \) at any point of the system space \( \R^k \)~\cite{bruntonKoopmanInvariantSubspaces2016}. All possible measurement functions \( \vec{h} \) span an infinite-dimensional Hilbert space \( \mathcal{H} \). A finite set of measurements \( \vec{h}_1, \vec{h}_2, \cdots, \vec{h}_p \) that span an invariant subspace \( \hat{\mathcal{H}} \subset \mathcal{H} \) can be considered as a basis of that subspace. That is, applying the Koopman operator to a linear combination of these functions keeps them in the subspace:
 	\begin{align*}
 		\vec{h} &= \alpha_1 \vec{h}_1 + \alpha_2 \vec{h}_2 + \cdots + \alpha_p \vec{g}_p \\
 		\mathcal{K} \, \vec{h} &= \beta_1 \vec{h}_1 + \beta_2 \vec{h}_2 + \cdots + \beta_p \vec{h}_p
 	\end{align*}
-	can be considered as a basis of that subspace. If that is possible, we can restrict the Koopman operator onto \( \hat{\mathcal{H}} \). Functions that both span the subspace \(\hat{\mathcal{H}}\) and do only scale when applying the Koopman operator, \ie \( \mathcal{K} \, \vec{\varphi} = \lambda \vec{\varphi} \) are called \emph{eigenfunctions} of the Koopman operator. Finding these eigenfunctions is extremely desirable, as it allows us to get a finite Koopman operator matrix \( \mat{K} \) globally linearizing the dynamical system \( \vec{F} \). However, for this thesis, we do not seek the eigenfunctions directly but an approximation of the \emph{inverse} observation function to forecast the dynamical system.
+	If that is possible, we can restrict the Koopman operator onto \( \hat{\mathcal{H}} \). Functions that both span the subspace \(\hat{\mathcal{H}}\) and do only scale when applying the Koopman operator, \ie \( \mathcal{K} \, \vec{\varphi} = \lambda \vec{\varphi} \) are called \emph{eigenfunctions} of the Koopman operator. Finding these eigenfunctions is extremely desirable as it allows us to get a finite Koopman operator matrix \( \mat{K} \) globally linearizing the dynamical system \( \vec{F} \). However, for this thesis, we do not seek the eigenfunctions directly but an approximation of the \emph{inverse} observation function to forecast the dynamical system.
 
 	\begin{figure}
 		\centering
@@ -173,7 +173,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\begin{align*}
 		p(\vec{y} \given \vec{\theta}) = \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
 	\end{align*}
-	is generally intractable. As usual on maximum likelihood approaches, it is useful to not maximize the likelihood directly, but to maximize the log-likelihood
+	is generally intractable. As usual on maximum likelihood approaches, it is useful not to maximize the likelihood directly, but to maximize the log-likelihood
 	\begin{align*}
 		\mathcal{L}(\vec{\theta}) \coloneqq \log p(\vec{y} \given \vec{\theta}) = \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
 	\end{align*}
@@ -207,7 +207,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\end{align*}
 	while holding the parameters \(\vec{\theta}\) fixed. This maximization turns the lower bound into an equality with the actual likelihood.
 
-	For the M-step, we keep the auxiliary distribution fixed and maximize the lower bound \ac{wrt} the parameters \(\vec{\theta}\). As this involves taking the derivative of \(\mathcal{L}_\mathrm{EM}\) \ac{wrt} \(\vec{\theta}\), we can safely omit the right hand side of the lower bound as it does not depend on \(\vec{\theta}\). Hence, we get the M-step as:
+	For the M-step, we keep the auxiliary distribution fixed and maximize the lower bound \ac{wrt} the parameters~\(\vec{\theta}\). As this involves taking the derivative of \(\mathcal{L}_\mathrm{EM}\) \ac{wrt} \(\vec{\theta}\), we can safely omit the right hand side of the lower bound as it does not depend on \(\vec{\theta}\). Hence, we get the M-step as:
 	\begin{align*}
 		\vec{\theta}^{(n + 1)}
 			&= \arg\max_{\vec{\theta}}\, \mathcal{L}_\mathrm{EM}\big[ q^{(n)}, \vec{\theta} \big] \\
@@ -217,15 +217,15 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\end{align*}
 	The quantity to optimize, \( Q(\vec{\theta}) \coloneqq \E[\log p(\vec{x}, \vec{y} \given \vec{\theta})] \), is also called the \emph{expected complete log-likelihood} as it involves both the observables and the latent variables.
 
-	As shown in~\cite{bealVariationalAlgorithmsApproximate2003a}, the lower bound turns into an equality after the E-step. Hence we are guaranteed to always rise the log-likelihood after each \ac{em} iteration if we do not already have the optimal auxiliary distribution and parameters. If this would be the case, both the E- and the M-step would not change anything, so our log-likelihood is monotonically increasing. Also we might not want to calculate the whole distribution in the E-step, but we might want to restrict our computations to sufficient statistics that cover our whole distribution. For the rest of this thesis, we know our distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \) is Gaussian, so we can assume the auxiliary distribution to be Gaussian too, given that we set them equal. Hence, we only need to calculate the mean and correlation or covariance of each variable to cover the whole distribution and to be able to proceed. This will turn out to be really useful later on.
+	As shown in~\cite{bealVariationalAlgorithmsApproximate2003a}, the lower bound turns into an equality after the E-step. Hence, we are guaranteed to always rise the log-likelihood after each \ac{em} iteration if we do not already have the optimal auxiliary distribution and parameters. If this would be the case, both the E- and the M-step would not change anything, so our log-likelihood is monotonically increasing. Also, we might not want to calculate the whole distribution in the E-step, but we might want to restrict our computations to sufficient statistics that cover our whole distribution. For the rest of this thesis, we know our distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \) is Gaussian, so we can assume the auxiliary distribution to be Gaussian too, given that we set them equal. Hence, we only need to calculate the mean and correlation or covariance of each variable to cover the whole distribution and to be able to proceed. This will turn out to be really useful later on.
 
 	We will now take a look at variational autoencoders and justify the title of this thesis even if we, as we will see in~\autoref{c:nonlinearGaussianKoopman}, derived an \ac{em} algorithm.
 % end
 
 \section{Variational Autoencoders and the Evidence Lower Bound}
-	\acp{vae} have been first introduced in the context of the \ac{aevb} algorithm by Kingma and Welling in 2014~\cite{kingmaAutoEncodingVariationalBayes2014}. They tackle inference and learning in probabilistic models with latent variables, similar to the \ac{em} algorithm. To keep the notation analogous to the derivation of the \ac{em} algorithm, we deviate from~\cite{kingmaAutoEncodingVariationalBayes2014} in terms that we keep \(\vec{x}\) as our latent variables and \(\vec{y}\) as the observables.
+	Variational autoencoders have been first introduced in the context of the \ac{aevb} algorithm by Kingma and Welling in 2014~\cite{kingmaAutoEncodingVariationalBayes2014}. They tackle inference and learning in probabilistic models with latent variables, similar to the \ac{em} algorithm. To keep the notation analogous to the derivation of the \ac{em} algorithm, we deviate from~\cite{kingmaAutoEncodingVariationalBayes2014} in terms that we keep \(\vec{x}\) as our latent variables and \(\vec{y}\) as the observables.
 
-	To perform inference, we want to maximize the (log-) likelihood
+	To perform inference, we want to maximize the (log-)\,likelihood
 	\begin{align*}
 		\mathcal{L}(\vec{\theta}) \coloneqq \log p(\vec{y} \given \vec{\theta}) = \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
 	\end{align*}
