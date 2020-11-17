@@ -119,7 +119,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 
 	As we have already discussed, the plain Kalman filter not applicable to nonlinear systems without modifications. In this section we want to motivate the need for \emph{cubature rules} and outline their derivation and how to apply them.
 
-	Often when deriving probabilistic algorithms like \ac{em} or the Kalman filter, we have to evaluate expectations \( \E_{\vec{x} \sim p(\vec{x})}\big[ \vec{f}(\vec{x}) \big] \) and hence integrals of the form
+	Often when deriving probabilistic algorithms like \ac{em} or the Kalman filter, we have to evaluate expectations \( \E_{\vec{x} \sim p(\vec{x})}\big[ \vec{f}(\vec{x}) \big] \) and hence integrals of the form:
 	\begin{equation*}
 		\E_{\vec{x} \sim p(\vec{x})}\big[ \vec{f}(\vec{x}) \big] = \int\! \vec{f}(\vec{x}) p(\vec{x}) \dd{\vec{x}}
 	\end{equation*}
@@ -170,7 +170,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 	\end{figure}
 
 	\subsection{The Unscented Transform}
-		The \emph{unscented\footnote{The name "unscented", meaning "without perfume", was given by Uhlmann as he did not want people to call the corresponding filter the "Uhlmann Filter"~\cite{FirstHandUnscentedTransform}.} transform}, originally introduced by S.~J.~Julier and J.~K.~Uhlmann in 1995~\cite{julierNewApproachFiltering1995} is another method for approximating nonlinear Gaussian integrals with a parameterized transformation, the \ac{ut}. As shown by~\cite{solinCubatureIntegrationMethods2010}, the spherical-radial cubature rule is just a special case of the more general \ac{ut}. We will follow Solins derivation of this fact here. For \ac{ut}, \( 2n + 1 \) sigma points are formed as a matrix
+		The \emph{unscented\footnote{The name "unscented" was given by Uhlmann as he did not want people to call the corresponding filter the "Uhlmann Filter"~\cite{FirstHandUnscentedTransform}.} transform}, originally introduced by S.~J.~Julier and J.~K.~Uhlmann in 1995~\cite{julierNewApproachFiltering1995} is another method for approximating nonlinear Gaussian integrals with a parameterized transformation, the \ac{ut}. As shown by~\cite{solinCubatureIntegrationMethods2010}, the spherical-radial cubature rule is just a special case of the more general \ac{ut}. We will follow Solins derivation of this fact here. For \ac{ut}, \( 2n + 1 \) sigma points are formed as a matrix
 		\begin{equation}
 			\mat{\mathcal{X}} =
 				\begin{bmatrix}
@@ -288,11 +288,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 		\begin{equation*}
 			\hat{\mat{\Sigma}} = \mat{\mathcal{Y}} \mat{\mathcal{Y}}^T = \mat{\mathcal{Y}} \mat{\Theta} \mat{\Theta}^T \mat{\mathcal{Y}} = \begin{bmatrix} \mat{B} & \mat{O}_{k \times (k + 1)} \end{bmatrix} \begin{bmatrix} \mat{B}^T \\ \mat{O}_{(k + 1) \times n} \end{bmatrix} = \mat{B} \mat{B}^T
 		\end{equation*}
-		so \( \mat{B} \) is the Cholesky decomposition of \( \hat{\mat{\Sigma}} \). But the equation~\eqref{eqn:sqrtFilteringQR}, where we neither now the orthogonal matrix \( \mat{\Theta} \) nor the right side of the equation, is exactly the type of matrix decomposition known as the \emph{QR decomposition} that is numerically more stable than the Cholesky decomposition as it does not require any special structure like positive definiteness of the matrix. In NumPy~\cite{harrisArrayProgrammingNumPy2020}, we can easily compute the matrix \( \mat{B} \) from \( \mathbb{\mathcal{Y}} \) with
-		\begin{lstlisting}
-Y = np.linalg.qr(Y.T).T
-		\end{lstlisting}
-		By applying this argumentation in an analogous way to every covariance computation in the cubature Kalman filter and \ac{rts} smoother, we find a complete square-root filtering and smoothing algorithm propagating the Cholesky decomposition of the covariance matrices \( \hat{\mat{V}}_{t \subgiven t - 1} \), \( \hat{\mat{V}}_{t \subgiven t} \) and \( \hat{\mat{V}}_{t \subgiven T} \).
+		so \( \mat{B} \) is the Cholesky decomposition of \( \hat{\mat{\Sigma}} \). But the equation~\eqref{eqn:sqrtFilteringQR}, where we neither now the orthogonal matrix \( \mat{\Theta} \) nor the right side of the equation, is exactly the type of matrix decomposition known as the \emph{QR decomposition} that is numerically more stable than the Cholesky decomposition as it does not require any special structure like positive definiteness of the matrix. In NumPy~\cite{harrisArrayProgrammingNumPy2020}, we can easily compute the matrix \( \mat{B} \) from \( \mathbb{\mathcal{Y}} \) with \lstinline|Y = np.linalg.qr(Y.T).T|. By applying this argumentation in an analogous way to every covariance computation in the cubature Kalman filter and \ac{rts} smoother, we find a complete square-root filtering and smoothing algorithm propagating the Cholesky decomposition of the covariance matrices \( \hat{\mat{V}}_{t \subgiven t - 1} \), \( \hat{\mat{V}}_{t \subgiven t} \) and \( \hat{\mat{V}}_{t \subgiven T} \).
 
 		The square-root cubature Kalman filter is summarized in~\autoref{alg:sqrtCubatureKalmanFilter} and the square-root cubature \ac{rts} smoother is summarized in~\autoref{alg:sqrtCubatureRtsSmoother}.
 
