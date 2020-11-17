@@ -205,22 +205,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 	% end
 
 	\subsection{Experiment Setup}
-		We will now introduce the experiment setup, initialization and similar stuff we used for each environment. For all experiments, we initialized the latent state dynamics matrix \( \mat{A} \) with an identity matrix, the initial state \( \vec{m}_0 \) with a one-vector and all covariance matrices \( \mat{R} \), \( \mat{R} \) and \( \mat{V}_0 \) with a small diagonal covariance of \( 10^{-5} \). We set the maximum number of \(\vec{g}\)-optimization iterations to \(1000\) for all environments. As described in~\autoref{sec:implementation}, we used a neural network for the observation function with \(\tanh\) activation functions (except for the output layer of course) and a single hidden layer with \(50\) neurons. The environment-specific parameters and the hidden layer sizes are given in~\autoref{tab:experimentSetup}.
-
-		\todo{Update table once more results are here and we changed hyperparameters!}
-		\begin{table}
-			\centering
-			\begin{tabular}{c|ccc}
-				\textbf{Environment} & \textbf{Whitening?} & \textbf{Latent Dim.} & \textbf{Max. Iterations} \\ \hline
-				      Pendulum       &         no          &        \(10\)        &         \(100\)          \\
-				  Damped Pendulum    &         yes         &        \(10\)        &         \(200\)          \\
-				    Gym Pendulum     &         no          &        \(10\)        &         \(500\)          \\
-				    Gym Cartpole     &         yes         &        \(8\)         &         \(500\)          \\
-				    Gym Acrobot      &         no          &        \(16\)        &         \(350\)
-			\end{tabular}
-			\caption{Overview over the different hyperparameter setting for the different environments.}
-			\label{tab:experimentSetup}
-		\end{table}
+		We will now introduce the experiment setup, initialization and similar stuff we used for each environment. For all experiments, we initialized the latent state dynamics matrix \( \mat{A} \) with an identity matrix, the initial state \( \vec{m}_0 \) with a one-vector and all covariance matrices \( \mat{R} \), \( \mat{R} \) and \( \mat{V}_0 \) with a small diagonal covariance of \( 10^{-5} \). We set the maximum number of \(\vec{g}\)-optimization iterations to \(1000\) for all environments. As described in~\autoref{sec:implementation}, we used a neural network for the observation function with \(\tanh\) activation functions (except for the output layer of course) and a single hidden layer with \(50\) neurons. We used \(100\) max. iterations for the pendulum, \(200\) for the damped pendulum, \(500\) for the Gym pendulum, \(500\) for the Gym cartpole and \(250\) for the Gym double pendulum.
 
 		For the proof-of-concept environment (the linear system), we used a slightly different setup as the environment is a lot simpler. We used a zero-layer neural network with no activation function, \ie a learnable matrix/linear transformation. We also fix the latent dimensionality to be \(2\) for the linear system as we only have two states.
 	% end
@@ -444,7 +429,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 	% end
 
-	\subsection{Gym Pendulum}
+	\subsection{Gym Pendulum} % Finished!
 		\subsubsection{Influence of the Latent Dimensionality}
 			\label{subsubsec:gymPendulumLatents}
 

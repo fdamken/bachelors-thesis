@@ -131,6 +131,20 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 		Improving the performance on the double pendulum might be possible by using a shorter integration interval \(h\) to provide the algorithm more information between the states such that it can better extrapolate from the data. Another idea, similar to the one outlined in~\autoref{subsec:discussGymPendulum}, would be to apply an inverse feature transform on the sine/cosine of the angles to reduce the dimensionality of the observation space and let "the model discover the symmetries". But overall we are satisfied that we managed to learn at least the rollout on the training data even in a chaotic system.
 	% end
 
+	\subsection{Running on the CPU or GPU makes a Difference}
+		\label{subsec:cpuGpu}
+
+		We noticed that running our code on the \ac{cpu} or on the \ac{gpu} makes a huge difference in the quality of the results, where running on the \ac{gpu} is better. The environment we mostly noticed this is the double pendulum, of which we added two plots in~\autoref{app:plotsCpuGpu}.~\autoref{fig:cpuVsGpuCpu} shows the double pendulum experiment result running on the \ac{cpu} and~\autoref{fig:cpuVsGpuGpu} shows the double pendulum experiment result running on the \ac{gpu}. We expect both plots to be the same, but in fact the plot of the experiment running on the \ac{cpu} looks better. These runs are the runs \texttt{1564} and \texttt{1565}, respectively. In both cases we set the seed for both NumPy and PyTorch to the same value. As the data was generated beforehand, the Gym seed does not matter in this case. We expect this to be an issue with a gradient flowing too far through the computation graph or an issue with floating point operations working differently on the \ac{cpu}/\ac{gpu}.
+	% end
+
+	\subsection{Learning Multiple Sequences at Once}
+		\label{subsec:singleMulti}
+
+		We derived the Koopman inference algorithm in a way such that it should be possible to learn on multiple observation sequences at once (see~\autoref{sec:ngkDerivation}). However, we noticed that the results of learning from multiple sequences at once yields worst results than learning one observation sequence. We have multiple explanations for this issue, the most probable being an error in the implementation we did not find. Another explanation is that in the single-sequence case the neural network of the observation function overfits to the training data and does not have enough "memory" to also overfit to another observation sequence and therefore breaks. This is a serious problem to address and we might be able to overcome this problem by adding noise to the input to generalize better.
+
+		\autoref{fig:plotsSingleSequence} and~\autoref{fig:plotsMultiSequence} show two rollouts on the damped pendulum environment, the former only learning on a single observation sequence and the latter learning on multiple sequences at once. We see that while the result of a single sequence captures the dynamics decently (see~\autoref{subsec:discussDampedPendulum} for an in-depth discussion), the model that learned on two sequences does not capture the dynamics correctly.
+	% end
+
 	\subsection{Discussion on Numerical Stability}
 		\label{subsec:discussPerformanceNumerics}
 

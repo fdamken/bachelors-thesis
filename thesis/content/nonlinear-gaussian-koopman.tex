@@ -200,21 +200,6 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 
 			We should note that some environments we ran experiments on are described by stiff differential equations, \eg the pendulum or the cartpole environment. As stiff \acp{ode} can not be integrated well with explicit solution methods, implicit methods should be preferred throughout the data generation. For some environments in OpenAI's Gym~\cite{brockmanOpenAIGym2016}, this has to be explicitly configured, \eg for the cartpole environment with \lstinline|env.kinematics_integrator = 'implicit-euler'|. Not changing the integrator leads to catastrophic data. In case of the cartpole, using the explicit Euler method causes the pole to build up energy and to get significantly faster over time.
 		% end
-
-		\subsubsection{Running on the CPU or GPU makes a Difference}
-			\label{subsubsec:cpuGpu}
-
-			We noticed that running our code on the \ac{cpu} or on the \ac{gpu} makes a huge difference in the quality of the results, where running on the \ac{gpu} is better. The environment we mostly noticed this is the double pendulum (see~\autoref{subsubsec:doublePendulum}), of which we added two plots in~\autoref{app:plotsCpuGpu}.~\autoref{fig:cpuVsGpuCpu} shows the double pendulum experiment result running on the \ac{cpu} and~\autoref{fig:cpuVsGpuGpu} shows the double pendulum experiment result running on the \ac{gpu}. We expect both plots to be the same, but in fact the plot of the experiment running on the \ac{cpu} looks better. These runs are the runs \texttt{1564} and \texttt{1565}, respectively. In both cases we set the seed for both NumPy and PyTorch to the same value. As the data was generated beforehand, the Gym seed does not matter in this case. We expect this to be an issue with a gradient flowing too far through the computation graph or an issue with floating point operations working differently on the \ac{cpu}/\ac{gpu}.
-
-			\todo{Maybe push to results section?}
-		% end
-
-		\subsubsection{Learning Multiple Sequences at Once}
-			We derived the Koopman inference algorithm in a way such that it is possible to learn on multiple observation sequences at once (see~\autoref{sec:ngkDerivation}). However, we noticed that the results of learning from multiple sequences in one go yields worst results than learning one observation sequence. We have multiple explanations for this issue, the most probable being an error in the implementation we did not find. Another explanation is that in the single-sequence case the neural network of the observation function overfits to the training data and does not have enough "memory" to also overfit to another observation sequence and therefore breaks.
-
-			\todo{Maybe push to results section?}
-			\todo{Add experiment for this!}
-		% end
 	% end
 
 	\subsection{Hyperparameters}
