@@ -148,6 +148,8 @@ class UncontrolledCartPole(CartPoleEnv):
 		% end
 
 		\subsubsection{Gym Double Pendulum}
+			\label{subsubsec:doublePendulum}
+
 			\begin{itemize}
 				\item Experiment ID: \texttt{acrobot\_gym}
 			\end{itemize}
@@ -525,6 +527,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 	\subsection{Gym Cartpole} % Finished!
 		\subsubsection{Influence of the Latent Dimensionality}
+			\label{subsubsec:cartpoleLatents}
+
 			For the cartpole experiment, we tested \(50\) latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 
 			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{nrmse} shrinks to near zero (approx. \(0.001\)) for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
@@ -576,6 +580,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
+			\label{subsubsec:cartpoleL10}
+
 			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}). According to the \ac{nrmse} of the training data, this should perform decent on the training data and, according to the \ac{nrmse} on the prediction, bad on the prediction.~\autoref{fig:cartpoleRolloutL10} shows that the rollout and the smoothed trajectory actually follow the true data really good, while the rollout does not match the true data after the prediction boundary, but roughly forecasts the qualitative behavior. Interestingly, the confidence in the rollout of the pendulum displacement and velocity is a lot higher than the confidence in the rollout of the cart position and velocity.
 
 			\begin{figure}
@@ -587,6 +593,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 16-Dimensional Latent}
+			\label{subsubsec:cartpoleL16}
+
 			We will now look at an exemplary run for the latent dimensionality \( k = 16 \) (run \texttt{166}), the run which had the lowest \ac{nrmse} over the complete rollout data. Still, according to the \ac{nrmse} of the prediction, we do not expect a good prediction.~\autoref{fig:cartpoleRolloutL16} confirms this, as the rollout on the training data follows the true data closely while the prediction is off the true trajectory. Compared to the 14-dimensional latent, we do not see much improvement in the prediction.
 
 			\begin{figure}

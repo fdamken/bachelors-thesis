@@ -471,3 +471,26 @@
 		All these equations match exactly the analytic equations we derived before. Thus, the cubature rule is exact if \(\vec{g}(\cdot)\) is a linear function.
 	\end{proof}
 % end
+
+\section{Miscellaneous}
+	This primarily contains plots for~\ref{c:nonlinearGaussianKoopman} to not clutter that chapter.
+
+	\subsection{Plots for Running on the CPU or GPU}
+		\label{app:plotsCpuGpu}
+
+		This section contains additional plots for~\autoref{subsubsec:cpuGpu}.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/results/cpu-vs-gpu/acrobot-gpu/rollout-observations-N0.pdf}
+			\caption{Rollout of the double pendulum experiment that ran on the \ac{cpu}.}
+			\label{fig:cpuVsGpuCpu}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/results/cpu-vs-gpu/acrobot-gpu/rollout-observations-N0.pdf}
+			\caption{Rollout of the double pendulum experiment that ran on the \ac{gpu}.}
+			\label{fig:cpuVsGpuGpu}
+		\end{figure}
+	% end
+% end
