@@ -5,7 +5,7 @@
 
 In this chapter we will introduce the basics of this work both to clarify notation and to introduce the reader to potentially unknown concepts and methodologies. We will start by having a look at dynamical systems that form the basis of this thesis.
 
-\section{Dynamical Systems}
+\section{Dynamical Systems}  % TODO: Maybe drop completely?
 	A \emph{dynamical system}~\cite{birkhoffDynamicalSystems1927} is a (physical) system that evolves over time \(t\) and is completely defined by the values of \(m\) real variables
 	\begin{equation*}
 		x_1, x_2, \,\cdots\!, x_m \quad\longleftrightarrow\quad \vec{x} = \begin{bmatrix} x_1 & x_2 & \cdots & x_m \end{bmatrix}^T
@@ -126,7 +126,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 		\begin{equation*}
 			\vec{x}_{t + 1} = \vec{F}(\vec{x}_t)
 		\end{equation*}
-		But we should note that, while seeming more restrictive, discrete-time dynamical systems are more general than continuous-time systems as we can discretize every continuous-time system
+		But we should note that, while seeming more restrictive, discrete-time dynamical systems are more general~\cite{bruntonKoopmanInvariantSubspaces2016} than continuous-time systems as we can discretize every continuous-time system
 		\begin{equation*}
 			\dot{\vec{x}} = \vec{f}(\vec{x})
 		\end{equation*}
@@ -214,8 +214,6 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	The quantity to optimize, \( Q(\vec{\theta}) \coloneqq \E[\log p(\vec{x}, \vec{y} \given \vec{\theta})] \), is also called the \emph{expected complete log-likelihood} as it involves both the observables and the latent variables.
 
 	As shown in~\cite{bealVariationalAlgorithmsApproximate2003a}, the lower bound turns into an equality after the E-step. Hence, we are guaranteed to always rise the log-likelihood after each \ac{em} iteration if we do not already have the optimal auxiliary distribution and parameters. If this would be the case, both the E- and the M-step would not change anything, so our log-likelihood is monotonically increasing. Also, we might not want to calculate the whole distribution in the E-step, but we might want to restrict our computations to sufficient statistics that cover our whole distribution. For the rest of this thesis, we know our distribution \( p(\vec{x} \given \vec{y}, \vec{\theta}) \) is Gaussian, so we can assume the auxiliary distribution to be Gaussian too, given that we set them equal. Hence, we only need to calculate the mean and correlation or covariance of each variable to cover the whole distribution and to be able to proceed. This will turn out to be really useful later on.
-
-	We will now take a look at variational autoencoders and justify the title of this thesis even if we, as we will see in~\autoref{c:nonlinearGaussianKoopman}, derived an \ac{em} algorithm.
 % end
 
 \section{Variational Autoencoders and the Evidence Lower Bound}
@@ -235,7 +233,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 			&= \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \frac{p(\vec{y} \given \vec{x}, \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}} + \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) p(\vec{y} \given \vec{x}, \vec{\theta}) \dd{\vec{x}}  \nonumber \\
 			&= -\KL{q(\vec{x} \given \vec{y}, \vec{\phi})}{p(\vec{y} \given \vec{x}, \vec{\theta})} + \E_{q(\vec{x} \given \vec{y}, \vec{\phi})}[p(\vec{y} \given \vec{x}, \vec{\theta})] \eqqcolon \mathcal{L}_\mathrm{ELBO}(\vec{\theta}, \vec{\psi})  \label{eq:elbo}
 	\end{align}
-	Note that we have introduced an auxiliary parametric distribution \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) which originally leads to the first integral to be an expectation and makes the application of Jensen's inequality possible. We now maximize the \ac{elbo}~\eqref{eq:elbo} \ac{wrt} the variational and generative parameters \(\vec{\phi}\) and \(\vec{\theta}\), respectively using the \emph{reparametrization trick}~\cite{kingmaAutoEncodingVariationalBayes2014}.
+	Note that we have introduced an auxiliary parametric distribution \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) which originally leads to the first integral to be an expectation and makes the application of Jensen's inequality possible. We now maximize the \ac{elbo}~\eqref{eq:elbo} \ac{wrt} the variational and generative parameters \(\vec{\phi}\) and \(\vec{\theta}\) respectively using the \emph{reparametrization trick}~\cite{kingmaAutoEncodingVariationalBayes2014}.
 
 	Shifting to \acp{vae}, we now represent the auxiliary distribution \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) using a neural network with some prior \( p(\vec{x} \given \vec{\theta}) \), e.g. a standard Gaussian \( p(\vec{x} \given \vec{\theta}) = \normal(\vec{0}, \mat{I}) \) to keep the latents "close to the center", enforced by the \ac{kl} divergences in the \ac{elbo}. For a Gaussian latent distribution, the neural network, called the \emph{amortization network}, produces the mean and the diagonal covariance of \( q \). A second neural network is used for decoding the latent dimension, representing the decoding distribution \( p(\vec{y} \given \vec{x}, \vec{\theta}) \). If we assume a Gaussian decoding distribution with constant variance, the right side of the \ac{elbo}~\eqref{eq:elbo} just becomes the squared error between the decoding mean and the input \(\vec{y}\). Such a network architecture is illustrated in~\autoref{fig:vae}.
 

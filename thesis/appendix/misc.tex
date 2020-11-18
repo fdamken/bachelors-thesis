@@ -75,4 +75,20 @@
 			\caption{Notations used for linear Gaussian dynamical systems in different papers.}
 		\end{table}
 	% end
+
+	\section{Framework-Specific Implementation Problems}
+		\label{app:implFrameworkProblems}
+
+		\subsubsection{Slow QR Decomposition on GPU}
+			During our implementation we found found that QR decomposition is relatively slow on the \ac{gpu} due to a bug in PyTorch\footnote{See \href{https://web.archive.org/web/20201110121407/https://github.com/pytorch/pytorch/issues/22573}{\texttt{https://github.com/pytorch/pytorch/issues/22573}}.} at the time of writing. While faster QR decomposition methods on a \ac{gpu} have been proposed~\cite{andersonCommunicationAvoidingQRDecomposition2011a}, we stuck to copying the data back and forth between \ac{cpu} and \ac{gpu} in every \ac{em} iteration.
+
+			We also address this in~\nameref{sec:futureWork}.
+		% end
+
+		\subsubsection{Issues with Numerical Integration}
+			\label{subsubsec:integrationProblems}
+
+			We should note that some environments we ran experiments on are described by stiff differential equations, \eg the pendulum or the cartpole environment. As stiff \acp{ode} can not be integrated well with explicit solution methods, implicit methods should be preferred throughout the data generation. For some environments in OpenAI's Gym~\cite{brockmanOpenAIGym2016}, this has to be explicitly configured, \eg for the cartpole environment with \lstinline|env.kinematics_integrator = 'implicit-euler'|. Not changing the integrator leads to catastrophic data. In case of the cartpole, using the explicit Euler method causes the pole to build up energy and to get significantly faster over time.
+		% end
+	% end
 % end

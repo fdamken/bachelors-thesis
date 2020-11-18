@@ -127,7 +127,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{equation*}
 		\E_{\vec{x} \sim p(\vec{x})}\big[ \vec{f}(\vec{x}) \big] = \int\! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}}
 	\end{equation*}
-	which do not have closed form solutions for arbitrary, nonlinear, functions \( \vec{f}(\vec{x}) \). Two common approaches for approximating the expectations/integrals are Monte Carlo Estimation, leading to particle filters and numerical integration methods, known as cubature\footnote{"Classical" numerical integration methods are called "quadrature" as they form a rectangle under the curve to approximate the area, while in higher dimensions this is more or less a "cube", hence it is called "cubature".} rules.
+	which do not have closed form solutions for arbitrary, nonlinear, functions \( \vec{f}(\vec{x}) \). Two common approaches for approximating the expectations/integrals are Monte Carlo Estimation, leading to \ac{mcmc}, particle filters and numerical integration methods, known as cubature\footnote{"Classical" numerical integration methods are called "quadrature" as they form a rectangle under the curve to approximate the area, while in higher dimensions this is more or less a "cube" or "hypercube", hence it is called "cubature".} rules.
 
 	To approximate Gaussian integrals, we need a set of \(m\) \emph{sigma points} \( \vec{x}_i \) to evaluate \( \vec{f}(\vec{x}) \) at and a set weights \( w_i \) to form a sum over the sigma points:
 	\begin{equation*}
@@ -152,17 +152,17 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 		r \sim \normal(80,\, 40) \qquad\qquad \theta \sim \normal(0,\, 0.4)
 	\end{equation*}
 
-	\begin{figure}
+	\begin{figure}  % TODO: Maybe include rasterized versions of these? The samples take a lot of resources.
 		\centering
 		\begin{subfigure}[t]{0.5\linewidth}
 			\centering
-			\includegraphics[width = \linewidth]{figures/inference/cubature/spherical-radial-cubature-original}
+			\includegraphics[width = \linewidth]{figures/inference/cubature/spherical-radial-cubature-original.png}
 			\caption{The original samples in polar coordinates with the real mean shown as an orange star in the middle.}
 		\end{subfigure}%
 		~
 		\begin{subfigure}[t]{0.5\linewidth}
 			\centering
-			\includegraphics[width = \linewidth]{figures/inference/cubature/spherical-radial-cubature-transformed}
+			\includegraphics[width = \linewidth]{figures/inference/cubature/spherical-radial-cubature-transformed.png}
 			\caption{The approximate mean calculated via the spherical-radial cubature rule is shown as an orange star, positioned at the mean of the transformed cubature points. This plot also shows the Monte Carlo estimate as a black cross right above the cubature estimate, showing that the cubature estimate is really accurate with significantly less computational effort.}
 		\end{subfigure}
 		\caption{These plots show how the spherical-radial cubature rule is used to estimate the mean of the Gaussian on the left after it has been transformed with a polar transformation to the right. To illustrate the shape of the Gaussian after it has been transformed, we added the blue dots as sample values of the Gaussian. These are 1000 sample points also used to calculate the Monte Carlo estimate of the mean. The sigma points are shown as green pluses. \\ Adopted from~\cite{solinCubatureIntegrationMethods2010}.}

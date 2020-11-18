@@ -8,9 +8,7 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 
 \section{Model Performance}
 	\subsection{Proof-of-Concept: LGDS}
-		As we have seen in~\autoref{fig:lgdsRollout}, the \ac{lgds} proof-of-concept environment works pretty well and the true data is perfectly predicted. Applying the \ac{nrmse} to the smoothed trajectory and the rollout, the model has an error of approximately \( 0.0001 \) for every metric.
-
-		This shows that our model is a real extension of the linear \ac{lgds} algorithm, as it is also able to produce really good results on plain linear systems.
+		As we have seen in~\autoref{fig:lgdsRollout}, the \ac{lgds} proof-of-concept environment works pretty well and the true data is perfectly predicted. Applying the \ac{nrmse} to the smoothed trajectory and the rollout, the model has an error of approximately \( 0.0001 \) for every metric. This shows that we are still able to learn linear dynamical systems. We expected this result as we have proven that our algorithm is equivalent to the \ac{lgds} inference algorithm for linear systems in~\autoref{app:ngkExactness}. Hence, our algorithm does not reduce the "power" of the linear algorithm on linear systems and only extends its usability to nonlinear systems.
 	% end
 
 	\subsection{Pendulum}
@@ -22,7 +20,7 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 		\begin{equation*}
 			\sigma = \{ 1.00, 1.00, 1.00, 0.96, 0.65, 0.67, 0.86, 0.80, 0.73, 0.75 \}
 		\end{equation*}
-		we see that not all are close to one, \ie they vanish after some time. This directly corresponds to the energy loss in the system (the eigenvalues of a system capture the time evolution). We also see that the tenth dimension has a really high variance in its states, indicating that the model is unsure what to do with that dimension. Looking at the rollout of a nine-dimensional latent (run \texttt{58}) in~\autoref{fig:pendulumRolloutL09}, however, we see that the energy loss is still there. It also does not make sense to inspect higher-dimensional latent spaces for now as we have seen in the latent dimensionalities experiment that the error does not shrink much and the 14-dimensional latent that we inspected in~\autoref{subsubsec:pendulumL10} does also loose energy. We do not expect this to get better with higher latent dimensionalities. Also, higher dimensionalities impose numerical instability, a phenomenon we will address in~\autoref{subsec:discussPerformanceNumerics}.
+		we see that not all are close to one, \ie they vanish after some time. This directly corresponds to the energy loss in the system (the eigenvalues of a system capture the time evolution). We also see that the tenth dimension has a really high variance in its states, indicating that the model already has enough latent dimensions to explain the dynamics. Looking at the rollout of a nine-dimensional latent (run \texttt{58}) in~\autoref{fig:pendulumRolloutL09}, however, we see that the energy loss is still there. It also does not make sense to inspect higher-dimensional latent spaces for now as we have seen in the latent dimensionalities experiment that the error does not shrink much and the 14-dimensional latent that we inspected in~\autoref{subsubsec:pendulumL10} does also loose energy. We do not expect this to get better with higher latent dimensionalities. Also, higher dimensionalities impose numerical instability, a phenomenon we will address in~\autoref{subsec:discussPerformanceNumerics}.
 
 		For this environment, we get really small confidences with the true trajectory still lying in the region of confidence. We also see that the variance is higher on the turns of the pendulum which makes sense as that is the most critical part of the movement.
 
@@ -68,7 +66,7 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 
 		Improving this might be possible by fixing the observation function and optimizing just the state dynamics matrix on its own. This reduces the parameters the algorithm has to learn by a lot, possibly yielding a more accurate rollout. But overall we are satisfied with this result as we learn the energy loss and get a confidence that is not too high such that the real position is still in the region of variance. As for the undamped pendulum, we get higher variances in regions where the pendulum turns over.
 
-		As the rollout is generated from a linear system in the background, it makes sense that energy-loosing systems can be modeled easier: Taming a linear system to keep its energy for a long time is a lot harder as "letting it converge to zero". A stable non-zero system corresponds to eigenvalues that are approximately one (as \( \lim_{k \to \infty} 1^k = 1 \) and \( \lim_{k \to \infty} x^k = 0 \) for \( \lvert x \rvert < 1 \), but \( \lim_{k \to \infty} x^k \to \infty \) for \( x > 0 \)). Systems with eigenvalues close to one just have to be disturbed a little (\eg by inaccuracies) and the system diverges.
+		As the rollout is generated from a linear system in the background, it makes sense that energy-loosing systems can are easier to model: Taming a linear system to keep its energy for a long time is a lot harder as "letting it converge to zero". A stable non-zero system corresponds to eigenvalues that are approximately one (as \( \lim_{k \to \infty} 1^k = 1 \) and \( \lim_{k \to \infty} x^k = 0 \) for \( \lvert x \rvert < 1 \), but \( \lim_{k \to \infty} x^k \to \infty \) for \( x > 0 \)). Systems with eigenvalues close to one just have to be disturbed a little (\eg by inaccuracies) and the system diverges.
 
 		\begin{figure}
 			\centering
@@ -183,14 +181,14 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 		Looking into this was not possible for us as it is beyond the scope of this thesis.
 	% end
 
-	\subsection{Full Bayesian}
-		Another extension would be to go full Bayesian and treat \eg the state dynamics matrix, covariance matrices and so on as random variables. This would allow to gauge the uncertainty on the dynamics itself and would allow to restrict the matrices to small ones by placing a prior on them. The approach would be to replace the \ac{ml} estimator with a \ac{map} estimator.
+	\subsection{Bayesian Treatment}
+		Another extension would be to employ a Bayesian view on the parameters and treat \eg the state dynamics matrix, covariance matrices and so on as random variables. This would allow to gauge the uncertainty on the dynamics itself and would allow to restrict the matrices to small ones by placing a prior on them. The approach would be to remove the \ac{ml} estimator and marginalize over the parameters to get a predictive distribution. Another semi-Bayesian approach would be to use point-estimates using a \ac{map} estimator rather than a predictive distribution.
 	% end
 
 	\subsection{Automatic Relevance Determination (ARD)}
 		\label{subsec:ard}
 
-		In combination with going full Bayesian on the model goes the implementation of automatic relevance determination of latent dimensions as proposed in~\cite{bealVariationalKalmanSmoother2000} for linear systems. Choosing a zero-mean prior might lead to a determination of non-relevant latent states, driving the state dynamics matrix to zero. Implementing this could solve the problems described in~\autoref{subsec:discussPerformanceNumerics} that the algorithm does "not know what to do" with some latent dimensions.
+		In combination with going full Bayesian on the model goes the implementation of automatic relevance determination of latent dimensions as proposed in~\cite{bealVariationalKalmanSmoother2000} for linear systems. Choosing a zero-mean prior might lead to a determination of non-relevant latent states, driving the state dynamics matrix to zero. Implementing this could solve the problems described in~\autoref{subsec:discussPerformanceNumerics} that the algorithm does already has "enough" latent dimensions and drives the variance to a high level on some dimensions.
 	% end
 
 	\subsection{Better Regularization and Learning the Cholesky Decomposition}
