@@ -1,9 +1,9 @@
-all: clean rasterize-pdfs build rename-to-hash
+all: clean build rename-to-hash
 
 clean:
 	./clean.sh
 
-build:
+build: rasterize-pdfs
 	lualatex thesis.tex
 	bibtex thesis
 	makeglossaries thesis
