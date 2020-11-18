@@ -176,7 +176,7 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 	We will now discuss and propose future work and ideas that can be tried based on the results of this thesis.
 
 	\subsection{Control}
-		In this thesis we presented a method for learning a dynamical system with no control inputs. The most obvious extension would be to add control inputs to the latent space in an additive fashion \( \vec{s}_{t + 1} = \mat{A} \vec{s}_t + \mat{B} \vec{u}_t \) with a learnable control matrix \(\mat{B}\). With this approach it might be possible to actually perform \ac{mpc} and uncertainty-aware control like in~\cite{mortonDeepVariationalKoopman2019a}, but with a simpler model. Our first approach to this would be to test this method on a simple environment like the pendulum and firstly learn the control rollout and afterwards perform a stabilization task and try the swing-up of the pendulum.
+		In this thesis we presented a method for learning a dynamical system with no control inputs. The most obvious extension would be to add control inputs to the latent space in an additive fashion \( \vec{s}_{t + 1} = \mat{A} \vec{s}_t + \mat{B} \vec{u}_t \) with a learnable control matrix \(\mat{B}\). With this approach it might be possible to actually perform \ac{mpc} and uncertainty-aware control like in~\cite{mortonDeepVariationalKoopman2019a}, but with a simpler model. Our first approach to this would be to test this method on a simple environment like the pendulum and first learn the control rollout and afterwards perform a stabilization task and try the swing-up of the pendulum.
 
 		Looking into this was not possible for us as it is beyond the scope of this thesis.
 	% end

@@ -4,22 +4,22 @@
 
 
 
-A dynamical system often describes some kind of physical process, \eg a pendulum swinging around a fixed point or two pendulums together. However, these systems often exhibit complicated and tedious, in some cases even chaotic, movement. In (optimal) control theory, we try to control these systems to accomplish a desired state, \eg to stand upright. As for complex systems we do not necessarily have the equations of motion (\eg with friction models), we have to learn the model in a process called \emph{model learning}.
+A dynamical system often describes some kind of physical process, \eg a pendulum swinging around a fixed point or two pendulums swinging together. However, these systems often exhibit complicated and in some cases even chaotic movement. In (optimal) control theory, we try to control these systems to accomplish a desired state, \eg to stand upright. As for complex systems we do not necessarily have the equations of motion (\eg with friction models), we have to learn the model in a process called \emph{model learning}.
 
 \paragraph{Motivation}
-	Learning nonlinear models is a tedious task. For (optimal) control, there are highly evolved control methods like \ac{lqr} to get an optimal trajectory. Unfortunately, such solution theories does not exist for nonlinear models, even if we had perfect models. Most methods used for control, \eg \ac{mpc} and \ac{ilqr}, use approximations and locally linear dynamics models.
+	Learning nonlinear models is a tedious task. For (optimal) control, there are highly evolved control methods like \ac{lqr} to get an optimal trajectory. Unfortunately, such solution theories does not exist for nonlinear models, even if we had models that perfectly describe the reality. Most methods used for controlling dynamics systems, \eg \ac{mpc} and \ac{ilqr}, use approximations and locally linear dynamics models.
 
-	This motivates finding globally linear embeddings that we can project the nonlinear dynamics to. This enables doing control in the linear embedding rather than the complex nonlinear state space, yielding better overall results.
+	This motivates globally linear embeddings that we can project the nonlinear dynamics to. This enables doing control in the linear embedding rather than the complex nonlinear state space, yielding better overall results.
 % end
 
 \paragraph{Approach}
-	Finding such a linear embedding to perform control in is theoretically backed by Koopman theory~\cite{koopmanHamiltonianSystemsTransformation1931}, stating that every dynamical system can be lifted into a linear embedding. Such methods have proven to be useful in the past~\cite{kaiserDatadrivenDiscoveryKoopman2020,hanDeepLearningKoopman2020,mortonDeepVariationalKoopman2019a}, however, most of the approaches do not tackle the problem from a probabilistic view or have very complex models.
+	Finding such a linear embedding to perform control in is theoretically backed by the Koopman theory~\cite{koopmanHamiltonianSystemsTransformation1931}, stating that every dynamical system can be lifted into a linear embedding. Such methods have proven to be useful in the past~\cite{kaiserDatadrivenDiscoveryKoopman2020,hanDeepLearningKoopman2020,mortonDeepVariationalKoopman2019a}, however, most of the approaches do not tackle the problem from a probabilistic view or have very complex models.
 % end
 
 \paragraph{Contribution}
 	Our contribution is an extension of the well-known model learning algorithm for \acp{lgds}~\cite{ghahramaniParameterEstimationLinear1996,minkaHiddenMarkovModels1999} by using nonlinear measurements. Backed by Koopman theory~\cite{koopmanHamiltonianSystemsTransformation1931} and results from prior work~\cite{luschDeepLearningUniversal2018}, we assume the existence of an observation function that maps from a linear Koopman embedding to the nonlinear state space, allowing model predictions of the complex underlying dynamics using linear transformations.
 
-	We evaluate our model on well-known environments like the (damped) pendulum, cartpole and a double pendulum. Finally, we examine the model performance on an error-basis and explore the influence of hyperparameters to the performance.
+	We evaluate our model on well-known environments like the (damped) pendulum, cartpole and a double pendulum. Finally, we examine the model performance on an error-basis and explore the influence of hyperparameters on the performance.
 % end
 
 \paragraph{Goals}
@@ -27,5 +27,5 @@ A dynamical system often describes some kind of physical process, \eg a pendulum
 % end
 
 \paragraph{Outline}
-	In \chapterautorefname~"\nameref{c:preliminaries}" we give an overview over the basic techniques we use throughout this thesis, namely dynamical systems, the Koopman operator and the expectation-maximization algorithm. Afterwards we give an introduction to inference in dynamical systems in~\autoref{c:inferenceInDynamicalSystems}, laying the groundwork for the following chapters that include our contribution. In \chapterautorefname~"\nameref{c:nonlinearGaussianKoopman}", we state the problem to solve formally and propose a method to solve the upcoming inference problem using an approximate nonlinear expectation-maximization algorithm utilizing cubature rules. We will also cover implementation details and assess the numerical stability of our algorithm. We will cover experiments and experimental results in~\autoref{c:experiments} and discuss the results in~\autoref{c:discussion}, giving also some propositions for future work. Finally, we summarize all results in~\autoref{c:conclusion}.
+	In the \chapterautorefname~"\nameref{c:preliminaries}" we give an overview over the basic techniques we use throughout this thesis, namely dynamical systems, the Koopman operator and the expectation-maximization algorithm. Afterwards, we give an introduction to inference in dynamical systems in the \chapterautorefname~"\nameref{c:inferenceInDynamicalSystems}", laying the groundwork for the following chapters that include our contribution. In \chapterautorefname~"\nameref{c:nonlinearGaussianKoopman}", we state the problem to solve formally and propose a method to solve the upcoming inference problem using an approximate nonlinear expectation-maximization algorithm utilizing cubature rules. We will also cover implementation details and assess the numerical stability of our algorithm. We will cover experiments and experimental results in the \chapterautorefname~"\nameref{c:experiments}" and discuss the results in the \chapterautorefname~"\nameref{c:discussion}", giving also some propositions for future work. Finally, we summarize all results in the \chapterautorefname~"\nameref{c:conclusion}".
 % end

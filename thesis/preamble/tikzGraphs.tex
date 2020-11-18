@@ -280,8 +280,51 @@
 }
 
 \newcommand{\tikzVariationalAutoEncoder}{
-	\begin{tikzpicture}
-		\tikzAutoEncoder{3}{2}{5}{5}
+	\begin{tikzpicture}[yscale=-1]
+		\coordinate (pa) at (0, 0.5);
+		\coordinate (pb) at (2, 1.5);
+		\coordinate (pc) at (2, 2.5);
+		\coordinate (pd) at (0, 3.5);
+		\path (pa) -- coordinate(pA) (pd);
+		\path (pb) -- coordinate(pB) (pc);
+		\path (pA) -- coordinate(pC) (pB);
+		\path (pb) -- coordinate(pD) (pc);
+
+		\coordinate (a) at (2.5, 1.5);
+		\coordinate (b) at (3.5, 1.5);
+		\coordinate (c) at (3.5, 2.5);
+		\coordinate (d) at (2.5, 2.5);
+		\path (c) -- coordinate(A) (d);
+		\path (a) -- coordinate(B) (c);
+		\path (b) -- coordinate(E) (c);
+		\path (a) -- coordinate(D) (d);
+
+		\coordinate (qa) at (4, 1.5);
+		\coordinate (qb) at (6, 0.5);
+		\coordinate (qc) at (6, 3.5);
+		\coordinate (qd) at (4, 2.5);
+		\path (qa) -- coordinate(qA) (qd);
+		\path (qb) -- coordinate(qB) (qc);
+		\path (qA) -- coordinate(qC) (qB);
+		\path (qa) -- coordinate(qE) (qd);
+
+		\draw (pa) -- (pb) -- (pc) -- (pd) -- cycle;
+		\draw (a) -- (b) -- (c) -- (d) -- cycle;
+		\draw (qa) -- (qb) -- (qc) -- (qd) -- cycle;
+
+		\node at (pC) {\( q_{\vec{\phi}}(\vec{x} \given \vec{y}) \)};
+		\node at (qC) {\( p_{\vec{\theta}}(\vec{y} \given \vec{x}) \)};
+		\node at (B) {\( \vec{x} \)};
+		\node (prior) [below = 0.5 of A] {\( p(\vec{x}) \)};
+
+		\node (y) [left = 0.5 of pA] {\( \vec{y} \)};
+		\node (yT) [right = 0.5 of qB] {\( \tilde{\vec{y}} \)};
+
+		\draw [->, dotted] (prior) -- (A);
+		\draw [->] (pD) -- (D);
+		\draw [->] (E) -- (qE);
+		\draw [->] (y) -- (pA);
+		\draw [->] (qB) -- (yT);
 	\end{tikzpicture}
 }
 
@@ -324,7 +367,7 @@
 		\node [below = 0 of kA] {\small \( t - 1 \)};
 		\node [below = 0 of kpA] {\small \( t \)};
 
-		\node [below = 0 of t1] {\( 0 \)};
+		\node [below = 0 of t1] {\( 1 \)};
 		\node [below = 0 of tT] {\( T \)};
 
 		\path [fill = black, opacity = 0.2] (0, 0.2) -- (10, 0.2) -- (10, -0.2) -- (0, -0.2) -- cycle;
