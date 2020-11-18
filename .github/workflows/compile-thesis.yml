@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install make and poppler-utils
-        run: sudo apt install make poppler-utils
+      - name: Install poppler-utils
+        run: sudo apt install poppler-utils
       - name: Rasterize PDFs
-        run: cd thesis && make rasterize-pdfs
+        run: cd thesis && ./rasterize-pdfs.sh
       - name: Compile Document
         uses: dante-ev/latex-action@v0.2.0
         with:
