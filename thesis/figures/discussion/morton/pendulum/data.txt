@@ -1,7 +1,0 @@
-Our Run:    tmp_results_grid_search/latent-dim_pendulum_gym/104
-Morton Run: benchmarking/morton/results/pendulum/predictions_29.json
-Our NRMSE:     0.19966
-Morton NRMSE:  0.01676
-Are we better? no
-Absolute Difference:  0.18290
-Relative Difference: 11.91527
