@@ -80,7 +80,7 @@
 		\label{app:implFrameworkProblems}
 
 		\subsubsection{Slow QR Decomposition on GPU}
-			During our implementation we found found that QR decomposition is relatively slow on the \ac{gpu} due to a bug in PyTorch\footnote{See \href{https://web.archive.org/web/20201110121407/https://github.com/pytorch/pytorch/issues/22573}{\texttt{https://github.com/pytorch/pytorch/issues/22573}}.} at the time of writing. While faster QR decomposition methods on a \ac{gpu} have been proposed~\cite{andersonCommunicationAvoidingQRDecomposition2011a}, we stuck to copying the data back and forth between \ac{cpu} and \ac{gpu} in every \ac{em} iteration.
+			During our implementation we found that QR decomposition is relatively slow on the \ac{gpu} due to a bug in PyTorch\footnote{See \href{https://web.archive.org/web/20201110121407/https://github.com/pytorch/pytorch/issues/22573}{\texttt{https://github.com/pytorch/pytorch/issues/22573}}.} at the time of writing. While faster QR decomposition methods on a \ac{gpu} have been proposed~\cite{andersonCommunicationAvoidingQRDecomposition2011a}, we stuck to copying the data back and forth between \ac{cpu} and \ac{gpu} in every \ac{em} iteration.
 
 			We also address this in~\nameref{sec:futureWork}.
 		% end
