@@ -31,7 +31,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-lgds-N0.pdf}
-				\caption{Plot of the raw data used for training the proof-of-concept \ac{lgds} environment. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\caption[Raw data of the proof-of-concept LGDS environment]{Plot of the raw data used for training the proof-of-concept LGDS environment. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envLgds}
 			\end{figure}
 		% end
@@ -52,20 +52,20 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-N0.pdf}
-				\caption{Plot of the raw data used for training the undamped pendulum environment. The left plot shows the displacement and the right plot the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\caption[Raw data of the undamped pendulum environment]{Plot of the raw data used for training the undamped pendulum environment. The left plot shows the displacement and the right plot the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envPendulum}
 			\end{figure}
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-damped-N0.pdf}
-				\caption{Plot of the raw data used for training the damped pendulum environment. The left plot shows the displacement and the right plot the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\caption[Raw data of the damped pendulum environment]{Plot of the raw data used for training the damped pendulum environment. The left plot shows the displacement and the right plot the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envPendulumDamped}
 			\end{figure}
 
 			\begin{figure}
 				\centering
 				\tikzSimplePendulum
-				\caption{Illustration of the pendulum environment. The pendulum has length \(L\) and mass \(m\) and is attached to a fixed point in the center around which it can swing. In the case of the undamped pendulum, it swings freely, otherwise it is damped with a damping constant \(d\).}
+				\caption[Illustration of the pendulum environment]{Illustration of the pendulum environment. The pendulum has length \(L\) and mass \(m\) and is attached to a fixed point in the center around which it can swing. In the case of the undamped pendulum, it swings freely, otherwise it is damped with a damping constant \(d\).}
 				\label{fig:envPendulumSketch}
 			\end{figure}
 		% end
@@ -93,7 +93,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-gym-N0.pdf}
-				\caption{Plot of the raw data used for training the Gym pendulum environment. The top row shows the cosine/sine of the displacement of the pendulum and the bottom plot shows the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\caption[Raw data of the Gym pendulum environment]{Plot of the raw data used for training the Gym pendulum environment. The top row shows the cosine/sine of the displacement of the pendulum and the bottom plot shows the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envPendulumGym}
 			\end{figure}
 		% end
@@ -135,14 +135,14 @@ class UncontrolledCartPole(CartPoleEnv):
 			\begin{figure}
 				\centering
 				\tikzCartpole
-				\caption{Illustration of the cartpole environment. The cart has mass \(m_c\), the pole \(m_p\) with length \(L\). The cart can move freely on the \(x\) axis, while the pendulum can swing freely around the center of the cart, causing it to move.}
+				\caption[Illustration of the cartpole environment]{Illustration of the cartpole environment. The cart has mass \(m_c\), the pole \(m_p\) with length \(L\). The cart can move freely on the \(x\) axis, while the pendulum can swing freely around the center of the cart, causing it to move.}
 				\label{fig:envCartpoleGymSketch}
 			\end{figure}
 
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-cartpole-gym-N0.pdf}
-				\caption{Plot of the raw data used for training the Gym cartpole environment. The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\caption[Raw data of the cartpole environment]{Plot of the raw data used for training the Gym cartpole environment. The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envCartpoleGym}
 			\end{figure}
 		% end
@@ -191,14 +191,14 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\tikzDoublePendulum
-				\caption{Illustration of the double pendulum environment. The pendulums have lengths \(\ell_1\) and \(\ell_2\) with the masses \(m_1\) and \(m_2\) attached to the respective ends. The inner pendulum can swing freely around the center while the other pendulum can swing freely around the end of the inner pendulum. Hence fixing one of the pendulums would transform the system back to a simple pendulum. If both pendulums can swing, the system is chaotic.}
+				\caption[Illustration of the double pendulum environment]{Illustration of the double pendulum environment. The pendulums have lengths \(\ell_1\) and \(\ell_2\) with the masses \(m_1\) and \(m_2\) attached to the respective ends. The inner pendulum can swing freely around the center while the other pendulum can swing freely around the end of the inner pendulum. Hence fixing one of the pendulums would transform the system back to a simple pendulum. If both pendulums can swing, the system is chaotic.}
 				\label{fig:envDoublePendulumGymSketch}
 			\end{figure}
 
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0.pdf}
-				\caption{Plot of the raw data used for training the Gym double pendulum environment. The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
+				\caption[Raw data of the double pendulum environment]{Plot of the raw data used for training the Gym double pendulum environment. The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
 				\label{fig:envDoublePendulumGym}
 			\end{figure}
 		% end
@@ -253,7 +253,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figures/results/lgds/rollout-observations-N0.pdf}
-			\caption{The rollout plot in the observation space of the \ac{lgds} environment for \(k = 3\). The left plot shows the first dimension, the right plot the second dimension. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+			\caption[Rollout of the proof-of-concept LGDS experiment for 3 latent dimensions]{The rollout plot in the observation space of the LGDS environment for \(k = 3\). The left plot shows the first dimension, the right plot the second dimension. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 			\label{fig:lgdsRollout}
 		\end{figure}
 	% end
@@ -269,7 +269,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
+				\caption[Error of the smoothed trajectory on the training data of the pendulum experiment]{The NRMSE of the smoothed trajectory on the training data of the pendulum environment.}
 				\label{fig:pendulumRmseSmoothed}
 			\end{figure}
 
@@ -280,23 +280,23 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				\begin{subfigure}{0.7\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum/latent-dim/comparison-rmse-rollout-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the complete rollout on the pendulum environment.}
+					\caption[Error of the complete rollout on the pendulum environment]{Error of the complete rollout on the pendulum environment.}
 					\label{fig:pendulumRmseComplete}
 				\end{subfigure} \\
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the training data only on the pendulum environment.}
+					\caption[Error of the training rollout on the pendulum environment]{Error of the rollout on the training data only on the pendulum environment.}
 					\label{fig:pendulumRmseTrain}
 				\end{subfigure}%
 				~
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the prediction only on the pendulum environment.}
+					\caption[Error of the prediction rollout on the pendulum environment]{Error of the rollout on the prediction only on the pendulum environment.}
 					\label{fig:pendulumRmsePred}
 				\end{subfigure}
-				\caption{Plot of the errors of the pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
+				\caption[Errors on the pendulum environment for different latent dimensions]{Plot of the errors of the pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
 				\label{fig:pendulumRmse}
 			\end{figure}
 		% end
@@ -311,7 +311,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 %			\begin{figure}
 %				\centering
 %				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-04/rollout-observations-N0.pdf}
-%				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+%				\caption[Rollout of the pendulum experiment for 4 latent dimensions]{The rollout plot in the observation space of the pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 %				\label{fig:pendulumRolloutL04}
 %			\end{figure}
 %		% end
@@ -324,7 +324,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}[H]
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-10/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 10\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+				\caption[Rollout of the pendulum experiment for 10 latent dimensions]{The rollout plot in the observation space of the pendulum environment for \(k = 10\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:pendulumRolloutL10}
 			\end{figure}
 		% end
@@ -349,7 +349,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
+				\caption[Error of the smoothed trajectory on the training data of the damped pendulum experiment]{The NRMSE of the smoothed trajectory on the training data of the damped pendulum environment.}
 				\label{fig:pendulumDampedRmseSmoothed}
 			\end{figure}
 
@@ -358,23 +358,23 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				\begin{subfigure}{0.7\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the complete rollout on the damped pendulum environment.}
+					\caption[Error of the complete rollout on the damped pendulum environment]{Error of the complete rollout on the damped pendulum environment.}
 					\label{fig:pendulumDampedRmseComplete}
 				\end{subfigure} \\
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the training data only on the damped pendulum environment.}
+					\caption[Error of the training rollout on the damped pendulum environment]{Error of the rollout on the training data only on the damped pendulum environment.}
 					\label{fig:pendulumDampedRmseTrain}
 				\end{subfigure}%
 				~
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the prediction only on the damped pendulum environment.}
+					\caption[Error of the prediction rollout on the damped pendulum environment]{Error of the rollout on the prediction only on the damped pendulum environment.}
 					\label{fig:pendulumDampedRmsePred}
 				\end{subfigure}
-				\caption{Plot of the errors of the damped pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
+				\caption[Errors on the damped pendulum environment for different latent dimensions]{Plot of the errors of the damped pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
 				\label{fig:pendulumDampedRmse}
 			\end{figure}
 		% end
@@ -391,7 +391,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-10/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the damped pendulum environment for \(k = 10\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+				\caption[Rollout of the damped pendulum experiment for 10 latent dimensions]{The rollout plot in the observation space of the damped pendulum environment for \(k = 10\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:pendulumDampedRolloutL10}
 			\end{figure}
 		% end
@@ -414,7 +414,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-gym/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the Gym pendulum environment.}
+				\caption[Error of the smoothed trajectory on the training data of the Gym pendulum experiment]{The NRMSE of the smoothed trajectory on the training data of the Gym pendulum environment.}
 				\label{fig:gymPendulumRmseSmoothed}
 			\end{figure}
 
@@ -423,23 +423,23 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				\begin{subfigure}{0.7\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum-gym/latent-dim/comparison-rmse-rollout-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the complete rollout on the Gym pendulum environment.}
+					\caption[Error of the complete rollout on the Gym pendulum environment]{Error of the complete rollout on the Gym pendulum environment.}
 					\label{fig:gymPendulumRmseComplete}
 				\end{subfigure} \\
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum-gym/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the training data only on the Gym pendulum environment.}
+					\caption[Error of the training rollout on the Gym pendulum environment]{Error of the rollout on the training data only on the Gym pendulum environment.}
 					\label{fig:gymPendulumRmseTrain}
 				\end{subfigure}%
 				~
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/pendulum-gym/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the prediction only on the Gym pendulum environment.}
+					\caption[Error of the prediction rollout on the Gym pendulum environment]{Error of the rollout on the prediction only on the Gym pendulum environment.}
 					\label{fig:gymPendulumRmsePred}
 				\end{subfigure}
-				\caption{Plot of the errors of the Gym pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
+				\caption[Errors on the Gym pendulum environment for different latent dimensions]{Plot of the errors of the Gym pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
 				\label{fig:gymPendulumRmse}
 			\end{figure}
 		% end
@@ -456,7 +456,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum-gym/run-latent-dim-04/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the Gym pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+				\caption[Rollout of the Gym pendulum experiment for 4 latent dimensions]{The rollout plot in the observation space of the Gym pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:gymPendulumRolloutL04}
 			\end{figure}
 		% end
@@ -481,7 +481,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the cartpole environment.}
+				\caption[Error of the smoothed trajectory on the training data of the cartpole experiment]{The NRMSE of the smoothed trajectory on the training data of the cartpole environment.}
 				\label{fig:cartpoleRmseSmoothed}
 			\end{figure}
 
@@ -490,23 +490,23 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				\begin{subfigure}{0.7\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-rollout-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the complete rollout from on the cartpole environment.}
+					\caption[Error of the complete rollout on the cartpole environment]{Error of the complete rollout from on the cartpole environment.}
 					\label{fig:cartpoleRmseComplete}
 				\end{subfigure} \\
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the training data only on the cartpole environment.}
+					\caption[Error of the training rollout on the cartpole environment]{Error of the rollout on the training data only on the cartpole environment.}
 					\label{fig:cartpoleRmseTrain}
 				\end{subfigure}%
 				~
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/cartpole-gym/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the prediction only on the cartpole environment.}
+					\caption[Error of the prediction rollout on the cartpole environment]{Error of the rollout on the prediction only on the cartpole environment.}
 					\label{fig:cartpoleRmsePred}
 				\end{subfigure}
-				\caption{Plot of the errors of the cartpole environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation. The data points on the right side of the plot get increasingly sparse as the algorithm gets increasingly numerically brittle for higher latent dimensionalities.}
+				\caption[Errors on the cartpole environment for different latent dimensions]{Plot of the errors of the cartpole environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation. The data points on the right side of the plot get increasingly sparse as the algorithm gets increasingly numerically brittle for higher latent dimensionalities.}
 				\label{fig:cartpoleRmse}
 			\end{figure}
 		% end
@@ -523,7 +523,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-10/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 10\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation. As the variances in the top plots are very high, see~\autoref{fig:cartpoleRolloutL10Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
+				\caption[Rollout of the cartpole experiment for 10 latent dimensions]{The rollout plot in the observation space of the cartpole environment for \(k = 10\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation. As the variances in the top plots are very high, see~\autoref{fig:cartpoleRolloutL10Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
 				\label{fig:cartpoleRolloutL10}
 			\end{figure}
 		% end
@@ -548,7 +548,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the double pendulum environment.}
+				\caption[Error of the smoothed trajectory on the training data of the double pendulum experiment]{The NRMSE of the smoothed trajectory on the training data of the double pendulum environment.}
 				\label{fig:acrobotRmseSmoothed}
 			\end{figure}
 
@@ -557,23 +557,23 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				\begin{subfigure}{0.7\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-rollout-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the complete rollout from on the double pendulum environment.}
+					\caption[Error of the complete rollout on the double pendulum environment]{Error of the complete rollout from on the double pendulum environment.}
 					\label{fig:acrobotRmseComplete}
 				\end{subfigure} \\
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the training data only on the double pendulum environment.}
+					\caption[Error of the training rollout on the double pendulum environment]{Error of the rollout on the training data only on the double pendulum environment.}
 					\label{fig:acrobotRmseTrain}
 				\end{subfigure}%
 				~
 				\begin{subfigure}{0.5\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the prediction only on the double pendulum environment.}
+					\caption[Error of the prediction rollout on the double pendulum environment]{Error of the rollout on the prediction only on the double pendulum environment.}
 					\label{fig:acrobotRmsePred}
 				\end{subfigure}
-				\caption{Plot of the errors of the double pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation. The data points on the right side of the plot get increasingly sparse as the algorithm gets increasingly numerically brittle for higher latent dimensionalities.}
+				\caption[Errors on the double pendulum environment for different latent dimensions]{Plot of the errors of the double pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation. The data points on the right side of the plot get increasingly sparse as the algorithm gets increasingly numerically brittle for higher latent dimensionalities.}
 				\label{fig:acrobotRmse}
 			\end{figure}
 		% end
@@ -588,7 +588,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.9\linewidth]{figures/results/acrobot-gym/run-latent-dim-18/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the double pendulum environment for \(k = 18\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+				\caption[Rollout of the double pendulum experiment for 18 latent dimensions]{The rollout plot in the observation space of the double pendulum environment for \(k = 18\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:acrobotRolloutL18}
 			\end{figure}
 		% end

@@ -40,21 +40,21 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-10/energy-R10-N0-potential.pdf}
 			\end{subfigure}
-			\caption{Total energy of the undamped pendulum composed of the kinetic energy on the bottom left and the potential energy on the bottom right. The blue line represents the true energy, calculated from the training and validation data. The orange line is the energy calculated from the rollout. As usual, the red line is the prediction boundary until all training data was used and the rest is prediction.}
+			\caption[Total energy of the undamped pendulum]{Total energy of the undamped pendulum composed of the kinetic energy on the bottom left and the potential energy on the bottom right. The blue line represents the true energy, calculated from the training and validation data. The orange line is the energy calculated from the rollout. As usual, the red line is the prediction boundary until all training data was used and the rest is prediction.}
 			\label{fig:pendulumEnergyL10}
 		\end{figure}
 
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-10/rollout-latents-N0.pdf}
-			\caption{Rollout of the latent dimensions of the pendulum environment for \(k = 10 \) latents.}
+			\caption[Latent rollout of the pendulum experiment for 10 latent dimensions]{Rollout of the latent dimensions of the pendulum environment for \(k = 10 \) latents.}
 			\label{fig:pendulumLatentRolloutL10}
 		\end{figure}
 
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-09/rollout-observations-N0.pdf}
-			\caption{The rollout plot in the observation space of the pendulum environment for \(k = 9\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+			\caption[Rollout of the pendulum experiment for 9 latent dimensions]{The rollout plot in the observation space of the pendulum environment for \(k = 9\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 			\label{fig:pendulumRolloutL09}
 		\end{figure}
 	% end
@@ -82,14 +82,14 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-10/energy-R110-N0-potential.pdf}
 			\end{subfigure}
-			\caption{Total energy of the damped pendulum composed of the kinetic energy on the bottom left and the potential energy on the bottom right. The blue line represents the true energy, calculated from the training and validation data. The orange line is the energy calculated from the rollout. As usual, the red line is the prediction boundary until all training data was used and the rest is prediction.}
+			\caption[Total energy of the damped pendulum]{Total energy of the damped pendulum composed of the kinetic energy on the bottom left and the potential energy on the bottom right. The blue line represents the true energy, calculated from the training and validation data. The orange line is the energy calculated from the rollout. As usual, the red line is the prediction boundary until all training data was used and the rest is prediction.}
 			\label{fig:pendulumDampedEnergyL10}
 		\end{figure}
 
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-10/rollout-latents-N0.pdf}
-			\caption{Rollout of the latent dimensions of the damped pendulum environment for \(k = 10 \) latents.}
+			\caption[Latent rollout of the damped pendulum experiment for 10 latent dimensions]{Rollout of the latent dimensions of the damped pendulum environment for \(k = 10 \) latents.}
 			\label{fig:pendulumDampedLatentRolloutL10}
 		\end{figure}
 	% end
@@ -106,13 +106,13 @@ In this chapter we analyze the results from~\autoref{c:experiments} and set them
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figures/results/pendulum-gym/run-latent-dim-04/rollout-latents-N0.pdf}
-			\caption{Rollout of the latent dimensions of the Gym pendulum environment for \( k = 6 \) latents.}
+			\caption[Latent rollout of the Gym pendulum experiment for 6 latent dimensions]{Rollout of the latent dimensions of the Gym pendulum environment for \( k = 6 \) latents.}
 			\label{fig:gymPendulumLatentRolloutL04}
 		\end{figure}
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figures/results/pendulum-gym/run-latent-dim-07/rollout-latents-N0.pdf}
-			\caption{Rollout of the latent dimensions of the Gym pendulum environment for \( k = 7 \) latents.}
+			\caption[Latent rollout of the Gym pendulum experiment for 7 latent dimensions]{Rollout of the latent dimensions of the Gym pendulum environment for \( k = 7 \) latents.}
 			\label{fig:gymPendulumLatentRolloutL07}
 		\end{figure}
 	% end

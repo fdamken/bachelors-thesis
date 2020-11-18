@@ -32,15 +32,15 @@ In this chapter we will introduce the basics of this work both to clarify notati
 		\begin{subfigure}[t]{0.5\linewidth}
 			\centering
 			\includegraphics[width = \linewidth]{figures/introduction/generated/small-angle-approximation-sin.pdf}
-			\caption{Small angle approximation \( \sin(\varphi) \approx \varphi \) of Sine.}
+			\caption[Small angle approximation of sine]{Small angle approximation \( \sin(\varphi) \approx \varphi \) of Sine.}
 		\end{subfigure}%
 		~
 		\begin{subfigure}[t]{0.5\linewidth}
 			\centering
 			\includegraphics[width = \linewidth]{figures/introduction/generated/small-angle-approximation-cos.pdf}
-			\caption{Small angle approximation \( \cos(\varphi) \approx 1 \) of Cosine.}
+			\caption[Small angle approximation of cosine]{Small angle approximation \( \cos(\varphi) \approx 1 \) of Cosine.}
 		\end{subfigure}
-		\caption{Visualization of the small angle approximation (given in orange) of the basic trigonometric functions Sine and Cosine (given in blue). It is clear that the approximation is only valid in a small region around zero (\( \varphi \approx 0 \)).}
+		\caption[Small angle approximation of sine and cosine]{Visualization of the small angle approximation (given in orange) of the basic trigonometric functions Sine and Cosine (given in blue). It is clear that the approximation is only valid in a small region around zero (\( \varphi \approx 0 \)).}
 		\label{fig:smallAngleApproximation}
 	\end{figure}
 
@@ -52,7 +52,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 		\begin{figure}
 			\centering
 			\tikzHarmonicOscillator
-			\caption{Illustration of a simple harmonic oscillator with mass \(m\), spring stiffness \(k\) and position \(x\) that is not affected by any external force like gravity. The mass is in equilibrium if \( x = 0 \).}
+			\caption[Illustration of a simple harmonic oscillator]{Illustration of a simple harmonic oscillator with mass \(m\), spring stiffness \(k\) and position \(x\) that is not affected by any external force like gravity. The mass is in equilibrium if \( x = 0 \).}
 			\label{fig:simpleHarmonicOscillator}
 		\end{figure}
 
@@ -75,7 +75,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 		\begin{figure}
 			\centering
 			\tikzSimplePendulum
-			\caption{Illustration of an inverse pendulum with mass \(m\) and displacement \(\varphi\) that is only affected by gravity and no other external force. The mass is in equilibrium for both \( \varphi = 0 \) and \( \varphi = \pi \), where the former is an unstable equilibrium.}
+			\caption[Illustration of an inverse pendulum]{Illustration of an inverse pendulum with mass \(m\) and displacement \(\varphi\) that is only affected by gravity and no other external force. The mass is in equilibrium for both \( \varphi = 0 \) and \( \varphi = \pi \), where the former is an unstable equilibrium.}
 			\label{fig:simplePendulum}
 		\end{figure}
 
@@ -108,15 +108,15 @@ In this chapter we will introduce the basics of this work both to clarify notati
 			\begin{subfigure}[t]{0.5\linewidth}
 				\centering
 				\includegraphics[width = \linewidth]{figures/introduction/generated/pendulum-motion-solutions}
-				\caption{Trajectories of two solution strategies to the inverse pendulum, where the blue is a numerical solution of the actual motion of equation (solved using the Radau~IIA method~\cite[p.~72]{guglielmiImplementingRadauIIA2001}) and the orange one is the analytically computed solution linearized \ac{ode}. The latter is linearized using small angle approximation. The dashed gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
+				\caption[Trajectories of the small angle approximate solution of the inverse pendulum and a numerical solution]{Trajectories of two solution strategies to the inverse pendulum, where the blue is a numerical solution of the actual motion of equation (solved using the Radau~IIA method~\cite[p.~72]{guglielmiImplementingRadauIIA2001}) and the orange one is the analytically computed solution linearized \ac{ode}. The latter is linearized using small angle approximation. The dashed gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
 			\end{subfigure}%
 			~
 			\begin{subfigure}[t]{0.5\linewidth}
 				\centering
 				\includegraphics[width = \linewidth]{figures/introduction/generated/pendulum-motion-difference}
-				\caption{Differences between the small angle approximation and the numerical solution of the \ac{ode}. The dashed gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
+				\caption[Difference between the small angle approximate solution of the inverse pendulum and a numerical solution]{Differences between the small angle approximation and the numerical solution of the \ac{ode}. The dashed gray vertical line shows when the distance tolerance of \( \varepsilon = 10^{-3} \) is exceeded.}
 			\end{subfigure}
-			\caption{Comparison of a numerical solution to the \ac{ode} of the inverse pendulum given in~\eqref{eq:inversePendulum} and the analytical solution of the linearized \ac{ode} given in~\eqref{eq:linearizedInversePendulum}. A tolerance value of \( \varepsilon = 10^{-3} \) is used to show when both solutions diverge from each other.}
+			\caption[Comparison of the small angle approximate solution of the inverse pendulum an a numerical solution]{Comparison of a numerical solution to the \ac{ode} of the inverse pendulum given in~\eqref{eq:inversePendulum} and the analytical solution of the linearized \ac{ode} given in~\eqref{eq:linearizedInversePendulum}. A tolerance value of \( \varepsilon = 10^{-3} \) is used to show when both solutions diverge from each other.}
 			\label{fig:inversePendulumApprox}
 		\end{figure}
 	% end
@@ -161,7 +161,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\begin{figure}
 		\centering
 		\tikzKoopmanOperator
-		\caption{Illustration of the transition diagram imposed by applying the Koopman operator \( \mathcal{K} \) to system dynamics \( \vec{F} \). The observation function \( \vec{h} \) is forwarded in time linearly by the Koopman operator, while the states \(\vec{x}\) are forwarded nonlinearly. The dashed lines and \( \vec{h}^{-1} \) indicate that we want to recover the original state from the linear system. \\ Adopted from~\cite{bruntonKoopmanInvariantSubspaces2016}.}
+		\caption[State transition model of a Koopman dynamical system]{Illustration of the transition diagram imposed by applying the Koopman operator \( \mathcal{K} \) to system dynamics \( \vec{F} \). The observation function \( \vec{h} \) is forwarded in time linearly by the Koopman operator, while the states \(\vec{x}\) are forwarded nonlinearly. The dashed lines and \( \vec{h}^{-1} \) indicate that we want to recover the original state from the linear system. \\ Adopted from~\cite{bruntonKoopmanInvariantSubspaces2016}.}
 		\label{fig:koopman}
 	\end{figure}
 % end
@@ -240,7 +240,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\begin{figure}
 		\centering
 		\tikzVariationalAutoEncoder
-		\caption{Illustration of a Variational Auto-Encoder with the amortization network on the left and the decoder network on the right. Notice that the green neurons in the middle are not "real", deterministic, neurons, but represent the sampling section of the \ac{vae} where the reparametrization takes place. The input and output size (on the left and right, respectively) are the same as we want to reconstruct our original data from the smaller latent state in the middle. Also the "latent neurons" are smaller than the in- and output neurons to enforce an encoding into a lower dimension.}
+		\caption[Illustration of a variational auto-encoder]{Illustration of a Variational Auto-Encoder with the amortization network on the left and the decoder network on the right. Notice that the green neurons in the middle are not "real", deterministic, neurons, but represent the sampling section of the \ac{vae} where the reparametrization takes place. The input and output size (on the left and right, respectively) are the same as we want to reconstruct our original data from the smaller latent state in the middle. Also the "latent neurons" are smaller than the in- and output neurons to enforce an encoding into a lower dimension.}
 		\label{fig:vae}
 	\end{figure}
 

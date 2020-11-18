@@ -19,7 +19,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{figure}
 		\centering
 		\tikzHiddenMarkovModel
-		\caption{Illustration of a completely general Hidden Markov Model with states \(s_k\) and emis\-sions/observations \(\vec{y}_k\).}
+		\caption[Illustration of a hidden Markov model]{Illustration of a completely general Hidden Markov Model with states \(s_k\) and emis\-sions/observations \(\vec{y}_k\).}
 		\label{fig:hiddenMarkovModel}
 	\end{figure}
 
@@ -43,7 +43,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{figure}
 		\centering
 		\tikzLinearGaussianDynamicalSystem
-		\caption{Illustration of a Linear Gaussian Dynamical System with states \(\vec{x}_t\) and observations \(\vec{y}_t\). Solid arrows represent probabilistic dependency, where the matrix \(\mat{A}\) is the dynamics matrix indicating that the mean transitions linearly, so do the observations with the observation matrix \(\mat{C}\).}
+		\caption[Illustration of a LGDS]{Illustration of a Linear Gaussian Dynamical System with states \(\vec{x}_t\) and observations \(\vec{y}_t\). Solid arrows represent probabilistic dependency, where the matrix \(\mat{A}\) is the dynamics matrix indicating that the mean transitions linearly, so do the observations with the observation matrix \(\mat{C}\).}
 		\label{fig:lgds}
 	\end{figure}
 % end
@@ -65,7 +65,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 	\begin{figure}
 		\centering
 		\tikzPredictionFilteringSmoothing
-		\caption{This diagram shows the main differences between prediction, filtering and smoothing. The shaded region describes the observations that have been used to estimate the state at time step \(t\), indicated by a solid line. The dotted line represents time step \(t - 1\), to which all observations are used in all three procedures. \\ Adopted from~\cite{solinCubatureIntegrationMethods2010}.}
+		\caption[Illustration of the differences between prediction, filtering and smoothing]{This diagram shows the main differences between prediction, filtering and smoothing. The shaded region describes the observations that have been used to estimate the state at time step \(t\), indicated by a solid line. The dotted line represents time step \(t - 1\), to which all observations are used in all three procedures. \\ Adopted from~\cite{solinCubatureIntegrationMethods2010}.}
 		\label{fig:predictionFilteringSmoothing}
 	\end{figure}
 
@@ -157,15 +157,15 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 		\begin{subfigure}[t]{0.5\linewidth}
 			\centering
 			\includegraphics[width = \linewidth]{figures/inference/cubature/spherical-radial-cubature-original.png}
-			\caption{The original samples in polar coordinates with the real mean shown as an orange star in the middle.}
+			\caption[Original samples in polar coordinates to illustrate cubature rules]{The original samples in polar coordinates with the real mean shown as an orange star in the middle.}
 		\end{subfigure}%
 		~
 		\begin{subfigure}[t]{0.5\linewidth}
 			\centering
 			\includegraphics[width = \linewidth]{figures/inference/cubature/spherical-radial-cubature-transformed.png}
-			\caption{The approximate mean calculated via the spherical-radial cubature rule is shown as an orange star, positioned at the mean of the transformed cubature points. This plot also shows the Monte Carlo estimate as a black cross right above the cubature estimate, showing that the cubature estimate is really accurate with significantly less computational effort.}
+			\caption[Transformed in Cartesian coordinates to illustrate cubature rules]{The approximate mean calculated via the spherical-radial cubature rule is shown as an orange star, positioned at the mean of the transformed cubature points. This plot also shows the Monte Carlo estimate as a black cross right above the cubature estimate, showing that the cubature estimate is really accurate with significantly less computational effort.}
 		\end{subfigure}
-		\caption{These plots show how the spherical-radial cubature rule is used to estimate the mean of the Gaussian on the left after it has been transformed with a polar transformation to the right. To illustrate the shape of the Gaussian after it has been transformed, we added the blue dots as sample values of the Gaussian. These are 1000 sample points also used to calculate the Monte Carlo estimate of the mean. The sigma points are shown as green pluses. \\ Adopted from~\cite{solinCubatureIntegrationMethods2010}.}
+		\caption[Illustrative application of the spherical-radial cubature rule to the mapping from polar coordinate to Cartesian coordinates]{These plots show how the spherical-radial cubature rule is used to estimate the mean of the Gaussian on the left after it has been transformed with a polar transformation to the right. To illustrate the shape of the Gaussian after it has been transformed, we added the blue dots as sample values of the Gaussian. These are 1000 sample points also used to calculate the Monte Carlo estimate of the mean. The sigma points are shown as green pluses. \\ Adopted from~\cite{solinCubatureIntegrationMethods2010}.}
 		\label{fig:cubature}
 	\end{figure}
 
@@ -238,7 +238,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 				Residual Covariance  &   \ref{algline:ckfResCov}   &   \eqref{eqn:kfResCov}   \\
 				Kalman Gain          & \ref{algline:ckfKalmanGain} & \eqref{eqn:kfKalmanGain}
 			\end{tabular}
-			\caption{This table shows how the code lines of the cubature Kalman filer relate to the corresponding linear Kalman filter equations.}
+			\caption[Correspondence between the cubature and non-cubature Kalman filter]{This table shows how the code lines of the cubature Kalman filer relate to the corresponding linear Kalman filter equations.}
 			\label{tab:cubatureKalmanFilter}
 		\end{table}
 
@@ -262,7 +262,7 @@ Our second contribution is to take a probabilistic perspective on "classical" Ko
 				Smoothed State      & \ref{algline:crtsState} &   \eqref{eqn:rtsState}   \\
 				Smoothed Covariance &  \ref{algline:crtsCov}  &   \eqref{eqn:rtsState}
 			\end{tabular}
-			\caption{This table shows how the code lines of the cubature \ac{rts} smoother relate to the corresponding linear \ac{rts} smoother equations.}
+			\caption[Correspondence between the cubature and non-cubature RTS filter]{This table shows how the code lines of the cubature \ac{rts} smoother relate to the corresponding linear RTS smoother equations.}
 			\label{tab:cubatureRtsSmoother}
 		\end{table}
 	% end

@@ -13,15 +13,15 @@ By looking at the graphical model for an \ac{lgds} and the state transition mode
 	\begin{subfigure}[t]{0.5\linewidth}
 		\centering
 		\resizebox{\linewidth}{!}{\tikzLinearGaussianDynamicalSystem}
-		\caption{Graphical model of a linear Gaussian dynamical system with the latent state \(\vec{s}_t\) and the (linear) observations \(\vec{y}_t\). In contrast to the Koopman system, this system is not deterministic and the arrows represent probabilistic dependency rather than hard transitions.}
+		\caption[Graphical model of a LGDS]{Graphical model of a linear Gaussian dynamical system with the latent state \(\vec{s}_t\) and the (linear) observations \(\vec{y}_t\). In contrast to the Koopman system, this system is not deterministic and the arrows represent probabilistic dependency rather than hard transitions.}
 	\end{subfigure}%
 	~
 	\begin{subfigure}[t]{0.5\linewidth}
 		\centering
 		\resizebox{\linewidth}{!}{\tikzKoopmanOperator}
-		\caption{State transition model of a Koopman dynamical system with the Koopman operator \( \mathcal{K} \) that can be approximated with a matrix \(\mat{K}\). In contrast to the \ac{lgds} the state is represented via nonlinear transitions and the observations are the linear dynamics. \\ Adopted from~\cite{bruntonKoopmanInvariantSubspaces2016}.}
+		\caption[State transition model of a Koopman dynamical system]{State transition model of a Koopman dynamical system with the Koopman operator \( \mathcal{K} \) that can be approximated with a matrix \(\mat{K}\). In contrast to the \ac{lgds} the state is represented via nonlinear transitions and the observations are the linear dynamics. \\ Adopted from~\cite{bruntonKoopmanInvariantSubspaces2016}.}
 	\end{subfigure}
-	\caption{Side-by-side comparison of the a \ac{lgds} on the left and a Koopman dynamical system on the right. This side-by-side view highlights our idea of interpreting an Koopman system as a semi-linear dynamical system (\ie an \ac{lgds} with nonlinear observations).}
+	\caption[Side-by-side comparison of a LGDS and a Koopman dynamical system]{Side-by-side comparison of the a \ac{lgds} on the left and a Koopman dynamical system on the right. This side-by-side view highlights our idea of interpreting an Koopman system as a semi-linear dynamical system (\ie an \ac{lgds} with nonlinear observations).}
 	\label{fig:lgdsKoopmanRelation}
 \end{figure}
 
@@ -44,7 +44,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 \begin{figure}
 	\centering
 	\tikzNonlinearGaussianKoopman
-	\caption{The graphical model of the Koopman inference model. Given an observation sequence \( \vec{y}_{1:T} \), we seek the latent dynamics and the corresponding nonlinear mapping \( \vec{g}(\cdot) \) from the latent space to the observations.}
+	\caption[Graphical model of the Koopman inference model]{The graphical model of the Koopman inference model. Given an observation sequence \( \vec{y}_{1:T} \), we seek the latent dynamics and the corresponding nonlinear mapping \( \vec{g}(\cdot) \) from the latent space to the observations.}
 	\label{fig:nonlinearGaussianKoopman}
 \end{figure}
 
