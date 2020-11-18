@@ -21,8 +21,9 @@ clean() {
 	rm -f **/*.toc
 	rm -f **/*.xdy
 	rm -f **/*.xmpdata
-	rm -f drawroom.pdf
 	rm -f **/pdfa.xmpi
+	rm -f figures/**/*.png
+	rm -f drawroom.pdf
 	rm -f thesis.pdf
 	touch thesis_commit-.pdf
 	rm -f thesis_commit-*.pdf
