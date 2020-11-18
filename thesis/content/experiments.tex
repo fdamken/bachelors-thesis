@@ -266,14 +266,14 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 			We will start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:pendulumRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the pendulum dynamics. We see that the \ac{nrmse} shrinks to near zero (less than \( 0.01 \)). Even for \( k = 1 \), the error is only approx. \( 0.18 \).
 
-			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:pendulumRmseComplete}, we see that the error is quite noisy due to initialization. Nevertheless, the error shrinks until \( k \geq 10 \) and then stabilizes around an error of approx. \(0.15\). Comparing the complete rollout error with the training and prediction \ac{nrmse} in~\autoref{fig:pendulumRmseTrain} and~\autoref{fig:pendulumRmsePred}, respectively, we see that the training error falls until \( k \geq 10 \) and then stabilizes around \(0.08\). For the prediction error, we see a similar connection to \( k \geq 10 \), but the error does not shrink as much and always is around \(0.20\).
-
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
 				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
 				\label{fig:pendulumRmseSmoothed}
 			\end{figure}
+
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:pendulumRmseComplete}, we see that the error is quite noisy due to initialization. Nevertheless, the error shrinks until \( k \geq 10 \) and then stabilizes around an error of approx. \(0.15\). Comparing the complete rollout error with the training and prediction \ac{nrmse} in~\autoref{fig:pendulumRmseTrain} and~\autoref{fig:pendulumRmsePred}, respectively, we see that the training error falls until \( k \geq 10 \) and then stabilizes around \(0.08\). For the prediction error, we see a similar connection to \( k \geq 10 \), but the error does not shrink as much and always is around \(0.20\).
 
 			\begin{figure}
 				\centering
@@ -303,32 +303,25 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
 			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{100}). According to the errors, the rollout error should be quite high. On the other hand, the smoothed trajectory should nearly match the true data.~\autoref{fig:pendulumRolloutL02} shows that the rollout and also the rollout of the smoothed trajectory are far off with low confidence, but the true data is in the confidence region. However, the smoothed trajectory follows the true data really good.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-02/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 2\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:pendulumRolloutL02}
-			\end{figure}
 		% end
 
-		\subsubsection{Exemplary Evaluation: 4-Dimensional Latent}
-			We will now look at an exemplary run for the latent dimensionality \( k = 4 \) (run \texttt{53}). This run is especially interesting for comparison with~\cite{mortonDeepVariationalKoopman2019a} which we will do in~\autoref{c:discussion}.~\autoref{fig:pendulumRolloutL04} shows the rollout of the model with four latent dimensions. We see that the smoothed trajectory equals the true data as expected, while the rollout captures the dynamics of the system really roughly and the true data lies withing the region of confidence of the rollout.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-04/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:pendulumRolloutL04}
-			\end{figure}
-		% end
+%		\subsubsection{Exemplary Evaluation: 4-Dimensional Latent}
+%			We will now look at an exemplary run for the latent dimensionality \( k = 4 \) (run \texttt{53}). This run is especially interesting for comparison with~\cite{mortonDeepVariationalKoopman2019a} which we will do in~\autoref{c:discussion}.~\autoref{fig:pendulumRolloutL04} shows the rollout of the model with four latent dimensions. We see that the smoothed trajectory equals the true data as expected, while the rollout captures the dynamics of the system really roughly and the true data lies withing the region of confidence of the rollout.
+%
+%			\begin{figure}
+%				\centering
+%				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-04/rollout-observations-N0.pdf}
+%				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+%				\label{fig:pendulumRolloutL04}
+%			\end{figure}
+%		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
 			\label{subsubsec:pendulumL10}
 
 			We will now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}) as we postulated from the \ac{nrmse} data that this is the boundary of diminishing returns, \ie it does not get much better with higher latent dimensionalities.~\autoref{fig:pendulumRolloutL10} shows the rollout of the model, where the dynamics of the system are captured really good with high confidence. Also the prediction is really good, so that it is hard to distinguish between true data, smoothed prediction and rollout.
 
-			\begin{figure}
+			\begin{figure}[H]
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-10/rollout-observations-N0.pdf}
 				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 10\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
@@ -340,13 +333,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\label{subsubsec:pendulumL14}
 
 			We will now look at an exemplary run for the latent dimensionality \( k = 14 \) (run \texttt{210}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumRolloutL14} shows the rollout of the model. In comparison to the 10-dimensional latent, nothing has changed, fulfilling the expectation of diminishing returns with high latent dimensionality.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-14/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 14\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:pendulumRolloutL14}
-			\end{figure}
 		% end
 	% end
 
@@ -395,13 +381,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
 			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout error should be quite high, but the smoothed trajectory should follow the true data really good.~\autoref{fig:pendulumDampedRolloutL02} shows that most trajectories are far off the true trajectory with low confidence, while the smoothed trajectory almost perfectly matches the true data.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-02/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the damped pendulum environment for \(k = 2\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:pendulumDampedRolloutL02}
-			\end{figure}
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
@@ -419,13 +398,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 		\subsubsection{Exemplary Evaluation: 24-Dimensional Latent}
 			We will now look at an exemplary run for the latent dimensionality \( k = 30 \) (run \texttt{130}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumDampedRolloutL30} shows the rollout of the model. In comparison to the ten-dimensional latent, the model is a less confident but the rollout is nearly the same as the rollout of the ten-dimensional latent.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/pendulum-damped/run-latent-dim-30/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the damped pendulum environment for \(k = 30\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:pendulumDampedRolloutL30}
-			\end{figure}
 		% end
 	% end
 
@@ -441,8 +413,8 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
-				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the damped pendulum environment.}
+				\includegraphics[width=0.7\linewidth]{figures/results/pendulum-gym/latent-dim/comparison-rmse-smoothed-normalized-mean-vs-latent-dim.pdf}
+				\caption{The \ac{nrmse} of the smoothed trajectory on the training data of the Gym pendulum environment.}
 				\label{fig:gymPendulumRmseSmoothed}
 			\end{figure}
 
@@ -450,37 +422,30 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				\centering
 				\begin{subfigure}{0.7\linewidth}
 					\centering
-					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the complete rollout on the damped pendulum environment.}
+					\includegraphics[width=\linewidth]{figures/results/pendulum-gym/latent-dim/comparison-rmse-rollout-normalized-mean-vs-latent-dim.pdf}
+					\caption{Error of the complete rollout on the Gym pendulum environment.}
 					\label{fig:gymPendulumRmseComplete}
 				\end{subfigure} \\
 				\begin{subfigure}{0.5\linewidth}
 					\centering
-					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the training data only on the damped pendulum environment.}
+					\includegraphics[width=\linewidth]{figures/results/pendulum-gym/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the training data only on the Gym pendulum environment.}
 					\label{fig:gymPendulumRmseTrain}
 				\end{subfigure}%
 				~
 				\begin{subfigure}{0.5\linewidth}
 					\centering
-					\includegraphics[width=\linewidth]{figures/results/pendulum-damped/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the rollout on the prediction only on the damped pendulum environment.}
+					\includegraphics[width=\linewidth]{figures/results/pendulum-gym/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
+					\caption{Error of the rollout on the prediction only on the Gym pendulum environment.}
 					\label{fig:gymPendulumRmsePred}
 				\end{subfigure}
-				\caption{Plot of the errors of the damped pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
+				\caption{Plot of the errors of the Gym pendulum environment for different latent dimensions. The black dots show the measured data, the blue line the average of the data points at a specific time step. The blue shaded region shows two times the standard deviation.}
 				\label{fig:gymPendulumRmse}
 			\end{figure}
 		% end
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
 			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout trajectory should be off the true data, but the smoothed trajectory should be mostly on the true data.~\autoref{fig:gymPendulumRolloutL02} shows exactly this behavior: all trajectory are far off the true trajectory with the exception of the smoothed trajectory that almost matches the true data.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/pendulum-gym/run-latent-dim-02/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the Gym pendulum environment for \(k = 2\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:gymPendulumRolloutL02}
-			\end{figure}
 		% end
 
 		\subsubsection{Exemplary Evaluation: 4-Dimensional Latent}
@@ -491,7 +456,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\begin{figure}
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum-gym/run-latent-dim-04/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
+				\caption{The rollout plot in the observation space of the Gym pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:gymPendulumRolloutL04}
 			\end{figure}
 		% end
@@ -500,13 +465,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\label{subsubsec:gymPendulumL07}
 
 			We will now look at an exemplary run for the latent dimensionality \( k = 7 \) (run \texttt{157}) as we postulated from the \ac{nrmse} data that this is the boundary of diminishing returns, \ie it does not get much better with higher latent dimensionalities.~\autoref{fig:gymPendulumRolloutL7} shows the rollout of the model. We see that the training rollout and the smoothed trajectory is good, as expected, but the prediction does not capture the dynamics of the system.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/pendulum-gym/run-latent-dim-07/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the pendulum environment for \(k = 7\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:gymPendulumRolloutL7}
-			\end{figure}
 		% end
 	% end
 
@@ -555,13 +513,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
 			We will now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). As we have already seen, the rollout should not perform too god, but the smoothed trajectory should be really accurate. Looking at~\autoref{fig:cartpoleRolloutL02}, we see that nearly all trajectories are off the true trajectory. Only the smoothed trajectory fits the data perfectly (until the prediction boundary). We can also see that the rollout starts to go near the true data, learning roughly how the true data looks.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-02/without-confidence/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 2\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". Note that we have removed the confidence on this plot as it is really low, resulting in high variances. See~\autoref{fig:cartpoleRolloutL02Appendix} in~\autoref{app:remainingPlots} for the plot with confidence.}
-				\label{fig:cartpoleRolloutL02}
-			\end{figure}
 		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
@@ -581,13 +532,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 			\label{subsubsec:cartpoleL16}
 
 			We will now look at an exemplary run for the latent dimensionality \( k = 16 \) (run \texttt{166}), the run which had the lowest \ac{nrmse} over the complete rollout data. Still, according to the \ac{nrmse} of the prediction, we do not expect a good prediction.~\autoref{fig:cartpoleRolloutL16} confirms this, as the rollout on the training data follows the true data closely while the prediction is off the true trajectory. Compared to the 14-dimensional latent, we do not see much improvement in the prediction.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/results/cartpole-gym/run-latent-dim-16/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the cartpole environment for \(k = 14\). The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation. As the variances in the top plots are still very high, see~\autoref{fig:cartpoleRolloutL16Appendix} in~\autoref{app:remainingPlots} for the plot without the confidence.}
-				\label{fig:cartpoleRolloutL16}
-			\end{figure}
 		% end
 	% end
 
@@ -613,7 +557,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 				\begin{subfigure}{0.7\linewidth}
 					\centering
 					\includegraphics[width=\linewidth]{figures/results/acrobot-gym/latent-dim/comparison-rmse-rollout-normalized-mean-vs-latent-dim.pdf}
-					\caption{Error of the complete rollout from on the cartpole double pendulum.}
+					\caption{Error of the complete rollout from on the double pendulum environment.}
 					\label{fig:acrobotRmseComplete}
 				\end{subfigure} \\
 				\begin{subfigure}{0.5\linewidth}
@@ -636,13 +580,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 		\subsubsection{Exemplary Evaluation: 3-Dimensional Latent}
 			We will now look at an exemplary run for the latent dimensionality \( k = 3 \) (run \texttt{153}). As we have already seen, the rollout should not perform well, but the smoothed trajectory should be really accurate. Looking at~\autoref{fig:acrobotRolloutL03}, we see that nearly all trajectories are far off the true trajectory. Only the smoothed trajectory follows the data decently (until the prediction boundary, of course).
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=0.9\linewidth]{figures/results/acrobot-gym/run-latent-dim-03/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the double pendulum environment for \(k = 3\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:acrobotRolloutL03}
-			\end{figure}
 		% end
 
 		\subsubsection{Exemplary Evaluation: 18-Dimensional Latent}
@@ -658,13 +595,6 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 		\subsubsection{Exemplary Evaluation: 30-Dimensional Latent}
 			We will now look at an exemplary run for the latent dimensionality \( k = 30 \) (run \texttt{80}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:acrobotRolloutL30} shows the rollout of the model. In comparison to the 18-dimensional latent, the rollout is not nearly as good. However, the low confidence in the prediction produces is better than for the 18-dimensional latent as more parts of the true trajectory lie within the region of confidence.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=0.9\linewidth]{figures/results/acrobot-gym/run-latent-dim-30/rollout-observations-N0.pdf}
-				\caption{The rollout plot in the observation space of the double pendulum environment for \(k = 18\). The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-				\label{fig:acrobotRolloutL30}
-			\end{figure}
 		% end
 	% end
 % end
