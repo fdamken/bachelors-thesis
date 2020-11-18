@@ -12,7 +12,7 @@ build: rasterize-pdfs
 	lualatex thesis.tex
 
 rasterize-pdfs:
-	find . -type f -name '*.pdf' | while read file; do pdftoppm -singlefile -png "$file" "$(sed 's/.pdf$//' <<<"$file")"; done
+	find . -type f -name '*.pdf' -print0 | while IFS= read -r -d '' file; do pdftoppm -singlefile -png "$file" "$(sed 's/.pdf$//' <<<"$file")"; done
 
 rename-to-hash: GIT_COMMIT=$(shell git rev-parse HEAD)
 rename-to-hash:	
