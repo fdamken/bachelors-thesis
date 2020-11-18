@@ -209,7 +209,7 @@ In this chapter we will introduce the basics of this work both to clarify notati
 			&= \arg\max_{\vec{\theta}}\, \mathcal{L}_\mathrm{EM}\big[ q^{(n)}, \vec{\theta} \big] \\
 			&= \arg\max_{\vec{\theta}} \int\! q^{(n)}(\vec{x} \given \vec{y}) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} \\
 			&= \arg\max_{\vec{\theta}} \int\! p\big(\vec{x} \biggiven \vec{y}, \vec{\theta}^{(n)}\big) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} \\
-			&= \arg\max_{\vec{\theta}}\, \E_{p\big(\vec{x} \given \vec{y}, \vec{\theta}^{(n)}\big)}[\log p(\vec{x}, \vec{y} \given \vec{\theta})]
+			&= \arg\max_{\vec{\theta}}\, \E_{p(\vec{x} \given \vec{y}, \vec{\theta}^{(n)})}[\log p(\vec{x}, \vec{y} \given \vec{\theta})]
 	\end{align*}
 	The quantity to optimize, \( Q(\vec{\theta}) \coloneqq \E[\log p(\vec{x}, \vec{y} \given \vec{\theta})] \), is also called the \emph{expected complete log-likelihood} as it involves both the observables and the latent variables.
 
@@ -221,21 +221,21 @@ In this chapter we will introduce the basics of this work both to clarify notati
 
 	To perform inference, we want to maximize the (log-)\,likelihood
 	\begin{align*}
-		\mathcal{L}(\vec{\theta}) \coloneqq \log p(\vec{y} \given \vec{\theta}) = \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
+		\mathcal{L}(\vec{\theta}) \coloneqq \log p_{\vec{\theta}}(\vec{y}) = \log \int\! p_{\vec{\theta}}(\vec{x}, \vec{y}) \dd{\vec{x}}
 	\end{align*}
 	by maximizing the \ac{elbo} \( \mathcal{L}_\mathrm{ELBO} \) which we can find by using Jensen's inequality~\cite{jensenFonctionsConvexesInegalites1906}:
 	\begin{align}
 		\mathcal{L}(\vec{\theta})
-			&= \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}  \nonumber \\
-			&= \log \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}}  \nonumber \\
-			&\geq \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \log \frac{p(\vec{x}, \vec{y} \given \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}}  \nonumber \\
-			&= \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \log \frac{p(\vec{y} \given \vec{x}, \vec{\theta}) p(\vec{x} \given \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}}  \nonumber \\
-			&= \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \frac{p(\vec{y} \given \vec{x}, \vec{\theta})}{q(\vec{x} \given \vec{y}, \vec{\phi})} \dd{\vec{x}} + \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) p(\vec{y} \given \vec{x}, \vec{\theta}) \dd{\vec{x}}  \nonumber \\
-			&= -\KL{q(\vec{x} \given \vec{y}, \vec{\phi})}{p(\vec{y} \given \vec{x}, \vec{\theta})} + \E_{q(\vec{x} \given \vec{y}, \vec{\phi})}[p(\vec{y} \given \vec{x}, \vec{\theta})] \eqqcolon \mathcal{L}_\mathrm{ELBO}(\vec{\theta}, \vec{\psi})  \label{eq:elbo}
+			&= \log \int\! p_{\vec{\theta}}(\vec{x}, \vec{y}) \dd{\vec{x}}  \nonumber \\
+			&= \log \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \frac{p_{\vec{\theta}}(\vec{x}, \vec{y})}{q_{\vec{\phi}}(\vec{x} \given \vec{y})} \dd{\vec{x}}  \nonumber \\
+			&\geq \int\! q_{\vec{\phi}}(\vec{x} \given \vec{y}) \log \frac{p_{\vec{\theta}}(\vec{x}, \vec{y})}{q_{\vec{\phi}}(\vec{x} \given \vec{y})} \dd{\vec{x}}  \nonumber \\
+			&= \int\! q(\vec{x} \given \vec{y}, \vec{\phi}) \log \frac{p_{\vec{\theta}}(\vec{y} \given \vec{x}) p_{\vec{\theta}}(\vec{x})}{q_{\vec{\phi}}(\vec{x} \given \vec{y})} \dd{\vec{x}}  \nonumber \\
+			&= \int\! q_{\vec{\phi}}(\vec{x} \given \vec{y}) \frac{p_{\vec{\theta}}(\vec{x})}{q_{\vec{\phi}}(\vec{x} \given \vec{y})} \dd{\vec{x}} + \int\! q_{\vec{\phi}}(\vec{x} \given \vec{y}) p_{\vec{\theta}}(\vec{y} \given \vec{x}) \dd{\vec{x}}  \nonumber \\
+			&= -\KL{q_{\vec{\phi}}(\vec{x} \given \vec{y})}{p_{\vec{\theta}}(\vec{x})} + \E_{q_{\vec{\phi}}(\vec{x} \given \vec{y})}[p_{\vec{\theta}}(\vec{y} \given \vec{x})] \eqqcolon \mathcal{L}_\mathrm{ELBO}(\vec{\theta}, \vec{\psi})  \label{eq:elbo}
 	\end{align}
-	Note that we have introduced an auxiliary parametric distribution \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) which originally leads to the first integral to be an expectation and makes the application of Jensen's inequality possible. We now maximize the \ac{elbo}~\eqref{eq:elbo} \ac{wrt} the variational and generative parameters \(\vec{\phi}\) and \(\vec{\theta}\) respectively using the \emph{reparametrization trick}~\cite{kingmaAutoEncodingVariationalBayes2014}.
+	Note that we have introduced an auxiliary parametric distribution \( q_{\vec{\phi}}(\vec{x} \given \vec{y}) \) which originally leads to the first integral to be an expectation and makes the application of Jensen's inequality possible. We now maximize the \ac{elbo}~\eqref{eq:elbo} \ac{wrt} the variational and generative parameters \(\vec{\phi}\) and \(\vec{\theta}\) respectively using the \emph{reparametrization trick}~\cite{kingmaAutoEncodingVariationalBayes2014}.
 
-	Shifting to \acp{vae}, we now represent the auxiliary distribution \( q(\vec{x} \given \vec{y}, \vec{\phi}) \) using a neural network with some prior \( p(\vec{x} \given \vec{\theta}) \), e.g. a standard Gaussian \( p(\vec{x} \given \vec{\theta}) = \normal(\vec{0}, \mat{I}) \) to keep the latents "close to the center", enforced by the \ac{kl} divergences in the \ac{elbo}. For a Gaussian latent distribution, the neural network, called the \emph{amortization network}, produces the mean and the diagonal covariance of \( q \). A second neural network is used for decoding the latent dimension, representing the decoding distribution \( p(\vec{y} \given \vec{x}, \vec{\theta}) \). If we assume a Gaussian decoding distribution with constant variance, the right side of the \ac{elbo}~\eqref{eq:elbo} just becomes the squared error between the decoding mean and the input \(\vec{y}\). Such a network architecture is illustrated in~\autoref{fig:vae}.
+	Shifting to \acp{vae}, we now represent the auxiliary distribution \( q_{\vec{\phi}}(\vec{x} \given \vec{y}) \) using a neural network with some prior \( p_{\vec{\theta}}(\vec{x}) \), e.g. a standard Gaussian \( p_{\vec{\theta}}(\vec{x}) = \normal(\vec{0}, \mat{I}) \) to keep the latents "close to the center", enforced by the \ac{kl} divergences in the \ac{elbo}. For a Gaussian latent distribution, the neural network, called the \emph{amortization network}, produces the mean and the diagonal covariance of \( q \). A second neural network is used for decoding the latent dimension, representing the decoding distribution \( p_{\vec{\theta}}(\vec{y} \given \vec{x}) \). If we assume a Gaussian decoding distribution with constant variance, the right side of the \ac{elbo}~\eqref{eq:elbo} just becomes the squared error between the decoding mean and the input \(\vec{y}\). Such a network architecture is illustrated in~\autoref{fig:vae}.
 
 	\begin{figure}
 		\centering
@@ -245,22 +245,12 @@ In this chapter we will introduce the basics of this work both to clarify notati
 	\end{figure}
 
 	\subsection{Connection between EM and VAEs}
-		As we have seen, the log-likelihood
+		As we have seen, the log-likelihood \( \mathcal{L}(\vec{\theta}) \) gives rise to a lower bound \( \mathcal{L}_\mathrm{EM} \)~\eqref{eq:emLowerBound} and the \ac{elbo} \( \mathcal{L}_\mathrm{ELBO} \)~\eqref{eq:elbo}:
 		\begin{align*}
-			\mathcal{L}(\vec{\theta}) = \log \int\! p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}}
+			\mathcal{L}_\mathrm{EM}[q, \vec{\theta}] &= \int\! q(\vec{x} \given \vec{y}) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} - \int\! q(\vec{x} \given \vec{y}) \log q(\vec{x} \given \vec{y}) \dd{\vec{x}} \\
+			\mathcal{L}_\mathrm{ELBO}(\vec{\theta}, \vec{\psi}) &= -\KL{q_{\vec{\phi}}(\vec{x} \given \vec{y})}{p_{\vec{\theta}}(\vec{x})} + \E_{q_{\vec{\phi}}(\vec{x} \given \vec{y})}[p_{\vec{\theta}}(\vec{y} \given \vec{x})]
 		\end{align*}
-		gives rise to a lower bound \( \mathcal{L}_\mathrm{EM} \)~\eqref{eq:emLowerBound} and the \ac{elbo} \( \mathcal{L}_\mathrm{ELBO} \)~\eqref{eq:elbo}:
-		\begin{gather*}
-			\mathcal{L}_\mathrm{EM} = \int\! q(\vec{x} \given \vec{y}) \log p(\vec{x}, \vec{y} \given \vec{\theta}) \dd{\vec{x}} - \int\! q(\vec{x} \given \vec{y}) \log q(\vec{x} \given \vec{y}) \dd{\vec{x}} \\
-			\mathcal{L}_\mathrm{ELBO} = -\KL{q(\vec{x} \given \vec{y}, \vec{\phi})}{p(\vec{y} \given \vec{x}, \vec{\theta})} + \E_{q(\vec{x} \given \vec{y}, \vec{\phi})}[p(\vec{y} \given \vec{x}, \vec{\theta})] \eqqcolon \mathcal{L}_\mathrm{ELBO}(\vec{\theta}, \vec{\psi})
-		\end{gather*}
-		The lower bounds look quite different, but they are in fact equivalent,
-		\begin{align*}
-			\mathcal{L}_\mathrm{EM} = \mathcal{L}_\mathrm{ELBO}
-		\end{align*}
-		as the whole difference is just that the \ac{elbo} uses a factorization \( p(\vec{x}, \vec{y} \given \vec{\theta}) = p(\vec{y} \given \vec{x}, \vec{\theta}) p(\vec{x} \given \vec{\theta}) \) and the \ac{em} lower bound does not.
-
-		The maximization procedures differ in the following way:
+		We saw that the two concepts are similar to each other, but the maximization procedure differs in the following way:
 		\begin{itemize}
 			\item In the \ac{em} algorithm, we separately maximize the components of the lower bound, firstly finding the next auxiliary distribution \(q\) and then maximizing the lower bound \ac{wrt} the parameters.
 			\item In \acp{vae}, we use an amortization network to model the auxiliary distribution \(q\) in a parameterized way. Then we maximize the lower bound \ac{wrt} to both the variational and the generative parameters at once.
