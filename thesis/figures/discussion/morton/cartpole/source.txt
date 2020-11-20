@@ -1,0 +1,8 @@
+Our Run:    tmp_results_grid_search/latent-dim_cartpole_gym/10
+Morton Run: benchmarking/morton/results/cartpole-32.json
+Morton CLI: --seq_length 32 --n_trials 20 --n_subseq 220 --kl_weight 0.1 --extractor_size 64 64 --inference_size 64 64 --prior_size 64 32 --domain_name ContinuousCartPole-v0
+Our NRMSE:     0.20046
+Morton NRMSE:  0.26493
+Are we better? yes
+Absolute Difference:  0.06447
+Relative Difference:  1.32159
