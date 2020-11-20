@@ -8,7 +8,6 @@
 	In this appendix we cover the full derivation of the Koopman inference algorithm, starting with the formulation of the expected log-likelihood, going over the M-step and finally to the E-step with the regular, non-square-root, filter/smoother equations.
 
 	Our model is given as
-	This model can also be written as a set of both linear and nonlinear equations:
 	\begin{align*}
 		p(\vec{s}_t \given \vec{s}_{t - 1}) &\sim \normal(\mat{A} \vec{s}_{t - 1}, \mat{Q}) \\
 		p(\vec{y}_t \given \vec{s}_t)       &\sim \normal\big(\vec{g}(\vec{s}_t), \mat{R}\big)
@@ -16,7 +15,7 @@
 	with diagonal noise covariances \(\mat{Q}\) and \(\mat{R}\).
 
 	\paragraph{M-Step}
-		For a single observation sequence, the log-likelihood \( \log p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big) \) is given as
+		For a single observation sequence, the log-likelihood \( \log p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big) \) is given as,
 		\begin{align*}
 			\log p\Big(\vec{s}_{1:T}^{(n)}, \vec{y}_{1:T}^{(n)}\Big)
 				&= \log \Bigg(\! p\Big(\vec{s}_1^{(n)}\Big) \prod_{t = 2}^{T} p\Big(\vec{s}_t^{(n)} \given \vec{s}_{t - 1}^{(n)}\Big) \prod_{t = 1}^{T} p\Big(\vec{y}_t^{(n)} \given \vec{s}_t^{(n)}\Big) \!\Bigg) \\
@@ -38,7 +37,7 @@
 				&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 2}^{T} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big)^T \mat{Q}^{-1} \Big( \vec{s}_t^{(n)} - \mat{A} \vec{s}_{t - 1}^{(n)} \Big) \\
 				&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \Big( \vec{y}_t^{(n)} - \vec{g}_t^{(n)} \Big)^T \mat{R}^{-1} \Big( \vec{y}_t^{(n)} - \vec{g}_t^{(n)} \Big)
 		\end{align*}
-		To derive the M-step formulas, we need to maximize the \emph{expected} log-likelihood. Therefore, we will now derive the expected log-likelihood
+		To derive the M-step formulas, we need to maximize the \emph{expected} log-likelihood. Therefore, we will now derive the expected log-likelihood:
 		\begin{equation*}
 			Q = \E\big[ p(\vec{s}_{1:T}, \vec{y}_{1:T}) \given \vec{y}_{1:T} \big]
 		\end{equation*}
@@ -309,7 +308,7 @@
 				\hat{\vec{s}}_{t - 1 \subgiven T}^{(n)} &= \hat{\vec{s}}_{t - 1 \subgiven t - 1}^{(n)} + \mat{J}_{t - 1}^{(n)} \Big(\hat{\vec{s}}_{t \subgiven T}^{(n)} - \hat{\vec{s}}_{t \subgiven t - 1}^{(n)}\Big) \\
 				\mat{V}_{t - 1 \subgiven T}^{(n)}       &= \mat{V}_{t - 1 \subgiven t - 1}^{(n)} + \mat{J}_{t - 1}^{(n)} \Big(\mat{V}_{t \subgiven T}^{(n)} - \mat{V}_{t \subgiven t - 1}^{(n)}\Big) \mat{J}_{t - 1}^{(n), T}
 			\end{align*}
-			with
+			with:
 			\begin{align}
 				\mat{J}_{t - 1}^{(n)}                    &\coloneqq \mat{V}_{t - 1, t \subgiven t - 1}^{(n)} \Big(\mat{V}_{t \subgiven t - 1}^{(n)}\Big)^{-1}  \nonumber \\
 				\mat{V}_{t - 1, t \subgiven t - 1}^{(n)} &\coloneqq \Cov_{\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)}}\Big[\vec{s}_{t - 1}^{(n)}, \vec{s}_t^{(n)} \Biggiven \vec{y}_{1:t - 1}\Big]  \label{eq:smootherPriorCrossCov}

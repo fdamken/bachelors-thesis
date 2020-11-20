@@ -170,7 +170,7 @@ Our second contribution is a probabilistic perspective on "classical" Koopman th
 	\end{figure}
 
 	\subsection{The Unscented Transform}
-		The \emph{unscented\footnote{The name "unscented" was given by Uhlmann as he did not want people to call the corresponding filter the "Uhlmann Filter"~\cite{FirstHandUnscentedTransform}.} transform}, originally introduced by S.~J.~Julier and J.~K.~Uhlmann~\cite{julierNewApproachFiltering1995} is another method for approximating nonlinear Gaussian integrals with a parameterized transformation, the \ac{ut}. As shown by~\cite{solinCubatureIntegrationMethods2010}, the spherical-radial cubature rule is just a special case of the more general \ac{ut}. We will follow Solins derivation of connection here. For \ac{ut}, \( 2n + 1 \) sigma points are formed as a matrix
+		The \emph{unscented} transform, originally introduced by S.~J.~Julier and J.~K.~Uhlmann~\cite{julierNewApproachFiltering1995} is another method for approximating nonlinear Gaussian integrals with a parameterized transformation, the \ac{ut}. As shown by~\cite{solinCubatureIntegrationMethods2010}, the spherical-radial cubature rule is just a special case of the more general \ac{ut}. We will follow Solins derivation of connection here. For \ac{ut}, \( 2n + 1 \) sigma points are formed as a matrix
 		\begin{equation}
 			\mat{\mathcal{X}} =
 				\begin{bmatrix}
