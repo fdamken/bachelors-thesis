@@ -162,9 +162,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	\end{itemize}
 	These are only the parameters that can be configured directly on the \ac{em} algorithm but the user is also able to specify how to initialize everything, \ie the matrices \( \mat{A} \), \( \mat{Q} \), \( \mat{R} \), \( \mat{V}_0 \), \( \vec{m}_0 \) and the parameters \( \vec{\theta} \) of the observation function \( \vec{g}_{\vec{\theta}} \). We used a neural network with \( \tanh \) activation function and a single hidden layer for all experiments (see~\autoref{c:experiments} for more information about the experiment setup). We also made it possible to pass arbitrary PyTorch modules as the function approximator that can be learned via a \ac{gd}-like algorithm (of course they must be differentiable and expose parameters).
 
-	For learning multiple observation sequences, as outlined in the derivation of the Koopman inference algorithm in~\autoref{c:nonlinearGaussianKoopman}, it turns out to be useful to add noise to the training data which has the effect of regularizing the algorithm a bit. This effect is visible in smoother log-likelihood curves as we will see in~\autoref{c:experiments}.
-
-	\todo{Ref log-likelihood curves!}
+	For learning multiple observation sequences, as outlined in the derivation of the Koopman inference algorithm in~\autoref{c:nonlinearGaussianKoopman}, it turns out to be useful to add noise to the training data which has the effect of regularizing the algorithm a bit.
 
 	\subsection{Insights, Problems and Solutions}
 		In this section we will focus on interesting insights and problems we found during the implementation and how to possibly solve them.

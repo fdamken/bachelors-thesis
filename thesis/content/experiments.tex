@@ -239,12 +239,21 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 
 			We now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}) as we postulated from the \ac{nrmse} data that this is the boundary, after which we expected diminishing returns.~\autoref{fig:pendulumRolloutL10} shows the rollout of the model, where the dynamics of the system are captured quite well with high confidence. Also the prediction is good, so that the differences between true data, smoothed prediction and rollout are small.
 
+			%~\autoref{fig:pendulumLogLikelihood} shows the log-likelihood of this experiment, showing the improvement of the \ac{em} algorithm that is nearly monotonous (as opposed to the regular \ac{em} algorithm, we did not expect a completely monotonous improvement due to the numerical optimization and the approximations the cubature rules impose).
+
 			\begin{figure}[H]
 				\centering
 				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-10/rollout-observations-N0.png}
 				\caption[Rollout of the pendulum experiment for 10 latent dimensions]{The rollout plot in the observation space of the pendulum environment for \(k = 10\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
 				\label{fig:pendulumRolloutL10}
 			\end{figure}
+
+%			\begin{figure}
+%				\centering
+%				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-10/log-likelihood.png}
+%				\caption[Log-likelihood of the pendulum experiment for 10 latent dimensions over the iteration]{Log-likelihood of the pendulum experiment for 10 latent dimensions over the iteration.}
+%				\label{fig:pendulumLogLikelihood}
+%			\end{figure}
 		% end
 
 		\subsubsection{Exemplary Evaluation: 14-Dimensional Latent}
