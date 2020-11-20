@@ -102,6 +102,8 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 			&\qquad\qquad -\frac{N}{2} \sum_{t = 2}^{T} \tr\!\Big( \mat{P}_t \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{P}_{t, t - 1} \mat{A}^T \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t, t - 1} \mat{Q}^{-1} \Big) - \tr\!\Big( \mat{A} \mat{P}_{t - 1} \mat{A}^T \mat{Q}^{-1} \Big) \\
 			&\qquad\qquad -\frac{1}{2} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \tr\!\Big( \vec{y}_t^{(n)} \vec{y}_t^{(n), T} \mat{R}^{-1} \Big) - \tr\!\Big( \vec{y}_t^{(n)} \hat{\vec{g}}_t^{(n), T} \mat{R}^{-1} \Big) - \tr\!\Big( \hat{\vec{g}}_t^{(n)} \vec{y}_t^{(n), T} \mat{R}^{-1} \Big) + \tr\!\Big( \mat{G}_t^{(n)} \mat{R}^{-1} \Big)
 	\end{align*}
+	\pagebreak
+
 	By maximizing this quantity \ac{wrt} the dynamics matrix \(\mat{A}\), the covariance matrices \(\mat{Q}\) and \(\mat{R}\), the initial state mean \(\vec{m}_0\) and the initial state covariance \(\mat{V}_0\), \ie setting the derivative \ac{wrt} these parameters to zero and rearranging the equations, we get the closed-form solutions
 	\begin{align*}
 		\mat{A}^\new   &= \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t, t - 1} \!\Bigg) \Bigg(\! \sum_{t = 2}^{T} \mat{P}_{t - 1} \!\Bigg)^{-1} \\

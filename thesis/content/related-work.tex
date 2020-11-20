@@ -9,6 +9,7 @@ Starting with work from 2018~\cite{luschDeepLearningUniversal2018}, Lusch et al.
 
 An approach closer to ours is from 2019~\cite{mortonDeepVariationalKoopman2019a} and also treats the Koopman embedding probabilistically by not modeling the Koopman observations directly but treating the linear embedding as a series of states to be inferred. Additionally, they assume control inputs to be present in the linear embedding in the form of an additive control with a control matrix. Their model uses six neural networks for encoding the dynamics:
 \begin{itemize}
+	\setlength{\itemsep}{-4pt}
 	\item the \emph{decoder network} to model the decoding of the embedding states back to the nonlinear manifold,
 	\item the \emph{temporal encoder network} using a bidirectional \ac{lstm} summarizing the time evolution,
 	\item the \emph{initial observation inference network} to infer the initial observation,
