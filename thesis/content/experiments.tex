@@ -12,7 +12,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 	In this section we will introduce the experiment setup and all the different environments we used for evaluation.
 
 	\subsection{Environments}
-		This section covers the different environments we used and changes we might have applied to them. Note that we separated the data generation process from running the experiment. For each of the following environments we summarize the most important data about the environment at the start of the subsection, including the experiment ID that can be used to find the experiment in the code.
+		This section covers the different environments we used and changes we have applied to them. Note that we separated the data generation process from running the experiment. For each of the following environments we summarize the most important data about the environment at the start of the subsection, including the experiment ID that can be used to find the experiment in the code.
 
 		\subsubsection{Proof-of-Concept: Classic LGDS}
 			\begin{itemize}
@@ -105,7 +105,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 				\item Experiment ID: \texttt{cartpole\_gym}
 			\end{itemize}
 
-			The second last environment we run experiment on is the cartpole environment. In the cartpole environment, an inverted pendulum is build on a (typically controlled, but otherwise freely movable) cart. If the pendulum falls town, the torque on the joint is translated into a force moving the cart around. This creates nonlinear coupling and therefore highly nonlinear dynamics. A sketch of the cartpole environment is given in~\autoref{fig:envCartpoleGymSketch}. As for the previous pendulum, we rely on the cartpole implementation of Gym. We slightly modified the environment to be uncontrolled, as the environment usually has discrete actions for pushing the cart left or right. This modification is shown in~\autoref{lst:uncontrolledCartPole}. The state of the environment is given as
+			The second last environment we run experiment on is the cartpole environment. In the cartpole environment, an inverted pendulum is build on a (typically controlled, but otherwise freely movable) cart. If the pendulum falls down, the torque on the joint is translated into a force moving the cart around. This creates nonlinear coupling and therefore highly nonlinear dynamics. A sketch of the cartpole environment is given in~\autoref{fig:envCartpoleGymSketch}. As for the previous pendulum, we rely on the cartpole implementation of Gym. We slightly modified the environment to be uncontrolled, as the environment usually has discrete actions for pushing the cart left or right. This modification is shown in~\autoref{lst:uncontrolledCartPole}. The state of the environment is given as
 			\begin{equation*}
 				\vec{y} \coloneqq
 					\begin{bmatrix}
@@ -209,7 +209,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 		We now introduce the experiment setup, initialization and similar stuff we used for each environment. For all experiments, we initialized the latent state dynamics matrix \( \mat{A} \) with an identity matrix, the initial state \( \vec{m}_0 \) with a one-vector and all covariance matrices \( \mat{R} \), \( \mat{Q} \) and \( \mat{V}_0 \) with a small diagonal covariance of \( 10^{-5} \). We set the maximum number of \(\vec{g}\)-optimization iterations to \(1000\) for all environments. As described in~\autoref{sec:implementation}, we used a neural network for the observation function with \(\tanh\) activation functions (except for the output layer of course) and a single hidden layer with \(50\) neurons. We used \(100\) maximum iterations for the pendulum, \(200\) for the damped pendulum, \(500\) for the Gym pendulum, \(500\) for the Gym cartpole and \(250\) for the Gym double pendulum.
 
-		For the proof-of-concept environment (the linear system), we used a slightly different setup as the environment is a lot simpler. We used a zero-layer neural network with no activation function, \ie a learnable matrix/linear transformation. We also fix the latent dimensionality to be \(2\) for the linear system as we only have two states.
+		For the proof-of-concept environment (the linear system), we used a slightly different setup as the environment is a lot simpler. We used a zero-layer neural network with no activation function, \ie a learnable matrix/linear transformation. We also fixed the latent dimensionality to be \(2\) for the linear system as we only have two states.
 	% end
 
 	\subsection{Hyper-Experiments}
@@ -407,7 +407,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 			We start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:gymPendulumRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning dynamics. We see that the \ac{nrmse} shrinks to near zero (less than \( 0.01 \)) for latent dimensionalities of \( k \geq 2 \). Even for \( k = 1 \), the error is only approximately \( 0.09 \).
 
-			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:gymPendulumRmseComplete}, we see a slight improvement at the beginning that is, looking at the training and prediction error in~\autoref{fig:gymPendulumRmseTrain} and~\autoref{fig:gymPendulumRmsePred}, respectively, fully caused by the training error. Looking at the prediction error, we see that the error does not change much with different latent dimensionalities\footnote{The spike on the right is possibly due to bad initialization and is only chosen as the mean as all other seeds crashed due to negative definite matrices.}. In comparison, the training error shrinks to near zero (less than \( 0.01 \)) for latent dimensionalities \( k \geq 7 \). Hence, we expect the model not to predict well behind the prediction boundary.
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:gymPendulumRmseComplete}, we see a slight improvement at the beginning, which is, looking at the training and prediction error in~\autoref{fig:gymPendulumRmseTrain} and~\autoref{fig:gymPendulumRmsePred}, respectively, fully caused by the training error. Looking at the prediction error, we see that the error does not change much with different latent dimensionalities\footnote{The spike on the right is possibly due to bad initialization and is only chosen as the mean as all other seeds crashed due to negative definite matrices.}. In comparison, the training error shrinks to near zero (less than \( 0.01 \)) for latent dimensionalities \( k \geq 7 \). Hence, we expect the model not to predict well behind the prediction boundary.
 
 			\begin{figure}
 				\centering
@@ -443,7 +443,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
-			We now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout trajectory should be off the true data, but the smoothed trajectory should be mostly on the true data.~\autoref{fig:gymPendulumRolloutL02} shows exactly this behavior: all trajectory are far off the true trajectory with the exception of the smoothed trajectory that almost matches the true data.
+			We now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout trajectory should be off the true data, but the smoothed trajectory should be mostly on the true data.~\autoref{fig:gymPendulumRolloutL02} shows exactly this behavior: all trajectories are far off the true trajectory with the exception of the smoothed trajectory that almost matches the true data.
 		% end
 
 		\subsubsection{Exemplary Evaluation: 4-Dimensional Latent}
