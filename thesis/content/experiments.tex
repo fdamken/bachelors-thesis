@@ -24,16 +24,9 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 				\dot{x}_1 &= x_2 \\
 				\dot{x}_2 &= -x_1
 			\end{align*}
-			The initial state \( \vec{s}_1 \) is sampled from a Gaussian with mean \( \begin{bmatrix} 0.1 & 0.2 \end{bmatrix}^T \) and covariance \( \diag\big(10^{-5}, 10^{-5}\big) \). The system is integrated using the implicit Runge-Kutta Radau~IIA~\cite{guglielmiImplementingRadauIIA2001} method with an evaluation interval of \( h = 0.1 \) for \( T = 240 \) time steps where only the first \( T_\train = 120 \) steps are used for training and the remaining \(120\) are used for validation. The raw data is shown in~\autoref{fig:envLgds}.
+			The initial state \( \vec{s}_1 \) is sampled from a Gaussian distribution with mean \( \begin{bmatrix} 0.1 & 0.2 \end{bmatrix}^T \) and covariance \( \diag\big(10^{-5}, 10^{-5}\big) \). The system is integrated using the implicit Runge-Kutta Radau~IIA~\cite{guglielmiImplementingRadauIIA2001} method with an evaluation interval of \( h = 0.1 \) for \( T = 240 \) time steps where only the first \( T_\train = 120 \) steps are used for training and the remaining \(120\) are used for validation.
 
 			As the system's eigenvalues \( -i \), \( i \) are purely imaginary, the integrated system rings around the equilibrium \( \begin{bmatrix} 0 & 0 \end{bmatrix}^T \) indefinitely.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-lgds-N0.png}
-				\caption[Raw data of the proof-of-concept LGDS environment]{Plot of the raw data used for training the proof-of-concept LGDS environment with the first dimension on the left and the second dimension on the right. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
-				\label{fig:envLgds}
-			\end{figure}
 		% end
 
 		\subsubsection{(Damped) Pendulum}
@@ -41,33 +34,13 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 				\item Experiment ID: \texttt{pendulum} and \texttt{pendulum\_damped}
 			\end{itemize}
 
-			The first nonlinear system we look at is the (inverted) pendulum in both an undamped and a damped setting. For this experiment, we use the angular state \( \vec{y} = \begin{bmatrix} \theta & \dot{\theta} \end{bmatrix} \) where \(\theta\) is the displacement angle (see~\autoref{fig:envPendulumSketch}). The dynamics are specified by the \ac{ode}
+			The first nonlinear system we look at is the (inverted) pendulum in both an undamped and a damped setting. For this experiment, we use the angular state \( \vec{y} = \begin{bmatrix} \theta & \dot{\theta} \end{bmatrix} \) where \(\theta\) is the displacement angle (see~\autoref{fig:simplePendulum}). The dynamics are specified by the \ac{ode}
 			\begin{equation*}
 				\ddot{\theta} = \sin\theta - d \dot{\theta}
 			\end{equation*}
-			that is solved using the Radau~IIA~\cite{guglielmiImplementingRadauIIA2001} \ac{ivp} integrator (after transforming the \ac{ode} to a first-order \ac{ode} system). The initial velocity is set to \(0\) and the initial position is sampled from a Gaussian with mean \( \pi/36 \) and variance \( \pi/8 \). This puts the pendulum in motion as it falls down from its initial position. For the undamped pendulum, we set \( d = 0 \). For both environments, we use an evaluation interval of \( h = 0.1 \) for \( T = 1000 \) time steps where only the first \( T_\train = 500 \) steps are used for training and the remaining \(500\) are used for validation. The raw data is shown in~\autoref{fig:envPendulum} for the undamped and~\autoref{fig:envPendulumDamped} for the damped pendulum.
+			that is solved using the Radau~IIA~\cite{guglielmiImplementingRadauIIA2001} \ac{ivp} integrator (after transforming the \ac{ode} to a first-order \ac{ode} system). The initial velocity is set to \(0\) and the initial position is sampled from a Gaussian distribution with mean \( \pi/36 \) and variance \( \pi/8 \). This puts the pendulum in motion as it falls down from its initial position. For the undamped pendulum, we set \( d = 0 \). For both environments, we use an evaluation interval of \( h = 0.1 \) for \( T = 1000 \) time steps where only the first \( T_\train = 500 \) steps are used for training and the remaining \(500\) are used for validation.
 
 			The damped pendulum is especially interesting as the system looses energy (\ie the sum of the kinetic and potential energy decreases over time) and the embedding has to encode this behavior.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-N0.png}
-				\caption[Raw data of the undamped pendulum environment]{Plot of the raw data used for training the undamped pendulum environment. The left plot shows the displacement and the right plot the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
-				\label{fig:envPendulum}
-			\end{figure}
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-damped-N0.png}
-				\caption[Raw data of the damped pendulum environment]{Plot of the raw data used for training the damped pendulum environment. The left plot shows the displacement and the right plot the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
-				\label{fig:envPendulumDamped}
-			\end{figure}
-
-			\begin{figure}
-				\centering
-				\tikzSimplePendulum
-				\caption[Illustration of the pendulum environment]{Illustration of the pendulum environment. The pendulum has length \(L\) and mass \(m\) and is attached to a fixed point in the center around which it can swing. In the case of the damped pendulum is damped with a damping constant \(d\).}
-				\label{fig:envPendulumSketch}
-			\end{figure}
 		% end
 
 		\subsubsection{Gym Pendulum}
@@ -88,14 +61,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 						\dot{\theta}
 					\end{bmatrix}
 			\end{equation*}
-			The Gym environment uses the Euler method for integrating the \ac{ode} with a step size of \( h = 0.05 \). We generate \( T = 100 \) time steps of which \( T_\train = 50 \) are used for training and the other \(50\) for validation. The raw data is shown in~\autoref{fig:envPendulumGym}.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-pendulum-gym-N0.png}
-				\caption[Raw data of the Gym pendulum environment]{Plot of the raw data used for training the Gym pendulum environment. The top row shows the cosine/sine of the displacement of the pendulum and the bottom plot shows the angular velocity. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
-				\label{fig:envPendulumGym}
-			\end{figure}
+			The Gym environment uses the Euler method for integrating the \ac{ode} with a step size of \( h = 0.05 \). We generate \( T = 100 \) time steps of which \( T_\train = 50 \) are used for training and the other \(50\) for validation.
 		% end
 
 		\subsubsection{Gym Cartpole}
@@ -105,7 +71,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 				\item Experiment ID: \texttt{cartpole\_gym}
 			\end{itemize}
 
-			The second last environment we run experiment on is the cartpole environment. In the cartpole environment, an inverted pendulum is build on a (typically controlled, but otherwise freely movable) cart. If the pendulum falls down, the torque on the joint is translated into a force moving the cart around. This creates nonlinear coupling and therefore, highly nonlinear dynamics. A sketch of the cartpole environment is given in~\autoref{fig:envCartpoleGymSketch}. As for the previous pendulum, we rely on the cartpole implementation of Gym. We slightly modified the environment to be uncontrolled, as the environment usually has discrete actions for pushing the cart left or right. This modification is shown in~\autoref{lst:uncontrolledCartPole}. The state of the environment is given as
+			The second to last environment we run experiment on is the cartpole environment. In the cartpole environment, an inverted pendulum is build on a (typically controlled, but otherwise freely movable) cart. If the pendulum falls down, the torque on the joint is translated into a force moving the cart around. This creates nonlinear coupling and therefore, highly nonlinear dynamics. A sketch of the cartpole environment is given in~\autoref{fig:envCartpoleGymSketch}. As for the previous pendulum, we rely on the cartpole implementation of Gym. We slightly modified the environment to be uncontrolled, as the environment usually has discrete actions for pushing the cart left or right. The state of the environment is given as
 			\begin{equation*}
 				\vec{y} \coloneqq
 					\begin{bmatrix}
@@ -120,30 +86,13 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 				\ddot{\theta} &= \frac{g \sin\theta + \cos\theta \Big(\! \frac{-F - m_p \ell \dot{\theta}^2 \sin\theta}{m_c + m_p} \!\Big)}{\ell \Big(\! \frac{4}{3} - \frac{m_p \cos^2\theta}{m_c + m_p} \!\Big)} \\
 				\ddot{x} &= \frac{F + m_p \ell \big( \dot{\theta}^2 \sin\theta - \ddot{\theta} \cos\theta \big)}{m_c + m_p}
 			\end{align*}
-			Here \( g = \SI{9.8}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_p = \SI{0.1}{\kilogram} \) and \( m_c = \SI{1}{\kilogram} \) are the masses of the pole and cart, respectively, \( 2\ell = \SI{1}{\meter} \) is the pole length and \( [F] = \si{\newton} \) is the external (control) force acting on the cart that we set to \( \SI{0}{\newton} \). The Gym environment uses an implicit Euler method\footnote{As mentioned in~\autoref{subsubsec:integrationProblems}, this has to be set manually with \lstinline|env.kinematics_integrator = 'implicit-euler'|.} for integrating the \ac{ode} with a step size of \( h = 0.02 \). We generate \( T = 300 \) time steps of which we use \( T_\train = 150 \) for training and the remaining \(150\) steps for validation. The raw data is shown in~\autoref{fig:envCartpoleGym}.
-
-			\begin{lstlisting}[caption={[Modification of Gym's cartpole environment to get an uncontrolled cartpole]Modification of Gym's cartpole environment to get an uncontrolled cartpole.}, label=lst:uncontrolledCartPole]
-from gym.envs.classic_control import CartPoleEnv
-
-class UncontrolledCartPole(CartPoleEnv):
-	def __init__(self):
-	super().__init__()
-
-	self.force_mag = 0.0
-			\end{lstlisting}
+			Here \( g = \SI{9.8}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_p = \SI{0.1}{\kilogram} \) and \( m_c = \SI{1}{\kilogram} \) are the masses of the pole and cart, respectively, \( 2\ell = \SI{1}{\meter} \) is the pole length and \( [F] = \si{\newton} \) is the external (control) force acting on the cart that we set to \( \SI{0}{\newton} \). The Gym environment uses an implicit Euler method for integrating the \ac{ode} with a step size of \( h = 0.02 \). We generate \( T = 300 \) time steps of which we use \( T_\train = 150 \) for training and the remaining \(150\) steps for validation.
 
 			\begin{figure}
 				\centering
 				\tikzCartpole
 				\caption[Illustration of the cartpole environment]{Illustration of the cartpole environment. The cart has mass \(m_c\), the pole \(m_p\) with length \(L\). The cart can move freely on the \(x\) axis, while the pendulum can swing freely around the center of the cart, causing the cart to move.}
 				\label{fig:envCartpoleGymSketch}
-			\end{figure}
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-cartpole-gym-N0.png}
-				\caption[Raw data of the cartpole environment]{Plot of the raw data used for training the Gym cartpole environment. The top plot is the cart position (left) and velocity (right), the row the pole displacement (left) and angular velocity (right). The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
-				\label{fig:envCartpoleGym}
 			\end{figure}
 		% end
 
@@ -154,7 +103,7 @@ class UncontrolledCartPole(CartPoleEnv):
 				\item Experiment ID: \texttt{acrobot\_gym}
 			\end{itemize}
 
-			The last environment we test on is the double pendulum, implemented in Gym as the \emph{acrobot} (as for the cartpole, we removed all control inputs and modified the initial state to start on top rather than hanging straight down, see~\autoref{lst:topAcrobot}). The double pendulum consists of a pendulum on a fixed joint and a second pendulum attached to the end of the first pendulum. This creates highly nonlinear coupling and is the most common example of a chaotic system~\cite{shinbrotChaosDoublePendulum1992}. We observe the state vector
+			The last environment we test on is the double pendulum, implemented in Gym as the \emph{acrobot} (as for the cartpole, we removed all control inputs and modified the initial state to start on top rather than hanging straight down). The double pendulum consists of a pendulum on a fixed joint and a second pendulum attached to the end of the first pendulum. This creates highly nonlinear coupling and is the most common example of a chaotic system~\cite{shinbrotChaosDoublePendulum1992}. We observe the state vector
 			\begin{equation*}
 				\vec{y} \coloneqq
 					\begin{bmatrix}
@@ -171,35 +120,13 @@ class UncontrolledCartPole(CartPoleEnv):
 				\ddot{\varphi}_1 &= \frac{g (\sin\varphi_2 \, \cos\varphi_\Delta - \mu \sin\varphi_1) - (\ell_2 \dot{\varphi}_2^2 + \ell_1 \dot{\varphi}_1^2 \cos\varphi_\Delta) \sin\varphi_\Delta}{\ell_1 (\mu - \cos^2\varphi_\Delta)} \\
 				\ddot{\varphi}_2 &= \frac{g \mu (\sin\varphi_2 \, \cos\varphi_\Delta - \mu \sin\varphi_1) + (\mu \ell_1 \dot{\varphi}_1^2 + \ell_2 \dot{\varphi}_2^2 \cos\varphi_\Delta) \sin\varphi_\Delta}{\ell_2 (\mu - \cos^2\varphi_\Delta)}
 			\end{align*}
-			with \( \varphi_\Delta \coloneqq \varphi_1 - \varphi \), \( \mu \coloneqq 1 + m_1/m_2 \) where \( g = \SI{9.8}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_1 = \SI{1}{\kilogram} \) and \( m_2 = \SI{1}{\kilogram} \) are the masses of the two links and \( \ell_1 = \SI{1}{\meter} \) and \( \ell_2 = \SI{1}{\meter} \) are the lengths of the two links. The Gym environment uses a \ac{rk4} for integrating the \ac{ode} with an evaluation interval of \( h = 0.2 \). We modified the initial position to be drawn from a Gaussian with mean \( \pi \) and standard deviation \( \pi/8 \) and the initial velocity to be drawn from a uniform distribution in the interval \( [-0.1, 0.1] \). We generate \( T = 100 \) time steps of which we use \( T_\train = 75 \) for training and the remaining \(25\) for validation. The raw data is shown in~\autoref{fig:envDoublePendulumGym}.
-
-			\begin{lstlisting}[caption={[Modification of Gym's acrobot environment to start at the top instead of hanging down]Modification of Gym's acrobot environment to start at the top instead of hanging down.}, label=lst:topAcrobot]
-import numpy as np
-from gym.envs.classic_control import AcrobotEnv
-
-class ModifiedAcrobotEnv(AcrobotEnv):
-	def __init__(self):
-		super().__init__()
-
-	def reset(self):
-		position = self.np_random.normal(np.pi, np.pi / 8.0, size=(2,))
-		velocity = self.np_random.uniform(low=-0.1, high=0.1, size=(2,))
-		self.state = np.concatenate([position, velocity], axis=0)
-		return self._get_ob()
-			\end{lstlisting}
+			with \( \varphi_\Delta \coloneqq \varphi_1 - \varphi \), \( \mu \coloneqq 1 + m_1/m_2 \) where \( g = \SI{9.8}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_1 = \SI{1}{\kilogram} \) and \( m_2 = \SI{1}{\kilogram} \) are the masses of the two links and \( \ell_1 = \SI{1}{\meter} \) and \( \ell_2 = \SI{1}{\meter} \) are the lengths of the two links. The Gym environment uses a \ac{rk4} for integrating the \ac{ode} with an evaluation interval of \( h = 0.2 \). We modified the initial position to be drawn from a Gaussian distribution with mean \( \pi \) and standard deviation \( \pi/8 \) and the initial velocity to be drawn from a uniform distribution in the interval \( [-0.1, 0.1] \). We generate \( T = 100 \) time steps of which we use \( T_\train = 75 \) for training and the remaining \(25\) for validation.
 
 			\begin{figure}
 				\centering
 				\tikzDoublePendulum
 				\caption[Illustration of the double pendulum environment]{Illustration of the double pendulum environment. The pendulums have lengths \(\ell_1\) and \(\ell_2\) with the masses \(m_1\) and \(m_2\) attached to the respective ends. The inner pendulum can swing freely around the center while the other pendulum can swing freely around the end of the inner pendulum. Hence, fixing one of the pendulums would transform the system back to a simple pendulum. If both pendulums can swing, the system is chaotic.}
 				\label{fig:envDoublePendulumGymSketch}
-			\end{figure}
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figures/experiments/environments/observations-acrobot-gym-N0.png}
-				\caption[Raw data of the double pendulum environment]{Plot of the raw data used for training the Gym double pendulum environment. The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocity of the inner and outer pendulum. The black dots represent the actual data points, all before the red prediction boundary are used for training, the rest for validation. The faint gray line emphasizes the connection between the data points and that they are actually generated from a dynamical system.}
-				\label{fig:envDoublePendulumGym}
 			\end{figure}
 		% end
 	% end
@@ -215,12 +142,12 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 	\subsection{Hyper-Experiments}
 		Besides the performance on specific environments, we were interested in how hyperparameters like the latent dimensionality affect the performance of the system. In this section we will discuss and present our experiment setup for the "hyper-experiments". All hyperparameters that are not part of the experiment where set as in in~\autoref{subsec:experimentSetup}.
 
-		If not stated differently, we always ran the experiment with five different seeds\footnote{Namely, we used the seeds \(0\), \(11\), \(42\), \(1234\) and \(1997\).} to average out initialization noise.
+		If not stated differently, we always ran the experiment with five different seeds to average out initialization noise.
 
 		\subsubsection{Influence of the Latent Dimensionality}
 			\label{subsec:experimentLatentDim}
 
-			As the latent dimensionality directly influences how well the Koopman matrix can approximate the infinite-dimensional operator, it is one of the most interesting hyperparameters we evaluate. Hence, we evaluate lots of different latent dimensionalities from \( k = 1 \) to \( k = 50 \).
+			As the latent dimensionality directly influences how well the Koopman matrix can approximate the infinite-dimensional operator, it is one of the most interesting hyperparameters we evaluate. Hence, we evaluate multiple different latent dimensionalities from \( k = 1 \) to \( k = 50 \).
 		% end
 	% end
 % end
@@ -241,13 +168,13 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 	\begin{equation*}
 		\mathit{NRMSE} = \frac{1}{k} \sum_{i = 1}^{k} \frac{1}{y_\mathrm{max} - y_\mathrm{min}} \sqrt{ \frac{1}{T} \sum_{t = 1}^{T} (y_{t, i} - \tilde{y}_{t, i})^2 }
 	\end{equation*}
-	where \( y_{t, i} \) is the true data and \( \tilde{y}_{t, i} \) is the corresponding data to evaluate at the \(t\)-th time step of the \(i\)-th dimension. We can compute four different error values: The error over the rollout from start to finish (\( t = 1, 2, \rangedots, T \)), over the training data only (\( t = 1, 2, \rangedots, T_\train \)), over the prediction only (\( t = T_\train, T_\train + 1, \rangedots, T \)) or over the smoothed trajectory (\ie the results from the E-step, \(  \hat{\vec{s}}_{1:T} \)). The latter primarily checks that our algorithm performs correct and that it is even capable of learning the dynamics and it should be near zero or at least below one for a decent parameter choice and model performance. On the other hand, the \ac{nrmse} over the complete rollout describes the generalization abilities. In conjunction with the rollout error over the training and prediction set, we can see where our error comes from. A low error over the training set is the least we should expect while at some environments a high error on the prediction is expected (we will later see when and why).
+	where \( y_{t, i} \) is the true data and \( \tilde{y}_{t, i} \) is the corresponding data to evaluate at the \(t\)-th time step of the \(i\)-th dimension. We can compute four different error values: The error over the rollout from start to finish (\( t = 1, 2, \rangedots, T \)), over the training data only (\( t = 1, 2, \rangedots, T_\train \)), over the prediction only (\( t = T_\train, T_\train + 1, \rangedots, T \)) or over the smoothed trajectory (\ie the results from the E-step, \(  \hat{\vec{s}}_{1:T} \)). The latter primarily checks that our algorithm performs correct and that it is even capable of learning the dynamics and it should be near zero or at least below one for a decent parameter choice and model performance. On the other hand, the \ac{nrmse} over the complete rollout describes the generalization abilities. In conjunction with the rollout error over the training and prediction set, we can see which rollout primarily caused the complete error. We expected a low error on the training set for every environment.
 
 	Using the \ac{nrmse} instead of the plain \ac{rmse} allows us to compare model performance across the difference dimensions as we are scaling the error to a reasonable interval. For error values below \( 0.01 \), we say that the error is close to zero as it only deviates at most \(1\%\) from the true data. For \(<0.1\) we say it is a good fit, and for \(<0.2\) we say the approximation is decent. However, we have to take these numbers with care as they summarize a lot of data into a single scalar.
 
 	All subsections (of non-proof-of-concept environments) are separated into two main parts: Looking at the hyper-experiment of the latent dimensionality and inspect how well the model performs with different latent dimensionalities. Then we will pick two or three of those latent dimensionalities and look at the qualitative plots of the runs (exemplary evaluation).
 
-	Each exemplary evaluation also contains the ID of the run containing the data we used and the raw data of the runs is added to the \href{https://github.com/fdamken/bachelors-thesis_code}{GitHub repository} along with the code. The documentation for how to generate the plots and so on is also there.
+	Each exemplary evaluation also contains the ID of the run containing the data we used and the raw data of the runs is added to the \href{https://github.com/fdamken/bachelors-thesis_code}{GitHub repository} along with the code. The documentation for how to generate the plots is also there.
 
 	\subsection{Proof-of-Concept: LGDS}
 		For the \ac{lgds} environment, we did not run multiple latent dimensionalities as we already know how many states we have.~\autoref{fig:lgdsRollout} shows the rollout plot for \( k = 3 \) latent dimensions. As expected, both the rollout and the smoothed states perfectly match the true data, even in the prediction time span.
@@ -302,24 +229,13 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
-			We now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{100}). According to the errors, the rollout error should be quite high. On the other hand, the smoothed trajectory should nearly match the true data.~\autoref{fig:pendulumRolloutL02} shows that the rollout and also the rollout of the smoothed trajectory are far off with low confidence, but the true data is in the confidence region. However, the smoothed trajectory follows the true data really good.
+			We now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{100}). Looking at the errors, the rollout trajectory should be off the real data, but the smoothed trajectory should nearly match the true data.~\autoref{fig:pendulumRolloutL02} shows that the rollout and also the rollout of the smoothed trajectory are far off with low confidence, but the true data is in the confidence region. However, the smoothed trajectory follows the true data really good.
 		% end
-
-%		\subsubsection{Exemplary Evaluation: 4-Dimensional Latent}
-%			We now look at an exemplary run for the latent dimensionality \( k = 4 \) (run \texttt{53}). This run is especially interesting for comparison with~\cite{mortonDeepVariationalKoopman2019a} which we will do in~\autoref{c:discussion}.~\autoref{fig:pendulumRolloutL04} shows the rollout of the model with four latent dimensions. We see that the smoothed trajectory equals the true data as expected, while the rollout captures the dynamics of the system really roughly and the true data lies withing the region of confidence of the rollout.
-%
-%			\begin{figure}
-%				\centering
-%				\includegraphics[width=\linewidth]{figures/results/pendulum/run-latent-dim-04/rollout-observations-N0.png}
-%				\caption[Rollout of the pendulum experiment for 4 latent dimensions]{The rollout plot in the observation space of the pendulum environment for \(k = 4\). The left plot shows the displacement and the right plot the angular velocity. The black dots represent the true data of which the model used everything till the red prediction boundary to train on. The blue line is the rollout, starting from the learned initial value (marked with a green star). The orange dash-dotted line is the smoothed data. The dotted orange line then is the rollout starting from the last smoothed state, forming the "smoothed prediction". The shaded regions show the confidence, \ie two times the standard deviation.}
-%				\label{fig:pendulumRolloutL04}
-%			\end{figure}
-%		% end
 
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
 			\label{subsubsec:pendulumL10}
 
-			We now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}) as we postulated from the \ac{nrmse} data that this is the boundary of diminishing returns, \ie it does not get much better with higher latent dimensionalities.~\autoref{fig:pendulumRolloutL10} shows the rollout of the model, where the dynamics of the system are captured really good with high confidence. Also the prediction is really good, so that it is hard to distinguish between true data, smoothed prediction and rollout.
+			We now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}) as we postulated from the \ac{nrmse} data that this is the boundary, after which we expected diminishing returns.~\autoref{fig:pendulumRolloutL10} shows the rollout of the model, where the dynamics of the system are captured quite well with high confidence. Also the prediction is good, so that the differences between true data, smoothed prediction and rollout are small.
 
 			\begin{figure}[H]
 				\centering
@@ -384,7 +300,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
 			\label{subsubsec:pendulumDampedL10}
 
-			We now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{110}). We chose this latent dimensionality as it is the boundary of diminishing returns in terms of the \ac{nrmse}, \ie it does not get much better from there on.~\autoref{fig:pendulumDampedRolloutL10} shows the rollout of the model. In comparison to the four-dimensional latent, the behavior of the system is captured pretty good, with a decent confidence. Also the prediction is at nearly the same amplitude as the real data. But the rollout gets phase-shifted in comparison to the true data further in the rollout horizon.
+			We now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{110}). We chose this latent dimensionality as it is the boundary of diminishing returns in terms of the \ac{nrmse}.~\autoref{fig:pendulumDampedRolloutL10} shows the rollout of the model. In comparison to the four-dimensional latent, the behavior of the system is captured pretty good, with a decent confidence. Also, the prediction is at nearly the same amplitude as the real data. But the rollout gets phase-shifted in comparison to the true data further in the rollout horizon.
 
 			\begin{figure}
 				\centering
@@ -395,7 +311,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 24-Dimensional Latent}
-			We now look at an exemplary run for the latent dimensionality \( k = 30 \) (run \texttt{130}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumDampedRolloutL30} shows the rollout of the model. In comparison to the ten-dimensional latent, the model is a less confident but the rollout is nearly the same as the rollout of the ten-dimensional latent.
+			We now look at an exemplary run for the latent dimensionality \( k = 30 \) (run \texttt{130}) for which we got the smallest overall \ac{nrmse}.~\autoref{fig:pendulumDampedRolloutL30} shows the rollout of the model. In comparison to the ten-dimensional latent, the model is less confident but the rollout is nearly the same as the rollout of the ten-dimensional latent.
 		% end
 	% end
 
@@ -443,13 +359,13 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 2-Dimensional Latent}
-			We now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout trajectory should be off the true data, but the smoothed trajectory should be mostly on the true data.~\autoref{fig:gymPendulumRolloutL02} shows exactly this behavior: all trajectories are far off the true trajectory with the exception of the smoothed trajectory that almost matches the true data.
+			We now look at an exemplary run for the latent dimensionality \( k = 2 \) (run \texttt{2}). According to the errors, the rollout trajectory should be off the true data, but the smoothed trajectory should be mostly on the true data.~\autoref{fig:gymPendulumRolloutL02} shows exactly this behavior: all trajectories are far sway from the true trajectory with the exception of the smoothed trajectory that almost matches the true data.
 		% end
 
 		\subsubsection{Exemplary Evaluation: 4-Dimensional Latent}
 			\label{subsubsec:gymPendulumL04}
 
-			We now look at an exemplary run for the latent dimensionality \( k = 4 \) (run \texttt{104}). This run is especially interesting for comparison with~\cite{mortonDeepVariationalKoopman2019a} which we will do in~\autoref{c:discussion}.~\autoref{fig:gymPendulumRolloutL04} shows the rollout of the model with four latent dimensions. We see that the smoothed trajectory equals the true data as expected and so does the training rollout. However, on the prediction the rollout only roughly follows the true data, capturing the dynamics of the system only roughly.
+			We now look at an exemplary run for the latent dimensionality \( k = 4 \) (run \texttt{104}). This run is especially interesting for comparison with~\cite{mortonDeepVariationalKoopman2019a} which we will do in~\autoref{c:discussion}.~\autoref{fig:gymPendulumRolloutL04} shows the rollout of the model with four latent dimensions. We see that the smoothed trajectory equals the true data as expected and so does the training rollout. However, on the prediction the rollout only roughly follows the true data, not capturing the dynamics of the system well.
 
 			\begin{figure}
 				\centering
@@ -462,7 +378,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Exemplary Evaluation: 7-Dimensional Latent}
 			\label{subsubsec:gymPendulumL07}
 
-			We now look at an exemplary run for the latent dimensionality \( k = 7 \) (run \texttt{157}) as we postulated from the \ac{nrmse} data that this is the boundary of diminishing returns, \ie it does not get much better with higher latent dimensionalities.~\autoref{fig:gymPendulumRolloutL7} shows the rollout of the model. We see that the training rollout and the smoothed trajectory is good, as expected, but the prediction does not capture the dynamics of the system.
+			We now look at an exemplary run for the latent dimensionality \( k = 7 \) (run \texttt{157}) as we postulated from the \ac{nrmse} data that this is the boundary of diminishing returns.~\autoref{fig:gymPendulumRolloutL7} shows the rollout of the model. We see that the training rollout and the smoothed trajectory fits the true data well, as expected, but the prediction does not capture the dynamics of the system.
 		% end
 	% end
 
@@ -474,7 +390,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 
 			We start by having a first look at the \ac{nrmse} of the smoothed trajectory in~\autoref{fig:cartpoleRmseSmoothed} to see how many latent dimensions we need at least to get a model that is even slightly capable of learning the cartpole dynamics. We see that the \ac{nrmse} shrinks to near zero (approximately \(0.001\)) for latent dimensionalities of \( k \geq 2 \). Hence, we need at least \(2\) latent dimensions to learn the dynamics.
 
-			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the error does not shrink much any more for latent dimensionalities of \( k \geq 10 \), where the error stabilizes around \(0.23\). Looking at the training and prediction plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, we see that the training error falls a lot until \( k \geq 10 \) latent dimensions where the error stabilized near zero, while the prediction error does not fall much after the first few latent dimensionalities. Hence, we can predict that our model learns the training rollout well, but does not generalize behind the prediction boundary.
+			Looking at the \ac{nrmse} of the complete rollout in~\autoref{fig:cartpoleRmseComplete}, we see that the error does not shrink much any more for latent dimensionalities of \( k \geq 10 \), where the error stabilizes around \(0.23\). Looking at the training and prediction plots in~\autoref{fig:cartpoleRmseTrain} and~\autoref{fig:cartpoleRmsePred}, respectively, we see that the training error falls by a large margin until \( k \geq 10 \) latent dimensions where the error stabilized near zero, while the prediction error does not fall much after the first few latent dimensionalities. Hence, we can predict that our model learns the training rollout well, but does not generalize beyond the prediction boundary.
 
 			\begin{figure}
 				\centering
@@ -516,7 +432,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		\subsubsection{Exemplary Evaluation: 10-Dimensional Latent}
 			\label{subsubsec:cartpoleL10}
 
-			We now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}). According to the \ac{nrmse} of the training data, this should perform decent on the training data and, according to the \ac{nrmse} on the prediction, bad on the prediction.~\autoref{fig:cartpoleRolloutL10} shows that the rollout and the smoothed trajectory actually follow the true data, while the rollout does not match the true data after the prediction boundary, but roughly forecasts the qualitative behavior. Interestingly, the confidence in the rollout of the pendulum displacement and velocity is a lot higher than the confidence in the rollout of the cart position and velocity.
+			We now look at an exemplary run for the latent dimensionality \( k = 10 \) (run \texttt{10}). According to the \ac{nrmse} of the training data, this should perform decently on the training data and, according to the \ac{nrmse}, bad on the prediction.~\autoref{fig:cartpoleRolloutL10} shows that the rollout and the smoothed trajectory actually follow the true data, while the rollout does not match the true data after the prediction boundary, but roughly forecasts the qualitative behavior. Interestingly, the confidence in the rollout of the pendulum displacement and velocity is a lot higher than the confidence in the rollout of the cart position and velocity.
 
 			\begin{figure}
 				\centering
@@ -577,7 +493,7 @@ class ModifiedAcrobotEnv(AcrobotEnv):
 		% end
 
 		\subsubsection{Exemplary Evaluation: 3-Dimensional Latent}
-			We now look at an exemplary run for the latent dimensionality \( k = 3 \) (run \texttt{153}). As we have already seen, the rollout should not perform well, but the smoothed trajectory should be really accurate. Looking at~\autoref{fig:acrobotRolloutL03}, we see that nearly all trajectories are far off the true trajectory. Only the smoothed trajectory follows the data decently (until the prediction boundary, of course).
+			We now look at an exemplary run for the latent dimensionality \( k = 3 \) (run \texttt{153}). As we have already seen, the rollout should not perform well, but the smoothed trajectory should be really accurate. Looking at~\autoref{fig:acrobotRolloutL03}, we see that nearly all trajectories do not match the true trajectory. Only the smoothed trajectory follows the data decently (until the prediction boundary, of course).
 		% end
 
 		\subsubsection{Exemplary Evaluation: 18-Dimensional Latent}

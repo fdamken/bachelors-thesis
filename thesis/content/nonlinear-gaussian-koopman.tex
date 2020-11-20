@@ -4,9 +4,9 @@
 
 
 
-In this chapter we will introduce our contribution and the theoretical background of the Koopman inference algorithm that we will implement as a proof of concept in~\autoref{c:experiments}. We will start by introducing the thoughts that led to the idea of using variational autoencoder and \ac{em} for Koopman dynamical systems, then formulate and also solve the arising (approximate) inference problem.
+In this chapter we will introduce the theoretical background of our contribution, the Koopman inference algorithm, that we will implement as a proof of concept in~\autoref{c:experiments}. We will start by introducing the thoughts that led to the idea of using variational autoencoder and \ac{em} for Koopman dynamical systems, then formulate and solve the arising (approximate) inference problem.
 
-By looking at the graphical model for an \ac{lgds} and the state transition model for a Koopman dynamical system in~\autoref{fig:lgdsKoopmanRelation}, we can see that there are lots of similarities. The first and most interesting similarity is that both systems assume a latent state that transitions linearly, either with a state dynamics matrix \(\mat{A}\) for the \ac{lgds} or with the Koopman operator\footnote{From now on, we suppose a finite-dimensional matrix approximation \(\mat{K}\) of the Koopman operator \(\mathcal{K}\).} \(\mat{K}\). The greatest difference is that measurements in classic \ac{lgds} are taken linearly with an observation matrix \( \mat{C} \) and nonlinear in the Koopman system with the measurement function \( \vec{h}(\cdot) \).
+By looking at the graphical model of an \ac{lgds} and the state transition model for a Koopman dynamical system in~\autoref{fig:lgdsKoopmanRelation}, we can see that there are lots of similarities. The first similarity is that both systems assume a latent state that transitions linearly, either with a state dynamics matrix \(\mat{A}\) for the \ac{lgds} or with the Koopman operator\footnote{From now on, we suppose a finite-dimensional matrix approximation \(\mat{K}\) of the Koopman operator \(\mathcal{K}\).} \(\mat{K}\). The greatest difference is that measurements in classic \ac{lgds} are taken linearly with an observation matrix \( \mat{C} \) and nonlinear in the Koopman system with the measurement function \( \vec{h}(\cdot) \).
 
 \begin{figure}
 	\centering
@@ -25,11 +25,11 @@ By looking at the graphical model for an \ac{lgds} and the state transition mode
 	\label{fig:lgdsKoopmanRelation}
 \end{figure}
 
-Our idea is to "flip" the Koopman dynamical system and replace the observation matrix \( \mat{C} \) with a nonlinear observation function \( \vec{g}(\cdot) \), that takes the linear states \( \vec{s}_t \) and maps them into a nonlinear observation space \( \vec{y}_t \). In other words, we seek to find the inverse function of \( \vec{h}(\cdot) \) to map out of the linear embedding that Koopman theory guarantees us to exist. Our assumption that such an inverse function exists is backed by previous accomplishments in data-driven Koopman analysis~\cite{luschDeepLearningUniversal2018} that also seek and find such an inverse mapping (see~\ref{c:relatedWork} for more information).
+Our idea is to "flip" the Koopman dynamical system and replace the observation matrix \( \mat{C} \) with a nonlinear observation function \( \vec{g}(\cdot) \), that takes the linear states \( \vec{s}_t \) and maps them into a nonlinear observation space \( \vec{y}_t \). In other words, we seek to find the inverse function of \( \vec{h}(\cdot) \) to map out of the linear embedding that Koopman theory guarantees us to exist. Our assumption that such an inverse function exists is backed by previous accomplishments in data-driven Koopman analysis~\cite{luschDeepLearningUniversal2018} which also seek and find such an inverse mapping (see~\autoref{c:relatedWork} for more information).
 
 Additionally, we contribute a probabilistic view on the Koopman operator, being able to gauge our uncertainty about the embedding and the inverse mapping to the observation space.
 
-At this point we want to clear up some inconsistencies in notation and naming that builds up when working with two systems where "observation" means contrary concepts. From now on, we will work on the graphical system shown in~\autoref{fig:nonlinearGaussianKoopman} characterized by the dynamics
+At this point we want to clear up some inconsistencies in notation and naming that builds when working with two systems where "observation" means opposing concepts. From now on, we will work on the graphical system shown in~\autoref{fig:nonlinearGaussianKoopman} characterized by the dynamics
 \begin{align*}
 	\vec{s}_{t + 1} &= \eqmakebox[ngkIntro][l]{\( \mat{A} \vec{s}_t + \vec{w}_t,\quad \vec{w}_t \)} \sim \normal(\vec{0}, \mat{Q}) \\
 	\vec{y}_t       &= \eqmakebox[ngkIntro][l]{\( \vec{g}(\vec{s}_t) + \vec{v}_t,\quad \vec{v}_t \)} \sim \normal(\vec{0}, \mat{R})
@@ -55,7 +55,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	\begin{equation*}
 		p(\vec{s}_{1:T}, \vec{y}_{1:T}) = p(\vec{s}_1) \prod_{t = 2}^{T} p(\vec{s}_t \given \vec{s}_{t - 1}) \prod_{t = 1}^{T} p(\vec{y}_t \given \vec{s}_t)
 	\end{equation*}
-	which factors over the conditional distributions due to the Markovian assumption. For brevity, we will keep the parameters \( \vec{\theta} \) of the observation function \( \vec{g}_{\vec{\theta}}(\cdot) \) implicit from now on. Subsequently, we can proceed by not maximizing the likelihood but the log-likelihood which is easier to maximize as the Gaussian lies in the exponential family, exhibiting a convex optimization problem\footnote{Strictly speaking, the optimization problem is only convex \ac{wrt} \(\mat{A}\) and \(\mat{Q}\). For \(\mat{R}\) and \(\vec{\theta}\), the problem is still non-convex, but numerically more stable as sums are easier to differentiate and to compute than products.}:
+	which factors over the conditional distributions due to the Markovian assumption. Subsequently, we can proceed by not maximizing the likelihood but the log-likelihood which is easier to maximize as the Gaussian lies in the exponential family, exhibiting a convex optimization problem\footnote{Strictly speaking, the optimization problem is only convex \ac{wrt} \(\mat{A}\) and \(\mat{Q}\). For \(\mat{R}\) and \(\vec{\theta}\), the problem is still non-convex, but numerically more stable as sums are easier to differentiate and to compute than products.}:
 	\begin{equation*}
 		\log p(\vec{s}_{1:T}, \vec{y}_{1:T}) = \log p(\vec{s}_1) + \sum_{t = 2}^{T} \log p(\vec{s}_t \given \vec{s}_{t - 1}) + \sum_{t = 1}^{T} \log p(\vec{y}_t \given \vec{s}_t)
 	\end{equation*}
@@ -63,7 +63,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 	\begin{equation*}
 		p(\vec{s}_1) = \normal(\vec{s}_1 \given \vec{m}_0, \mat{V}_0) \qquad\qquad
 		p(\vec{s}_t \given \vec{s}_{t - 1}) = \normal(\vec{s}_t \given \mat{A} \vec{s}_{t - 1}, \mat{Q}) \qquad\qquad
-		p(\vec{y}_t \given \vec{s}_t) = \normal\big(\vec{y}_t \given \vec{g}(\vec{s}_t), \mat{R}\big)
+		p(\vec{y}_t \given \vec{s}_t) = \normal\big(\vec{y}_t \given \vec{g}_{\vec{\theta}}(\vec{s}_t), \mat{R}\big)
 	\end{equation*}
 	yields the log-likelihood
 	\begin{align*}
@@ -73,14 +73,14 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 			&\qquad\qquad -\frac{1}{2} \sum_{t = 2}^{T} (\vec{s}_t - \mat{A} \vec{s}_{t - 1})^T \mat{Q}^{-1} (\vec{s}_t - \mat{A} \vec{s}_{t - 1}) \\
 			&\qquad\qquad -\frac{1}{2} \sum_{t = 1}^{T} (\vec{y}_t - \vec{g}_t)^T \mat{R}^{-1} (\vec{y}_t - \vec{g}_t)
 	\end{align*}
-	with the abbreviation \( \vec{g}_t \coloneqq \vec{g}(\vec{s}_t) \).
+	with the abbreviation \( \vec{g}_t \coloneqq \vec{g}_{\vec{\theta}}(\vec{s}_t) \).
 
 	But maximizing this quantity is impossible as we do not have the latent states \( \vec{s}_{1:T} \). Hence, as usual in \ac{em} (see~\autoref{sec:em}), we instead maximize the expected log-likelihood and estimate the latent states based on out previous guess for the state dynamics. These two steps form our E- and M-step of the Koopman inference algorithm:
 	\begin{itemize}
 		\item E-Step: Estimate the latent states \( \vec{s}_{1:T} \).
 		\item M-Step: Maximize the expected log-likelihood \ac{wrt} the state dynamics and observation function parameters.
 	\end{itemize}
-	We will proceed with deriving the M-step and finish this section off by deriving the E-step. Be aware that we only briefly touch the derivation here and focus on the important steps. See~\autoref{app:fullNgkDerivation} for the complete derivation with explanations throughout every step.
+	We will proceed with deriving the M-step and finish this section off by deriving the E-step. Be aware that we only briefly touch the derivation here and focus on the primary steps. See~\autoref{app:fullNgkDerivation} for the complete derivation with explanations throughout every step.
 
 	For the M-step, we first need the expected log-likelihood \( Q \coloneqq \E_{\vec{s}_{1:T}}\big[ p(\vec{s}_{1:T}, \vec{y}_{1:T}) \big] \) as stated previously. This quantity depends on three expectations that are estimated in the E-step:
 	\begin{align}
@@ -88,7 +88,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		\mat{P}_{t \subgiven t_0}^{(n)}        &\coloneqq \E\Big[\vec{s}_t^{(n)} \vec{s}_t^{(n), T} \bigggiven \vec{y}_{1:t_0}\Big]       & \mat{P}_{t \subgiven t_0}        & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t \subgiven t_0}^{(n)}  \label{eq:selfCorrelation} \\
 		\mat{P}_{t, t - 1 \subgiven t_0}^{(n)} &\coloneqq \E\Big[\vec{s}_t^{(n)} \vec{s}_{t - 1}^{(n), T} \bigggiven \vec{y}_{1:t_0}\Big] & \mat{P}_{t, t - 1 \subgiven t_0} & \coloneqq \frac{1}{N} \sum_{n = 1}^{N} \mat{P}_{t, t - 1 \subgiven t_0}^{(n)}  \label{eq:crossCorrelation}
 	\end{align}
-	These expectations are called the expected state, the self-correlation and the cross-correlation, respectively. We also silently introduced an upper index, \( \cdot^{(n)} \), which indicates which observation sequence our observation is from, because the algorithm can simultaneously learn on \(N\) observation sequences. For brevity, we may write \( \hat{\vec{s}}_t \) instead of \( \hat{\vec{s}}_{t \subgiven T} \) (analogous for all other values). Additionally, we have to define two quantities for the expectations of the nonlinear observation function \( \vec{g} \) that we cannot evaluate in closed form:
+	These expectations are called the expected state~\eqref{eq:stateSmoothed}, the self-correlation~\eqref{eq:selfCorrelation} and the cross-correlation~\eqref{eq:crossCorrelation}, respectively. We also introduced an upper index, \( \cdot^{(n)} \), which indicates which observation sequence our current observation is from, because the algorithm can simultaneously learn on \(N\) observation sequences. For brevity, we may write \( \hat{\vec{s}}_t \) instead of \( \hat{\vec{s}}_{t \subgiven T} \) (analogous for all other values). Additionally, we have to define two quantities for the expectations of the nonlinear observation function \( \vec{g}_{\vec{\theta}} \) that we cannot evaluate in closed form:
 	\begin{align}
 		\hat{\vec{g}}_t^{(n)} &\coloneqq \E\Big[\vec{g}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big]  \label{eq:expectedMeasurement} \\
 		\mat{G}_t^{(n)}       &\coloneqq \E\Big[\vec{g}_t^{(n)} \vec{g}_t^{(n), T} \Biggiven \vec{y}_{1:T}\Big]  \label{eq:expectedMeasurementMat}
@@ -110,12 +110,12 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		\mat{V}_0^\new &= \mat{P}_1 - \hat{\vec{s}}_1 \hat{\vec{s}}_1^T \\
 		\mat{R}^\new   &= \frac{1}{NT} \sum_{n = 1}^{N} \sum_{t = 1}^{T} \vec{y}_t^{(n)} \vec{y}_t^{(n), T} - \hat{\vec{g}}_t^{(n)} \vec{y}_t^{(n), T} - \vec{y}_t^{(n)} \hat{\vec{g}}_t^{(n), T} + \mat{G}_t^{(n), T}
 	\end{align*}
-	where we assume an optimal \( \vec{g}(\cdot) \) in the last equation (to compute \(\mat{R}\)). To maximize the expected log-likelihood \ac{wrt} the observation function \( \vec{g} \), we choose a learnable function approximator, \eg a neural network and maximize \(Q\) using simple gradient descent or a more advanced optimizer like Adam~\cite{kingmaAdamMethodStochastic2017}. We should note that we do not need to fully maximize \(Q\) in every M-step but that it is enough to just get better in every M-step for the convergence properties to still hold~\cite{dempsterMaximumLikelihoodIncomplete1977a}.
+	where we assume an optimal \( \vec{g}_{\vec{\theta}}(\cdot) \) in the last equation (to compute \(\mat{R}\)). To maximize the expected log-likelihood \ac{wrt} the observation function \( \vec{g}_{\vec{\theta}} \), we choose a learnable function approximator, \eg a neural network and maximize \(Q\) using simple gradient descent or a more advanced variant like Adam~\cite{kingmaAdamMethodStochastic2017}. We should note that we do not need to fully maximize \(Q\) in every M-step but that it is enough to just get better in every M-step for the convergence properties to still hold~\cite{dempsterMaximumLikelihoodIncomplete1977a}.
 
 	We now look into the problem of evaluating \( \hat{\vec{g}}_t^{(n)} \) and \( \mat{G}_t^{(n)} \). Instead of using Monte Carlo methods that are both very computationally demanding (especially as the gradient has to flow through the evaluation), we are employing the spherical-radial cubature rule that we have introduced in~\autoref{sec:cubatureRules}. That way, we can approximate the integrals both efficiently and deterministically (as compared to Monte Carlo methods):
 	\begin{align}
-		\hat{\vec{g}}_t^{(n)} &= \int\! \vec{g}_t^{(n)} p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \dd{\vec{s}_{1:T}^{(n)}} \approx \SRC\Big[\vec{g};\, \hat{\vec{s}}_t^{(n)}, \mat{V}_t^{(n)}\Big]  \label{eq:ngkgeval} \\
-		\mat{G}_t^{(n)}       &= \int\! \vec{g}_t^{(n)} \vec{g}\vec{s}_t^{(n), T} p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T} \Big) \dd{\vec{s}_{1:T}^{(n)}} \approx \SRC\Big[\vec{g} \vec{g}^T;\, \hat{\vec{s}}_t^{(n)}, \mat{V}_t^{(n)}\Big]  \label{eq:ngkGeval}
+		\hat{\vec{g}}_t^{(n)} &= \int\! \vec{g}_t^{(n)} p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T}\Big) \dd{\vec{s}_{1:T}^{(n)}} \approx \SRC\Big[\vec{g}_{\vec{\theta}};\, \hat{\vec{s}}_t^{(n)}, \mat{V}_t^{(n)}\Big]  \label{eq:ngkgeval} \\
+		\mat{G}_t^{(n)}       &= \int\! \vec{g}_t^{(n)} \vec{g}_t^{(n), T} p\Big(\vec{s}_t^{(n)} \Biggiven \vec{y}_{1:T} \Big) \dd{\vec{s}_{1:T}^{(n)}} \approx \SRC\Big[\vec{g}_{\vec{\theta}} \vec{g}_{\vec{\theta}}^T;\, \hat{\vec{s}}_t^{(n)}, \mat{V}_t^{(n)}\Big]  \label{eq:ngkGeval}
 	\end{align}
 	This concludes the derivation of the M-step, where we do not have explicit formulas for the observation parameters \(\vec{\theta}\) as we do learn these using a numerical optimizer like Adam~\cite{kingmaAdamMethodStochastic2017}.
 
@@ -125,7 +125,7 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		\mat{P}_{t, t - 1}^{(n)} &= \hat{\mat{J}}_{t - 1} \hat{\mat{V}}_t - \hat{\vec{s}}_{t}^{(n)} \hat{\vec{s}}_{t - 1}^{(n), T}
 	\end{align*}
 
-	The whole Koopman inference algorithm is outline in~\autoref{alg:ngk}.
+	The whole Koopman inference algorithm is outlined in~\autoref{alg:ngk}.
 
 	\begin{algorithm}  \DontPrintSemicolon
 		\KwData{\(N\) observation sequences \( \vec{y}_{1:T}^{(n)} \in \R^{p \times T} \).}
@@ -160,17 +160,17 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 		\item[] That is why we also made the maximum number of iterations configurable to support \emph{early stopping}. Once the algorithm performed these number of \ac{em} iterations, it will abort and report the results.
 		\item Similarly it is possible to configure the convergence precision and maximum number of iterations for the subsequent optimization of \(\vec{\theta}\).
 	\end{itemize}
-	These are only the parameters that can be configured directly on the \ac{em} algorithm but the user is also able to specify how to initialize everything, \ie the matrices \( \mat{A} \), \( \mat{Q} \), \( \mat{R} \), \( \mat{V}_0 \), \( \vec{m}_0 \) and the parameters \( \vec{\theta} \) of the observation function \( \vec{g}_{\vec{\theta}} \). Speaking of the observation function, we used a neural network with \( \tanh \) activation function and a single hidden layer for all experiments (see~\autoref{c:experiments} for more information about the experiment setup). We also made it possible to pass arbitrary PyTorch modules as the function approximator that can be learned via a \ac{gd}-like algorithm (of course they must be differentiable and expose parameters).
+	These are only the parameters that can be configured directly on the \ac{em} algorithm but the user is also able to specify how to initialize everything, \ie the matrices \( \mat{A} \), \( \mat{Q} \), \( \mat{R} \), \( \mat{V}_0 \), \( \vec{m}_0 \) and the parameters \( \vec{\theta} \) of the observation function \( \vec{g}_{\vec{\theta}} \). We used a neural network with \( \tanh \) activation function and a single hidden layer for all experiments (see~\autoref{c:experiments} for more information about the experiment setup). We also made it possible to pass arbitrary PyTorch modules as the function approximator that can be learned via a \ac{gd}-like algorithm (of course they must be differentiable and expose parameters).
 
 	For learning multiple observation sequences, as outlined in the derivation of the Koopman inference algorithm in~\autoref{c:nonlinearGaussianKoopman}, it turns out to be useful to add noise to the training data which has the effect of regularizing the algorithm a bit. This effect is visible in smoother log-likelihood curves as we will see in~\autoref{c:experiments}.
 
 	\todo{Ref log-likelihood curves!}
 
 	\subsection{Insights, Problems and Solutions}
-		In this section we will focus on interesting insights and problems we found during the implementation and how to (possibly) solve them.
+		In this section we will focus on interesting insights and problems we found during the implementation and how to possibly solve them.
 
 		\subsubsection{Diagonal Covariance}
-			As we assumed the noise to be independent, we can safely omit the non-diagonal entries of the covariance \( \mat{Q} \), \( \mat{R} \) and \( \mat{V}_0 \). That way we further reduce the computational overhead that would otherwise be generated as we still (even with square-root filtering) have to compute the Cholesky decomposition of \( \mat{Q} \) and \( \mat{R} \). We can now just take the square-root of the diagonal entries and get the Cholesky decomposition around ten times faster\footnote{We ran a experiment on \(1000\) random \( 1000 \times 1000 \) matrices on NumPy's~\cite{harrisArrayProgrammingNumPy2020} Cholesky decomposition and square-root implementation. Decomposing all matrices took approx. \SI{5.1}{\second}, taking the square-root took approx. \SI{0.5}{\second}.}.
+			As we assume the noise to be independent, we can safely omit the non-diagonal entries of the covariance \( \mat{Q} \), \( \mat{R} \) and \( \mat{V}_0 \). That way we further reduce the computational overhead that would otherwise be generated as we still (even with square-root filtering) have to compute the Cholesky decomposition of \( \mat{Q} \) and \( \mat{R} \). We can now just take the square-root of the diagonal entries and get the Cholesky decomposition around ten times faster\footnote{We ran a experiment on \(1000\) random \( 1000 \times 1000 \) matrices on NumPy's~\cite{harrisArrayProgrammingNumPy2020} Cholesky decomposition and square-root implementation. Decomposing all matrices took approx. \SI{5.1}{\second}, taking the square-root took approx. \SI{0.5}{\second}.}.
 
 			% >>> As = [np.diag(np.random.random(size=(1000,)) ** 2) for n in range(1000)]
 			% >>> timeit.timeit(lambda: [np.linalg.cholesky(A) for A in As], number=10)
@@ -188,18 +188,17 @@ We call \( \vec{s}_t \) the \emph{latent variables} or \emph{latents} in the \em
 
 			As we will see in~\autoref{c:experiments}, having singular and non-positive definite matrices is a big problem that should be assessed. We already implemented the square-root smoothing that increased the numerical stability through the smoothing by not allowing non-positive definite matrices to be produced by the smoothing at all (as we directly learn the Cholesky decomposition). Additional regularization might make sense at the computation of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\). Another approach would be to learn the Cholesky decomposition of the covariance matrices \(\mat{Q}\), \(\mat{R}\) and \(\mat{V}_0\) directly by replacing the explicit formulas with a \ac{gd} algorithm that directly learn the Cholesky or the square-root diagonal. As the optimization problem may still be convex or close to convex, finding the global optimum should be easily possible.
 
-			We also address this in~\nameref{sec:futureWork}.
+			We also address this in~\autoref{sec:futureWork} (\nameref{sec:futureWork}).
 		% end
 
-		\subsubsection{Framework-Specific Problems}
-			We also had some framework-specific problems with PyTorch, Gym and NumPy which are listed in~\autoref{app:implFrameworkProblems}.
-		% end
-
+%		\subsubsection{Framework-Specific Problems}
+%			We also had some framework-specific problems with PyTorch, Gym and NumPy which are listed in~\autoref{app:implFrameworkProblems}.
+%		% end
 	% end
 
 	\subsection{Hyperparameters}
 		One of the largest hyperparameter with high influence is obviously the architectural choice for \( \vec{g}_{\vec{\theta}} \). As it turns out, even simple models like a single hidden layer produce good results as we will see in~\autoref{c:experiments} and~\ref{c:discussion}. A \( \tanh \) activation function turns out to be really suitable as it produces smooth results compared to \eg a step function or \ac{relu}. The other high-influence hyperparameter is the dimensionality \(k\) of the latent space, \ie how many dimensions the Koopman operator has to build up a linear system that, taking the observations, behaves the same as the original nonlinear system. We will further investigate into the dependence on this hyperparameter in~\autoref{subsec:experimentLatentDim}.
 
-		On the same page is the maximum number of iterations in the numerical optimization of \( \vec{\theta} \). High maximum iterations seem to lead to overfitting on the neural network, causing the whole algorithm to not generalize well. On the other hand, too less iterations do not raise the likelihood enough to get reasonable results.
+		On the same page is the maximum number of iterations in the numerical optimization of \( \vec{\theta} \). High maximum iterations seem to lead to overfitting on the neural network, causing the whole algorithm to not generalize well. On the other hand, too few iterations do not raise the likelihood enough to get reasonable results.
 	% end
 % end
