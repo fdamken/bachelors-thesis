@@ -158,7 +158,7 @@ In this chapter we will analyze the results from~\autoref{c:experiments} and set
 	We ran four different environments:
 	\begin{itemize}
 		\item The acrobot environment that equals our double pendulum environment presented in~\autoref{subsubsec:doublePendulum}.
-		\item The cartpole environment, ones equal to our cartpole environment presented in~\autoref{subsubsec:cartpole} and ones with sine and cosine of the pole angle displacement as it was done initially in the \ac{dvk} reference implementation.
+		\item Two cartpole environments, one equal to our cartpole environment presented in~\autoref{subsubsec:cartpole} and one with sine and cosine of the pole angle displacement as it was done initially in the \ac{dvk} reference implementation.
 		\item The pendulum environment that equals our Gym pendulum environment presented in~\autoref{subsubsec:gymPendulum} with sine/cosine features.
 	\end{itemize}
 	If possible, we set the number of time steps for training equal to the number of time steps we used for training. However, due to numerical instabilities in their implementation, we had to deviate in terms of the number of time steps for some environments\footnote{The exact parameters we ran their code with can be found in the \hrefGithubVariationalKoopman{GitHub repository}.}:
