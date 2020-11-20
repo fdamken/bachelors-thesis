@@ -4,7 +4,7 @@
 
 
 
-In this chapter we will analyze the results from~\autoref{c:experiments} and set them into context with results from related work. We will discuss the performance on the different environments first and then discuss the overall performance of the \algname algorithm separately.
+In this chapter we will analyze the results from~\autoref{c:experiments} and set them into context with results from related work. We will discuss the performance on the different environments first and then compare our results with the results of some related work.
 
 \section{Model Performance}
 	\subsection{Proof-of-Concept: LGDS}
@@ -118,9 +118,7 @@ In this chapter we will analyze the results from~\autoref{c:experiments} and set
 	% end
 
 	\subsection{Gym Cartpole}
-		As we have seen in the experiments with different latent dimensionalities in~\autoref{subsubsec:cartpoleLatents}, we need at least ten latent dimensions to get a decent \ac{nrmse} on the (training) rollout. We have also seen that more latent dimensions (\eg 16 dimensions in~\autoref{subsubsec:cartpoleL16}) do not yield better results than ten latent dimensions (see~\autoref{subsubsec:cartpoleL10}). However, in both cases we get a near-to-perfect rollout before the prediction boundary but fail at the prediction. For the ten dimensional latent, the model captures the dynamics of the pole displacement/velocity and also the cart velocity after the prediction boundary roughly, but for the cart position the trajectory is quite off. Another interesting result is that the model is a lot more confident in the pole displacement and velocity than the cart position. Looking at just the data in~\autoref{fig:envCartpoleGym}, this makes sense. The movement of the car is more complex as it accelerates nonlinearly only through the movement of the pendulum. This does not impose a linear movement on the cart, but rather it "wobbles" around zero\footnote{See \href{https://github.com/fdamken/bachelors-thesis/blob/b5a4acbc1d10fa0224a73201995222690d2fb6de/thesis/figures/cartpole.gif}{GitHub} for a GIF of the cartpole movement.}. Also, as we have seen in~\autoref{subsec:discussPendulum} and~\autoref{subsec:discussDampedPendulum}, we are able to learn the movement of an undamped and a damped pendulum, where the motion of the pole on a cart can be seen as a slightly damped pendulum as the system is transferring energy from the pendulum to the cart.
-
-		\todo{Further improvements?}
+		As we have seen in the experiments with different latent dimensionalities in~\autoref{subsubsec:cartpoleLatents}, we need at least ten latent dimensions to get a decent \ac{nrmse} on the (training) rollout. We have also seen that more latent dimensions (\eg 16 dimensions in~\autoref{subsubsec:cartpoleL16}) do not yield better results than ten latent dimensions (see~\autoref{subsubsec:cartpoleL10}). However, in both cases we get a near-to-perfect rollout before the prediction boundary but fail at the prediction. For the ten dimensional latent, the model captures the dynamics of the pole displacement/velocity and also the cart velocity after the prediction boundary roughly, but for the cart position the trajectory is quite off. Another interesting result is that the model is a lot more confident in the pole displacement and velocity than the cart position. Looking at just the data in~\autoref{fig:envCartpoleGym}, this makes sense. The movement of the car is more complex as it accelerates nonlinearly only through the movement of the pendulum. This does not impose a linear movement on the cart, but rather it is centered around zero with a light shifting occurring when the pendulum falls down or swings up\footnote{See \href{https://github.com/fdamken/bachelors-thesis/blob/b5a4acbc1d10fa0224a73201995222690d2fb6de/thesis/figures/cartpole.gif}{GitHub} for a GIF of the cartpole movement.}. Also, as we have seen in~\autoref{subsec:discussPendulum} and~\autoref{subsec:discussDampedPendulum}, we are able to learn the movement of an undamped and a damped pendulum, where the motion of the pole on a cart can be seen as a slightly damped pendulum as the system is transferring energy from the pendulum to the cart.
 	% end
 
 	\subsection{Gym Double Pendulum}
@@ -155,11 +153,47 @@ In this chapter we will analyze the results from~\autoref{c:experiments} and set
 % end
 
 \section{Comparison with Related Work}
-	% In-Depth Comparison with Lush et al.
+	% In-Depth Comparison with Lusch et al.
 	% In-Depth Comparsion with Morton et al.
 	% Probably more qualitative comparisons with Sequential VAE or DVBF (Karl et al.).
 
-	\todo{Exp: Comparison}
+	In this section we will discuss the performance of the Koopman inference algorithm in the context of the results from related work, primarily~\cite{mortonDeepVariationalKoopman2019a}. We used the code Morton et al. originally published along with their paper and modified it to work with the latest TensorFlow~\cite{abadiTensorFlowLargeScaleMachine2016} and applied the changes mentioned in~\cite{mortonDeepVariationalKoopman2019a} (\ie make the actions of the acrobot and cartpole environment continuous). Additionally, we removed the actuation abilities of the environments along with the control inputs to mimic the behavior of our work which currently does not work with control inputs. Our modified version can be found on GitHub\footnote{See \hrefGithubVariationalKoopman{\texttt{https://github.com/fdamken/variational-koopman}} on the branch \texttt{without-control}.}.
+
+	We ran four different environments:
+	\begin{itemize}
+		\item The acrobot environment that equals our double pendulum environment presented in~\autoref{subsubsec:doublePendulum}.
+		\item The cartpole environment, ones equal to our cartpole environment presented in~\autoref{subsubsec:cartpole} and ones with sine and cosine of the pole angle displacement as it was done initially in~\cite{mortonDeepVariationalKoopman2019a}.
+		\item The pendulum environment that equals our Gym pendulum environment presented in~\autoref{subsubsec:gymPendulum} with sine/cosine features.
+	\end{itemize}
+	If possible, we set the number of time steps for training equal to the number of time steps we used for training. However, due to numerical instabilities in their implementation, we had to deviate in terms of the number of time steps for some environments\footnote{The exact parameters we ran their code with can be found in the \hrefGithubVariationalKoopman{GitHub repository}.}:
+	\begin{itemize}
+		\item We could only use 32 steps on the cartpole as opposed to ours which used 150.
+		\item We used 64 steps on the double pendulum as opposed to ours which uses only 56.
+	\end{itemize}
+	Also, our algorithm currently only learns on one observation sequence, \ie if we learn on a sequence that covers \(T_\text{train}\) time steps, we only use \(T_\text{train}\) data points, while~\cite{mortonDeepVariationalKoopman2019a} uses \num{3968} equally sized sequences. This sums up to \num{253952} data points for the acrobot environment, \num{126976} for the cartpole environment and \num{198400} for the pendulum environment.
+
+	We assess the performance of both models in the same ways as we did before: By looking at the rollout plots and evaluating the performance qualitatively and by comparing the \acrlong{nrmse}. We compute the \ac{nrmse} along the whole trajectory, although we should note that the "rollout" of Morton et al. is not a complete rollout as the observations on the training data are reconstructions of the learning data. That is, the rollout starts from the prediction boundary, possibly yielding better results before the boundary as if the data would be computed from the beginning. But this does most probably not affect our assessment in meaningful ways.
+
+	We will now discuss the performance on each environment separately.
+
+	\subsection{Pendulum}
+		The rollout on the pendulum environment by~\cite{mortonDeepVariationalKoopman2019a} is shown in~\autoref{fig:mortonPendulum}. We compare these results with both our results for the Gym pendulum (with sine/cosine) features and our results on the angular pendulum. As discussed in~\autoref{subsec:discussGymPendulum}, we can assume an inverse feature transformation back to the polar coordinate space.
+
+		We see that the reconstruction before the prediction boundary works quite well, however the sine feature of the angle has a dent around \( t \approx 25 \). In comparison to our rollout in~\autoref{fig:gymPendulumRolloutL04} (on the Gym pendulum) for the same number of latents~\cite{mortonDeepVariationalKoopman2019a} used (\( k = 4 \)), our rollout in the training error before the prediction boundary matches the data better.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/discussion/morton/pendulum/morton-predictions.png}
+			\caption[Rollout of the pendulum environment from~\cite{mortonDeepVariationalKoopman2019a}]{Rollout of the pendulum environment from~\cite{mortonDeepVariationalKoopman2019a}, generated by us. The top row shows the sine/cosine of the displacement of the pendulum, the bottom plot shows the angular velocity. The black dots shows the ground truth of the trajectory, the solid blue line the reconstructed states from the latents, the dashed blue line the prediction of the model and the shaded region shows the min-to-max distance. This is generated by sampling multiple sequences from the model and taking the maximal and minimal values at each time step. This can be roughly interpreted as the model confidence. The blue line is the mean of the sampled predictions. As usual, the red line is the prediction boundary up until the blue line represents the reconstruction; afterwards, the model predicted the rest of the data.}
+			\label{fig:mortonPendulum}
+		\end{figure}
+	% end
+
+	\subsection{Cartpole}
+	% end
+
+	\subsection{Double Pendulum}
+	% end
 % end
 
 %\section{Control}  % Only if there is time left!

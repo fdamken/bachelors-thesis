@@ -1,8 +1,12 @@
 Our Run:    tmp_results_grid_search/latent-dim_acrobot_gym/168
 Morton Run: benchmarking/morton/results/acrobot-64.json
 Morton CLI: --seq_length 64 --n_trials 20 --n_subseq 220 --kl_weight 0.1 --extractor_size 64 64 --inference_size 64 64 --prior_size 64 32 --domain_name ContinuousAcrobot-v0
-Our NRMSE:     0.22809
-Morton NRMSE:  0.10221
-Are we better? no
-Absolute Difference:  0.12588
-Relative Difference:  2.23160
+Our NRMSE:          0.22809
+Our NRMSE (Train):  0.00225
+Our NRMSE (Pred.):  0.56157
+Morton NRMSE:          0.10221
+Morton NRMSE (Train):  0.10314
+Morton NRMSE (Pred.):  0.10371
+Are we better?         no
+Are we better (Train)? yes
+Are we better (Pred.)? no

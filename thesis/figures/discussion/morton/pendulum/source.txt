@@ -1,8 +1,25 @@
 Our Run:    tmp_results_grid_search/latent-dim_pendulum_gym/104
 Morton Run: benchmarking/morton/results/pendulum-50.json
 Morton CLI: --seq_length 50 --n_trials 20 --n_subseq 220 --kl_weight 0.1 --extractor_size 64 64 --inference_size 64 64 --prior_size 64 32
-Our NRMSE:     0.19966
-Morton NRMSE:  0.19800
-Are we better? no
-Absolute Difference:  0.00166
-Relative Difference:  1.00838
+Our NRMSE:          0.19966
+Our NRMSE (Train):  0.00267
+Our NRMSE (Pred.):  0.28248
+Morton NRMSE:          0.19800
+Morton NRMSE (Train):  0.16805
+Morton NRMSE (Pred.):  0.22190
+Are we better?         no
+Are we better (Train)? yes
+Are we better (Pred.)? no
+
+Our Run:    tmp_results_grid_search/cpu/latent-dim_pendulum-cpu/10
+Morton Run: benchmarking/morton/results/pendulum-50.json
+Morton CLI: --seq_length 50 --n_trials 20 --n_subseq 220 --kl_weight 0.1 --extractor_size 64 64 --inference_size 64 64 --prior_size 64 32
+Our NRMSE:          0.02269
+Our NRMSE (Train):  0.01393
+Our NRMSE (Pred.):  0.02891
+Morton NRMSE:          0.19800
+Morton NRMSE (Train):  0.16805
+Morton NRMSE (Pred.):  0.22190
+Are we better?         yes
+Are we better (Train)? yes
+Are we better (Pred.)? yes

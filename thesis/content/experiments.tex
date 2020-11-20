@@ -44,6 +44,8 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 		% end
 
 		\subsubsection{Gym Pendulum}
+			\label{subsubsec:gymPendulum}
+
 			\begin{itemize}
 				\item Experiment ID: \texttt{pendulum\_gym}
 			\end{itemize}
@@ -120,7 +122,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 				\ddot{\varphi}_1 &= \frac{g (\sin\varphi_2 \, \cos\varphi_\Delta - \mu \sin\varphi_1) - (\ell_2 \dot{\varphi}_2^2 + \ell_1 \dot{\varphi}_1^2 \cos\varphi_\Delta) \sin\varphi_\Delta}{\ell_1 (\mu - \cos^2\varphi_\Delta)} \\
 				\ddot{\varphi}_2 &= \frac{g \mu (\sin\varphi_2 \, \cos\varphi_\Delta - \mu \sin\varphi_1) + (\mu \ell_1 \dot{\varphi}_1^2 + \ell_2 \dot{\varphi}_2^2 \cos\varphi_\Delta) \sin\varphi_\Delta}{\ell_2 (\mu - \cos^2\varphi_\Delta)}
 			\end{align*}
-			with \( \varphi_\Delta \coloneqq \varphi_1 - \varphi \), \( \mu \coloneqq 1 + m_1/m_2 \) where \( g = \SI{9.8}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_1 = \SI{1}{\kilogram} \) and \( m_2 = \SI{1}{\kilogram} \) are the masses of the two links and \( \ell_1 = \SI{1}{\meter} \) and \( \ell_2 = \SI{1}{\meter} \) are the lengths of the two links. The Gym environment uses a \ac{rk4} for integrating the \ac{ode} with an evaluation interval of \( h = 0.2 \). We modified the initial position to be drawn from a Gaussian distribution with mean \( \pi \) and standard deviation \( \pi/8 \) and the initial velocity to be drawn from a uniform distribution in the interval \( [-0.1, 0.1] \). We generate \( T = 100 \) time steps of which we use \( T_\train = 75 \) for training and the remaining \(25\) for validation.
+			with \( \varphi_\Delta \coloneqq \varphi_1 - \varphi \), \( \mu \coloneqq 1 + m_1/m_2 \) where \( g = \SI{9.8}{\meter\per\second\squared} \) is the gravitational acceleration, \( m_1 = \SI{1}{\kilogram} \) and \( m_2 = \SI{1}{\kilogram} \) are the masses of the two links and \( \ell_1 = \SI{1}{\meter} \) and \( \ell_2 = \SI{1}{\meter} \) are the lengths of the two links. The Gym environment uses a \ac{rk4} for integrating the \ac{ode} with an evaluation interval of \( h = 0.2 \). We modified the initial position to be drawn from a Gaussian distribution with mean \( \pi \) and standard deviation \( \pi/8 \) and the initial velocity to be drawn from a uniform distribution in the interval \( [-0.1, 0.1] \). We generate \( T = 75 \) time steps of which we use \( T_\train = 56 \) (\(75\%\)) for training and the remaining \(19\) for validation.
 
 			\begin{figure}
 				\centering
@@ -174,7 +176,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 
 	All subsections (of non-proof-of-concept environments) are separated into two main parts: Looking at the hyper-experiment of the latent dimensionality and inspect how well the model performs with different latent dimensionalities. Then we will pick two or three of those latent dimensionalities and look at the qualitative plots of the runs (exemplary evaluation).
 
-	Each exemplary evaluation also contains the ID of the run containing the data we used and the raw data of the runs is added to the \href{https://github.com/fdamken/bachelors-thesis_code}{GitHub repository} along with the code. The documentation for how to generate the plots is also there.
+	Each exemplary evaluation also contains the ID of the run containing the data we used and the raw data of the runs is added to the \hrefGithubKoopmanInference{GitHub repository} along with the code. The documentation for how to generate the plots is also there.
 
 	\subsection{Proof-of-Concept: LGDS}
 		For the \ac{lgds} environment, we did not run multiple latent dimensionalities as we already know how many states we have.~\autoref{fig:lgdsRollout} shows the rollout plot for \( k = 3 \) latent dimensions. As expected, both the rollout and the smoothed states perfectly match the true data, even in the prediction time span.
