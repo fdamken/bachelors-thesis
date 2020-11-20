@@ -157,12 +157,12 @@ In this chapter we will analyze the results from~\autoref{c:experiments} and set
 	% In-Depth Comparsion with Morton et al.
 	% Probably more qualitative comparisons with Sequential VAE or DVBF (Karl et al.).
 
-	In this section we will discuss the performance of the Koopman inference algorithm in the context of the results from related work, primarily~\cite{mortonDeepVariationalKoopman2019a}. We used the code Morton et al. originally published along with their paper and modified it to work with the latest TensorFlow~\cite{abadiTensorFlowLargeScaleMachine2016} and applied the changes mentioned in~\cite{mortonDeepVariationalKoopman2019a} (\ie make the actions of the acrobot and cartpole environment continuous). Additionally, we removed the actuation abilities of the environments along with the control inputs to mimic the behavior of our work which currently does not work with control inputs. Our modified version can be found on GitHub\footnote{See \hrefGithubVariationalKoopman{\texttt{https://github.com/fdamken/variational-koopman}} on the branch \texttt{without-control}.}.
+	In this section we will discuss the performance of the Koopman inference algorithm in the context of the results from related work, primarily the \ac{dvk} model proposed in~\cite{mortonDeepVariationalKoopman2019a}. We used the code Morton et al. originally published along with their paper and modified it to work with the latest TensorFlow~\cite{abadiTensorFlowLargeScaleMachine2016} and applied the changes mentioned in~\cite{mortonDeepVariationalKoopman2019a} (\ie make the actions of the acrobot and cartpole environment continuous). Additionally, we removed the actuation abilities of the environments along with the control inputs to mimic the behavior of our work which currently does not work with control inputs. Our modified version can be found on GitHub\footnote{See \hrefGithubVariationalKoopman{\texttt{https://github.com/fdamken/variational-koopman}} on the branch \texttt{without-control}.}.
 
 	We ran four different environments:
 	\begin{itemize}
 		\item The acrobot environment that equals our double pendulum environment presented in~\autoref{subsubsec:doublePendulum}.
-		\item The cartpole environment, ones equal to our cartpole environment presented in~\autoref{subsubsec:cartpole} and ones with sine and cosine of the pole angle displacement as it was done initially in~\cite{mortonDeepVariationalKoopman2019a}.
+		\item The cartpole environment, ones equal to our cartpole environment presented in~\autoref{subsubsec:cartpole} and ones with sine and cosine of the pole angle displacement as it was done initially in the \ac{dvk} reference implementation.
 		\item The pendulum environment that equals our Gym pendulum environment presented in~\autoref{subsubsec:gymPendulum} with sine/cosine features.
 	\end{itemize}
 	If possible, we set the number of time steps for training equal to the number of time steps we used for training. However, due to numerical instabilities in their implementation, we had to deviate in terms of the number of time steps for some environments\footnote{The exact parameters we ran their code with can be found in the \hrefGithubVariationalKoopman{GitHub repository}.}:
@@ -170,29 +170,117 @@ In this chapter we will analyze the results from~\autoref{c:experiments} and set
 		\item We could only use 32 steps on the cartpole as opposed to ours which used 150.
 		\item We used 64 steps on the double pendulum as opposed to ours which uses only 56.
 	\end{itemize}
-	Also, our algorithm currently only learns on one observation sequence, \ie if we learn on a sequence that covers \(T_\text{train}\) time steps, we only use \(T_\text{train}\) data points, while~\cite{mortonDeepVariationalKoopman2019a} uses \num{3968} equally sized sequences. This sums up to \num{253952} data points for the acrobot environment, \num{126976} for the cartpole environment and \num{198400} for the pendulum environment.
+	Also, our algorithm currently only learns on one observation sequence, \ie if we learn on a sequence that covers \(T_\text{train}\) time steps, we only use \(T_\text{train}\) data points, while the \ac{dvk} model uses \num{3968} equally sized sequences. This sums up to \num{253952} data points for the acrobot environment, \num{126976} for the cartpole environment and \num{198400} for the pendulum environment.
 
-	We assess the performance of both models in the same ways as we did before: By looking at the rollout plots and evaluating the performance qualitatively and by comparing the \acrlong{nrmse}. We compute the \ac{nrmse} along the whole trajectory, although we should note that the "rollout" of Morton et al. is not a complete rollout as the observations on the training data are reconstructions of the learning data. That is, the rollout starts from the prediction boundary, possibly yielding better results before the boundary as if the data would be computed from the beginning. But this does most probably not affect our assessment in meaningful ways.
+	We assess the performance of both models in the same ways as we did before: By looking at the rollout plots and evaluating the performance qualitatively and by comparing the \acrlong{nrmse}. We compute the \ac{nrmse} along the whole trajectory, although we should note that the "rollout" of \ac{dvk} is not a complete rollout as the observations on the training data are reconstructions of the learning data. That is, the rollout starts from the prediction boundary, possibly yielding better results before the boundary as if the data would be computed from the beginning. But this does most probably not affect our assessment in meaningful ways.
 
-	We will now discuss the performance on each environment separately.
+	We will now discuss the qualitative performance on each environment separately and afterwards assess the quantitative results for all environments at once.
 
 	\subsection{Pendulum}
-		The rollout on the pendulum environment by~\cite{mortonDeepVariationalKoopman2019a} is shown in~\autoref{fig:mortonPendulum}. We compare these results with both our results for the Gym pendulum (with sine/cosine) features and our results on the angular pendulum. As discussed in~\autoref{subsec:discussGymPendulum}, we can assume an inverse feature transformation back to the polar coordinate space.
+		The rollout on the pendulum environment of the \ac{dvk} model is shown in~\autoref{fig:mortonPendulum}. We compare these results with both our results for the Gym pendulum (with sine/cosine) features and our results on the angular pendulum. As discussed in~\autoref{subsec:discussGymPendulum}, we can assume an inverse feature transformation back to the polar coordinate space.
 
-		We see that the reconstruction before the prediction boundary works quite well, however the sine feature of the angle has a dent around \( t \approx 25 \). In comparison to our rollout in~\autoref{fig:gymPendulumRolloutL04} (on the Gym pendulum) for the same number of latents~\cite{mortonDeepVariationalKoopman2019a} used (\( k = 4 \)), our rollout in the training error before the prediction boundary matches the data better.
+		We see that the reconstruction before the prediction boundary works quite well, however the sine feature of the angle has a dent around \( t \approx 25 \). In comparison to our rollout in~\autoref{fig:gymPendulumRolloutL04} (on the Gym pendulum), our rollout in the training error before the prediction boundary matches the data better. However, the prediction of the \ac{dvk} model captures the behavior of the system better than our prediction. Looking at the angular pendulum in~\autoref{fig:pendulumRolloutL10} (on ten latent dimensions), our model captures both the dynamics before the prediction after the prediction boundary better than the \ac{dvk} model.
 
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figures/discussion/morton/pendulum/morton-predictions.png}
-			\caption[Rollout of the pendulum environment from~\cite{mortonDeepVariationalKoopman2019a}]{Rollout of the pendulum environment from~\cite{mortonDeepVariationalKoopman2019a}, generated by us. The top row shows the sine/cosine of the displacement of the pendulum, the bottom plot shows the angular velocity. The black dots shows the ground truth of the trajectory, the solid blue line the reconstructed states from the latents, the dashed blue line the prediction of the model and the shaded region shows the min-to-max distance. This is generated by sampling multiple sequences from the model and taking the maximal and minimal values at each time step. This can be roughly interpreted as the model confidence. The blue line is the mean of the sampled predictions. As usual, the red line is the prediction boundary up until the blue line represents the reconstruction; afterwards, the model predicted the rest of the data.}
+			\caption[Rollout of the pendulum environment of the DVK model]{Rollout of the pendulum environment of the \ac{dvk} model, generated by us. The top row shows the sine/cosine of the displacement of the pendulum, the bottom plot shows the angular velocity. The black dots shows the ground truth of the trajectory, the solid blue line the reconstructed states from the latents, the dashed blue line the prediction of the model and the shaded region shows the min-to-max distance. This is generated by sampling multiple sequences from the model and taking the maximal and minimal values at each time step. This can be roughly interpreted as the model confidence. The blue line is the mean of the sampled predictions. As usual, the red line is the prediction boundary up until the blue line represents the reconstruction; afterwards, the model predicted the rest of the data.}
 			\label{fig:mortonPendulum}
 		\end{figure}
 	% end
 
 	\subsection{Cartpole}
+		For the cartpole environment, we now have two versions of the environment for the \ac{dvk} model: One that uses the angle of the pole displacement directly with the rollout in~\autoref{fig:mortonCartpoleAngle} and one that uses sine/cosine features of the angle in~\autoref{fig:mortonCartpoleSineCosine}.
+
+		We see that both the reconstruction and the prediction for both cases are far away from the true data. Interestingly, in case of the sine/cosine features, the prediction is more away from the true data compared to the angular features, even though the former was a modification originally done in the \ac{dvk} model. But we must note that we were not able to fully reproduce the original results, so the original version might have yielded better results. Compared to our result in~\autoref{fig:cartpoleRolloutL10} (on ten latent dimensions), our model captures the dynamics a lot more accurate before the training section, but worse after the boundary (\ie for prediction), especially in the cart position and velocity. Overall, we can say from this qualitative comparisons, that our model performs better on the cartpole\footnote{Note that we used more time steps for training our model, but overall less data points. Also we were not able to train the \ac{dvk} model on more time steps as it became numerically unstable.}.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/discussion/morton/cartpole/morton-predictions.png}
+			\caption[Rollout of the cartpole environment of the \ac{dvk} model with angular features]{Rollout of the cartpole environment of the \ac{dvk} model with angular features, generated by us. The top row shows the position/velocity of the cart, the bottom row shows the angle and angular velocity of the pole one the cart. The black dots shows the ground truth of the trajectory, the solid blue line the reconstructed states from the latents, the dashed blue line the prediction of the model and the shaded region shows the min-to-max distance. This is generated by sampling multiple sequences from the model and taking the maximal and minimal values at each time step. This can be roughly interpreted as the model confidence. The blue line is the mean of the sampled predictions. As usual, the red line is the prediction boundary up until the blue line represents the reconstruction; afterwards, the model predicted the rest of the data.}
+			\label{fig:mortonCartpoleAngle}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/discussion/morton/cartpole-sinecosine/morton-predictions.png}
+			\caption[Rollout of the cartpole environment of the \ac{dvk} model with sine/cosine features]{Rollout of the cartpole environment of the \ac{dvk} model with angular features, generated by us. The top row shows the position/velocity of the cart, the middle row shows the cosine/sine of displacement and the bottom row shows the angular velocity of the pole on the cart. The black dots shows the ground truth of the trajectory, the solid blue line the reconstructed states from the latents, the dashed blue line the prediction of the model and the shaded region shows the min-to-max distance. This is generated by sampling multiple sequences from the model and taking the maximal and minimal values at each time step. This can be roughly interpreted as the model confidence. The blue line is the mean of the sampled predictions. As usual, the red line is the prediction boundary up until the blue line represents the reconstruction; afterwards, the model predicted the rest of the data.}
+			\label{fig:mortonCartpoleSineCosine}
+		\end{figure}
 	% end
 
 	\subsection{Double Pendulum}
+		The final environment we benchmarked on the \ac{dvk} model is the double pendulum, for which both we and the \ac{dvk} model used cosine/sine feature transformations. The rollout of the \ac{dvk} model is shown in~\autoref{fig:mortonAcrobot}.
+
+		We see that the reconstruction and prediction of the angular velocity is quite accurate as well as the reconstruction and prediction of the sine of both angles. However, the cosine only matches some of the data points. Compared to our rollout in~\autoref{fig:acrobotRolloutL18} (on 18 latent dimensions), the reconstruction is worse but the prediction is a lot more accurate than ours on every dimension.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figures/discussion/morton/acrobot/morton-predictions.png}
+			\caption[Rollout of the double pendulum environment of the \ac{dvk} model]{Rollout of the double pendulum environment of the \ac{dvk}, generated by us. The top row shows the cosine/sine of the displacement of the inner pendulum, the middle row shows the cosine/sine of the displacement of the outer pendulum and the bottom row shows the angular velocities of the inner and outer pendulum, from left to right. The black dots shows the ground truth of the trajectory, the solid blue line the reconstructed states from the latents, the dashed blue line the prediction of the model and the shaded region shows the min-to-max distance. This is generated by sampling multiple sequences from the model and taking the maximal and minimal values at each time step. This can be roughly interpreted as the model confidence. The blue line is the mean of the sampled predictions. As usual, the red line is the prediction boundary up until the blue line represents the reconstruction; afterwards, the model predicted the rest of the data.}
+			\label{fig:mortonAcrobot}
+		\end{figure}
+	% end
+
+	\subsection{Quantitative Comparison}
+		We now look at a quantitative comparison of both models, the \ac{dvk} model and the Koopman inference algorithm (ours). We use the \ac{nrmse} on the complete rollout, the rollout on the training data (or, in case of \ac{dvk}, the reconstruction) and the prediction.
+
+		\begin{table}
+			\centering
+			\begin{tabular}{c|c|c}
+				                          & \textbf{Deep Variational Koopman} & \textbf{Koopman Inference} \\ \hline
+				 \textbf{Complete Error}  &           \num{0.19800}           &       \num{0.02269}        \\
+				 \textbf{Training Error}  &           \num{0.16805}           &       \num{0.01393}        \\
+				\textbf{Prediction Error} &           \num{0.22190}           &       \num{0.02891}
+			\end{tabular}
+			\caption{Errors of the pendulum environment with sine/cosine feature transformations for DVK and angular features for the Koopman inference algorithm. \\ The complete error is over the rollout/reconstruction over the whole sequence, the training error is over the rollout/reconstruction on the training data and prediction is over rollout on the validation data. The numbers represent the NRMSE.}
+			\label{tab:pendulumSineCosineVsAngular}
+		\end{table}
+		\begin{table}
+			\centering
+			\begin{tabular}{c|c|c}
+				                          & \textbf{Deep Variational Koopman} & \textbf{Koopman Inference} \\ \hline
+				 \textbf{Complete Error}  &           \num{0.19800}           &       \num{0.19966}        \\
+				 \textbf{Training Error}  &           \num{0.16805}           &       \num{0.00267}        \\
+				\textbf{Prediction Error} &           \num{0.22190}           &       \num{0.28248}
+			\end{tabular}
+			\caption{Errors of the pendulum environment with sine/cosine feature transformations for DVK and the Koopman inference algorithm. \\ The complete error is over the rollout/reconstruction over the whole sequence, the training error is over the rollout/reconstruction on the training data and prediction is over rollout on the validation data. The numbers represent the NRMSE.}
+			\label{tab:pendulumSineCosineVsSineCosine}
+		\end{table}
+
+		\begin{table}
+			\centering
+			\begin{tabular}{c|c|c}
+				                          & \textbf{Deep Variational Koopman} & \textbf{Koopman Inference} \\ \hline
+				 \textbf{Complete Error}  &           \num{0.26493}           &       \num{0.20046}        \\
+				 \textbf{Training Error}  &           \num{0.46620}           &       \num{0.00877}        \\
+				\textbf{Prediction Error} &           \num{0.41971}           &       \num{0.37671}
+			\end{tabular}
+			\caption{Errors of the cartpole environment with angular features for DVK and the Koopman inference algorithm. \\ The complete error is over the rollout/reconstruction over the whole sequence, the training error is over the rollout/reconstruction on the training data and prediction is over rollout on the validation data. The numbers represent the NRMSE.}
+			\label{tab:cartpoleAngularVsAngular}
+		\end{table}
+		\begin{table}
+			\centering
+			\begin{tabular}{c|c|c}
+				                          & \textbf{Deep Variational Koopman} & \textbf{Koopman Inference} \\ \hline
+				 \textbf{Complete Error}  &           \num{0.46993}           &       \num{0.20046}        \\
+				 \textbf{Training Error}  &          \num{17.22240}           &       \num{0.00877}        \\
+				\textbf{Prediction Error} &           \num{0.81680}           &       \num{0.37671}
+			\end{tabular}
+			\caption{Errors of the cartpole environment with sine/cosine feature transformations for DVK and angular features for the Koopman inference algorithm. \\ The complete error is over the rollout/reconstruction over the whole sequence, the training error is over the rollout/reconstruction on the training data and prediction is over rollout on the validation data. The numbers represent the NRMSE.}
+			\label{tab:cartpoleSineCosineVsAngular}
+		\end{table}
+
+		\begin{table}
+			\centering
+			\begin{tabular}{c|c|c}
+				                          & \textbf{Deep Variational Koopman} & \textbf{Koopman Inference} \\ \hline
+				 \textbf{Complete Error}  &           \num{0.10221}           &       \num{0.22809}        \\
+				 \textbf{Training Error}  &           \num{0.10314}           &       \num{0.00225}        \\
+				\textbf{Prediction Error} &           \num{0.10371}           &       \num{0.56157}
+			\end{tabular}
+			\caption{Errors of the double pendulum environment of the DVK model and the Koopman inference algorithm. \\ The complete error is over the rollout/reconstruction over the whole sequence, the training error is over the rollout/reconstruction on the training data and prediction is over rollout on the validation data. The numbers represent the NRMSE.}
+			\label{tab:acrobot}
+		\end{table}
 	% end
 % end
 
