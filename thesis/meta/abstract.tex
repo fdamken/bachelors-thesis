@@ -3,7 +3,7 @@
 
 	Prior work has studied the Koopman operator and how to approximate it using a finite-dimensional linear embedding and to find the Koopman eigenfunctions. These functions only scale when applying the Koopman operator to it, spanning an invariant subspace of the embedding. Most of the prior work employed a deterministic view on the Koopman operator which makes gauging the uncertainty of the system impossible.
 
-	We will build an algorithm based on the theory of \acl{lgds} by replacing the linear observations with nonlinear observations. This algorithm, the \emph{Koopman inference} algorithm, is an \acl{em} algorithm that alternates between estimating the linear latent state, and optimizing the latent state dynamics and the observations functions. This way we will be able to approximate the dynamics of nonlinear systems using a finite-dimensional linear embedding.
+	We will build an algorithm based on the theory of \aclp{lgds} by replacing the linear observations with nonlinear observations. This algorithm, the \emph{Koopman inference} algorithm, is an \acl{em} algorithm that alternates between estimating the linear latent state, and optimizing the latent state dynamics and the observation function. This way we will be able to approximate the dynamics of nonlinear systems using a finite-dimensional linear embedding.
 
 	We will see that our algorithm performs decently on common nonlinear environments like the pendulum, successfully finding an embedding where the dynamics behave linearly.
 
