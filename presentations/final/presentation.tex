@@ -7,12 +7,14 @@
 	aspectratio=43,
 	color={accentcolor=1c},
 	logo=false,
-	colorframetitle=true
+	colorframetitle=true,
+	%handout
 ]{tudabeamer}
 
 % Include preamble to not clutter this file.
 \input{preamble/packages}
 \input{preamble/styles}
+\input{preamble/tikzGraphs}
 
 
 \title{Variational Autoencoders for Koopman Dynamical Systems}
@@ -20,161 +22,175 @@
 \author{Fabian Damken}
 \department{Department of Computer Science}
 \institute{Intelligent Autonomous Systems}
-\date{\today}
+\date{December 10, 2020}
 
-\logo*{\includegraphics{./img/iasLogo}}
+\logo*{\includegraphics{img/iasLogo}}
 
 \titlegraphic*{\includegraphics{figures/title}}
+
+\newcommand{\hence}{\(\longrightarrow\,\)}
 
 \begin{document}
 	\maketitle
 
-	\begin{frame}{Motivation}
-		\begin{itemize}
-			\item Control theory for linear systems is highly evolved.
-			\item But nonlinear systems are hard\dots
-			\item We need ways to linearize a nonlinear system!
-			\item<2-> "Classical" Linearization:
-				\begin{itemize}
-					\item Use small angle approximation (e.g. for pendulum)?
-					\item Diverge fast with higher displacements\dots
-					\item Only linearize locally, not globally.
-				\end{itemize}
-			\item<3-> Koopman theory offers a way to do that!
-		\end{itemize}
-	\end{frame}
-
-	\begin{frame}{The Koopman Operator}
-		For a \emph{nonlinear} dynamical system
-		\begin{align*}
-			\vec{s}_{t + 1} = \vec{F}(\vec{s}_{t})
-		\end{align*}
-		with \emph{nonlinear} measurements (and \emph{embedding})
-		\begin{align*}
-			\vec{y}_t = \vec{g}(\vec{s}_t)
-		\end{align*}
-		the Koopman operator advances these measurements forward in time \emph{linearly}:
-		\begin{align*}
-			\vec{g}(\vec{s}_{t + 1}) = \mathcal{K} \vec{g}(\vec{s}_t)
-			\quad\iff\quad
-			\vec{y}_{t + 1} = \mathcal{K} \vec{y}_t
-		\end{align*}
-
-		This is possible for every nonlinear dynamical system. And globalizes linearly! But the embedding \(\vec{g}\) is typically infinite-dimensional\dots
-	\end{frame}
-
-	\begin{frame}{Koopman Dynamical System ("Deterministic")}
-		\begin{figure}
-			\begin{tikzpicture}[->, state/.style = { draw, circle, minimum height = 1cm, minimum width = 1cm }, observation/.style = { draw, circle, minimum height = 1cm, minimum width = 1cm }]
-				\node [state] (s1) {\(\vec{s}_{\,\mathclap{\,1}}\)};
-				\node [state, right = 1 of s1] (s2) {\(\vec{s}_{\,\mathclap{\,2}}\)};
-				\node [state, right = 1 of s2] (s3) {\(\vec{s}_{\,\mathclap{\,3}}\)};
-				\node [minimum height = 1cm, right = 1 of s3] (sD) {\(\cdots\)};
-				\node [state, right = 1 of sD] (sT) {\(\vec{s}_{\,\mathclap{\,T}}\)};
-
-				\node [observation, below = 1 of s1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
-				\node [observation, below = 1 of s2] (y2) {\(\vec{y}_{\,\mathclap{\,2}}\)};
-				\node [observation, below = 1 of s3] (y3) {\(\vec{y}_{\,\mathclap{\,3}}\)};
-				\node [minimum height = 1cm, below = 1 of sD] (yD) {\(\cdots\)};
-				\node [observation, below = 1 of sT] (yT) {\(\vec{y}_{\,\mathclap{\,T}}\)};
-
-				\draw (s1) -- node[above]{\(\vec{F}\)} (s2);
-				\draw (s2) -- node[above]{\(\vec{F}\)} (s3);
-				\draw (s3) -- node[above]{\(\vec{F}\)} (sD);
-				\draw (sD) -- node[above]{\(\vec{F}\)} (sT);
-
-				\draw (y1) -- node[below]{\(\mathcal{K}\)} (y2);
-				\draw (y2) -- node[below]{\(\mathcal{K}\)} (y3);
-				\draw (y3) -- node[below]{\(\mathcal{K}\)} (yD);
-				\draw (yD) -- node[below]{\(\mathcal{K}\)} (yT);
-
-				\draw (s1) to[bend right = 15] node[left]{\(\vec{g}\)} (y1);
-				\draw (s2) to[bend right = 15] node[left]{\(\vec{g}\)} (y2);
-				\draw (s3) to[bend right = 15] node[left]{\(\vec{g}\)} (y3);
-				\draw (sT) to[bend right = 15] node[left]{\(\vec{g}\)} (yT);
-
-				\draw [dashed] (y1) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (s1);
-				\draw [dashed] (y2) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (s2);
-				\draw [dashed] (y3) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (s3);
-				\draw [dashed] (yT) to[bend right = 15] node[right]{\(\vec{g}^{-1}\)} (sT);
-			\end{tikzpicture}
-			\caption{Adopted from Brunton et al. "Koopman Invariant Subspaces and Finite Linear Representations of Nonlinear Dynamical Systems for Control".}
-		\end{figure}
-	\end{frame}
-
-	\begin{frame}{Linear Gaussian Dynamical System}
-		\begin{figure}
-			\begin{tikzpicture}[->, state/.style = { draw, circle, minimum height = 1cm, minimum width = 1cm }, observation/.style = { draw, circle, minimum height = 1cm, minimum width = 1cm }]
-				\node [state] (s1) {\(\vec{s}_{\,\mathclap{\,1}}\)};
-				\node [state, right = 1 of s1] (s2) {\(\vec{s}_{\,\mathclap{\,2}}\)};
-				\node [state, right = 1 of s2] (s3) {\(\vec{s}_{\,\mathclap{\,3}}\)};
-				\node [minimum height = 1cm, right = 1 of s3] (sD) {\(\cdots\)};
-				\node [state, right = 1 of sD] (sT) {\(\vec{s}_{\,\mathclap{\,T}}\)};
-
-				\node [observation, below = 1 of s1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
-				\node [observation, below = 1 of s2] (y2) {\(\vec{y}_{\,\mathclap{\,2}}\)};
-				\node [observation, below = 1 of s3] (y3) {\(\vec{y}_{\,\mathclap{\,3}}\)};
-				\node [observation, below = 1 of sT] (yT) {\(\vec{y}_{\,\mathclap{\,T}}\)};
-
-				\draw (s1) -- (s2);
-				\draw (s2) -- (s3);
-				\draw (s3) -- (sD);
-				\draw (sD) -- (sT);
-
-				\draw (s1) to[bend right = 15] (y1);
-				\draw (s2) to[bend right = 15] (y2);
-				\draw (s3) to[bend right = 15] (y3);
-				\draw (sT) to[bend right = 15] (yT);
-
-				\draw [dashed] (y1) to[bend right = 15] (s1);
-				\draw [dashed] (y2) to[bend right = 15] (s2);
-				\draw [dashed] (y3) to[bend right = 15] (s3);
-				\draw [dashed] (yT) to[bend right = 15] (sT);
-			\end{tikzpicture}
-		\end{figure}
-
-		\begin{equation*}
-			\begin{aligned}
-				\vec{s}_{t + 1} &= \eqmakebox[a][l]{\( \mat{A} \vec{s}_t + \vec{v}, \)}\quad \eqmakebox[b][r]{\( \vec{v} \)} \sim \normal(\vec{0}, \mat{Q}) \\
-				\vec{y}_t &= \eqmakebox[a][l]{\( \vec{g}_{\vec{\theta}}(\vec{s}_t) + \vec{w}, \)}\quad \eqmakebox[b][r]{\( \vec{w} \)} \sim \normal(\vec{0}, \mat{R})
-			\end{aligned}
-			\qquad\iff\qquad
-			\begin{aligned}
-				\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
-				\vec{y}_t &\sim \normal(\vec{g}_{\vec{\theta}}(\vec{s}_t), \mat{R})
-			\end{aligned}
-		\end{equation*}
-	\end{frame}
-
-	\begin{frame}{How to learn?}
-		Goal: Estimate all of the following:
-		\begin{itemize}
-			\item Latent dynamics matrix \( \mat{A} \).
-			\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (i.e. the parameters \( \vec{\theta} \)). \\ Variational auto-encoder without an amortization network.
-			\item Noise covariances \(\mat{Q}\), \(\mat{R}\).
-		\end{itemize}
-		We employ an EM-algorithm to do that.
-
-		\onslide<2->{
-			\begin{alertblock}{Core Problem}
-				Some expectations cannot be evaluated in closed form for a nonlinear \( \vec{g}_{\vec{\theta}}(\cdot) \).
-			\end{alertblock}
-		}
-
-		\onslide<3->{
+	\section{Introduction}
+		\begin{frame}{Motivation}
 			\begin{itemize}
-				\item Use cubature rules for evaluating the intractable expectations.
-				\item No closed form solution for maximizing w.r.t. function parameters \( \vec{\theta} \).
-				\item<4->[] \(\qquad\longrightarrow\quad\) Use backpropagation and gradient descent!
+				\item Control theory for linear systems is highly evolved.
+				\item But nonlinear systems are hard\dots
+				\item We need ways to linearize a nonlinear system!
+				\item<2-> "Classical" Linearization:
+					\begin{itemize}
+						\item Use small angle approximation (e.g. for pendulum)?
+						\item Diverge fast with higher displacements\dots
+						\item Only linearize locally, not globally.
+					\end{itemize}
+				\item<3-> Koopman theory offers a way to do that!
 			\end{itemize}
-		}
-	\end{frame}
+		\end{frame}
 
-%	\begin{frame}{Relation to the Evidence Lower Bound (ELBO)}
-%		\begin{align*}
-%			\mathcal{L}_{\text{ELBO}}(\vec{\theta}, \vec{\phi}; \vec{x}) = \E_{q_{\vec{\phi}}(\vec{z} \subgiven \vec{x})} \big[\! \ln p_{\vec{\theta}}(\vec{x} \given \vec{z}) \big] - D_\mathrm{KL}\big( q_{\vec{\phi}}(\vec{z} \given \vec{x}) \,\Vert\, p_{\vec{\theta}}(\vec{z}) \big)
-%		\end{align*}
-%	\end{frame}
+		\begin{frame}{The Koopman Operator}
+			For a \emph{nonlinear} dynamical system
+			\begin{align*}
+				\vec{x}_{t + 1} = \vec{F}(\vec{x}_{t})
+			\end{align*}
+			with \emph{nonlinear} measurements (an \emph{embedding})
+			\begin{align*}
+				\vec{y}_t = \vec{h}(\vec{x}_t)
+			\end{align*}
+			the Koopman operator advances these measurements forward in time \emph{linearly}:
+			\begin{align*}
+				\vec{h}(\vec{x}_{t + 1}) = \mathcal{K} \vec{h}(\vec{x}_t)
+				\quad\iff\quad
+				\vec{y}_{t + 1} = \mathcal{K} \vec{x}_t
+			\end{align*}
+
+			This is possible for every nonlinear dynamical system. And globalizes linearly! But the embedding \(\vec{h}\) is typically infinite-dimensional\dots
+		\end{frame}
+
+		\begin{frame}{Koopman Dynamical System}
+			\begin{figure}
+				\centering
+				\tikzKoopmanOperator
+				\caption{Adopted from Brunton et al. "Koopman Invariant Subspaces and Finite Linear Representations of Nonlinear Dynamical Systems for Control".}
+			\end{figure}
+		\end{frame}
+
+		\begin{frame}{Linear Gaussian Dynamical System}
+			\begin{figure}
+				\centering
+				\tikzLinearGaussianDynamicalSystem
+			\end{figure}
+
+			\begin{equation*}
+				\begin{aligned}
+					\vec{s}_{t + 1} &= \eqmakebox[a][l]{\( \mat{A} \vec{s}_t + \vec{w}, \)}\quad \eqmakebox[b][r]{\( \vec{w} \)} \sim \normal(\vec{0}, \mat{Q}) \\
+					\vec{y}_t &= \eqmakebox[a][l]{\( \mat{C} \vec{s}_t + \vec{v}, \)}\quad \eqmakebox[b][r]{\( \vec{v} \)} \sim \normal(\vec{0}, \mat{R})
+				\end{aligned}
+				\qquad\iff\qquad
+				\begin{aligned}
+					\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
+					\vec{y}_t &\sim \normal(\mat{C} \vec{s}_t, \mat{R})
+				\end{aligned}
+			\end{equation*}
+		\end{frame}
+	% end
+
+	\section{Koopman Inference}
+		\begin{frame}{The Koopman Inference Model}
+			\begin{figure}
+				\centering
+				\tikzNonlinearGaussianKoopman
+			\end{figure}
+
+			\begin{equation*}
+				\begin{aligned}
+					\vec{s}_{t + 1} &= \eqmakebox[a][l]{\( \mat{A} \vec{s}_t + \vec{w}, \)}\quad \eqmakebox[b][r]{\( \vec{w} \)} \sim \normal(\vec{0}, \mat{Q}) \\
+					\vec{y}_t &= \eqmakebox[a][l]{\( \vec{g}_{\vec{\theta}}(\vec{s}_t) + \vec{v}, \)}\quad \eqmakebox[b][r]{\( \vec{v} \)} \sim \normal(\vec{0}, \mat{R})
+				\end{aligned}
+				\qquad\iff\qquad
+				\begin{aligned}
+					\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
+					\vec{y}_t &\sim \normal\big(\vec{g}_{\vec{\theta}}(\vec{s}_t), \mat{R}\big)
+				\end{aligned}
+			\end{equation*}
+
+			\onslide<2->{
+				Observation function \( \vec{g}(\cdot) \) represents inverse Koopman observation \( \vec{h}^{-1}(\cdot) \).
+			}
+		\end{frame}
+
+		\begin{frame}{How to learn?}
+			Goal: Estimate all of the following:
+			\begin{itemize}
+				\item Latent dynamics matrix \( \mat{A} \).
+				\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (\ie the parameters \(\vec{\theta}\)). \\ Variational auto-encoder without an amortization network.
+				\item Noise covariances \(\mat{Q}\), \(\mat{R}\).
+			\end{itemize}
+			We employ an EM-algorithm to do that.
+
+			\onslide<2->{
+				\begin{alertblock}{Core Problem}
+					Some expectations cannot be evaluated in closed form for a nonlinear \( \vec{g}_{\vec{\theta}}(\cdot) \).
+				\end{alertblock}
+			}
+
+			\onslide<3->{
+				\begin{itemize}
+					\item Use cubature rules for evaluating the intractable expectations.
+					\item No closed form solution for maximizing w.r.t. function parameters \( \vec{\theta} \).
+					\item<4->[] \(\qquad\longrightarrow\quad\) Use backpropagation and gradient descent!
+				\end{itemize}
+			}
+		\end{frame}
+	% end
+
+	\section{Related Work}
+		\begin{frame}{Related Work}
+			\begin{itemize}
+				\item<+-> Lusch et al. "Deep Learning for Universal Linear Embeddings of Nonlinear Dynamics":
+					\begin{itemize}
+						\item Use an autoencoder approach with an encoder network.
+						\item No probabilistic interpretation.
+				\end{itemize}
+				\item<+-> Morton et al. "Deep Variational Koopman Models: Inferring Koopman Observations for Uncertainty-Aware Dynamics Modeling and Control":
+					\begin{itemize}
+						\item Utilize six different neural networks to perform variational inference.
+						\item Very complex model, lots of parameters.
+						\item Utilize much more training data than our method.
+					\end{itemize}
+				\item<+-> Becker et al. "Recurrent Kalman Networks: Factorized Inference in High-Dimensional Deep Feature Spaces"
+					\begin{itemize}
+						\item Proposal of a new type of recurrent neural networks: Kalman network.
+						\item Uses high-dimensional linear embeddings with factorized covariances. \\
+							\quad \(\longrightarrow\,\) Simple Kalman update rules.
+					\end{itemize}
+%				\item<+-> Zhang, Vikram et al. "SOLAR: Deep Structured Representations for Model-Based Reinforcement Learning"
+			\end{itemize}
+		\end{frame}
+	% end
+
+	\section{Experiments}
+		\begin{frame}{Experiments \\ Questions}
+			\begin{enumerate}
+				\item How does the latent dimensionality affect the model performance?
+				\item How does our model perform in relation to the DVK model?
+				\item How do different feature transformations of the environment affect the model performance?
+			\end{enumerate}
+
+			We will focus on a small subset of the experiments here!
+		\end{frame}
+
+		\begin{frame}{Used Environments}{Experiments}
+			\begin{itemize}
+				\item \eqmakebox[envs][l]{Pendulum:}            \qquad \(\theta\), \(\dot{\theta}\)
+				\item \eqmakebox[envs][l]{Damped Pendulum:}     \qquad \(\theta\), \(\dot{\theta}\)
+				\item \eqmakebox[envs][l]{Gym Pendulum:}        \qquad \(\cos\theta\), \(\sin\theta\), \(\dot{\theta}\)
+				\item \eqmakebox[envs][l]{Gym Cartpole:}        \qquad \(x\), \(\dot{x}\), \(\theta\), \(\dot{\theta}\)
+				\item \eqmakebox[envs][l]{Gym Double Pendulum:} \qquad \(\cos\varphi_1\), \(\sin\varphi_1\), \(\cos\varphi_2\), \(\sin\varphi_2\), \(\dot{\varphi}_1\), \(\dot{\varphi}_2\)
+			\end{itemize}
+		\end{frame}
+	% end
 
 	\section{Results}
 		\subsection{The Pendulum}
@@ -233,30 +249,22 @@
 		% end
 	% end
 
-	\section{Related Work and Outlook}
-		\begin{frame}{Related Work}
+	\section{Future Work}
+		\begin{frame}{Future Work}
 			\begin{itemize}
-				\item<+-> Lusch et al. "Deep Learning for Universal Linear Embeddings of Nonlinear Dynamics":
-					\begin{itemize}
-						\item Use an autoencoder approach with an encoder network.
-						\item No probabilistic interpretation.
-					\end{itemize}
-				\item<+-> Morton et al. "Deep Variational Koopman Models: Inferring Koopman Observations for Uncertainty-Aware Dynamics Modeling and Control":
-					\begin{itemize}
-						\item Utilize six different neural networks to perform variational inference.
-						\item We use only one!
-						\item And we expect to do at least as good.
-					\end{itemize}
-				\item<+-> Becker et al. "Recurrent Kalman Networks: Factorized Inference in High-Dimensional Deep Feature Spaces"
-				\item<+-> Zhang, Vikram et al. "SOLAR: Deep Structured Representations for Model-Based Reinforcement Learning"
+				\item Extend the Koopman Inference model for handling control inputs.
+				\item Employ a Bayesian view on the parameters; gauge the uncertainty on \eg the state dynamics matrix.
+				\item Use automatic relevance determination to detect how many latent dimensions are necessary.
+				\item Test different network architectures and function approximators for the observation function, \eg residual networks.
 			\end{itemize}
 		\end{frame}
 
-		\begin{frame}{Hypothesis and Outlook}
+		\begin{frame}{Conclusion}
 			\begin{itemize}
-				\item Tackle the ELBO using approximate EM rather than stochastic variational inference.
-				\item Assume we can do at least as good as Morton et al. with simpler network architectures.
-				\item Perform control tasks on pendulum, cartpole, acrobot.
+				\item We proposed the Koopman Inference model and algorithm.
+				\item Uses an approximate EM algorithm with cubature rules to estimate the nonlinear dynamical system.
+				\item Further research is needed into \eg different network architectures.
+				\item Results look promising for further research.
 			\end{itemize}
 		\end{frame}
 	% end
@@ -311,13 +319,4 @@
 			\end{frame}
 		% end
 	% end
-
-
-	% Classical approach.
-	% Interpretation as markov process or hidden markov model.
-	% Probabilistic interpretation.
-	% Variational approach.
-	% EM algorithm.
-	% Maximization goal (log-likelihood).
-	% Computation via FilterinTaken fromg/Smoothing and SGD.
 \end{document}

@@ -1,0 +1,377 @@
+% Tikz-diagrams for not cluttering the text.
+
+\newcommand{\tikzHarmonicOscillator}{
+	\begin{tikzpicture}
+		\node [draw, rectangle] (m) at (0, 3) {\(m\)};
+		\draw [thick] (-1.5, 5) -- (1.5, 5);
+		\fill [pattern = north east lines] (-1.5, 5) rectangle (1.5, 5.2);
+		\draw [decoration = { aspect = 0.3, segment length = 2mm, amplitude = 3mm, coil }, decorate] (0, 5) -- node[left, xshift = -0.4cm]{\(k\)} (m);
+
+		\coordinate (xA) at (1, 4.5);
+		\coordinate (xB) at (1, 3.5);
+		\draw [->] (xA) -- node[right]{\(x\)} (xB);
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzSimplePendulum}{
+	\begin{tikzpicture}
+		\node [draw, circle, fill, minimum width = 0.5cm] (C) at (0, 0) {};
+		\node [draw, circle] (mass) at (90-30:3cm) {\(m\)};
+		\coordinate (A) at (90:3cm);
+		\draw (C) -- coordinate(cm) (mass);
+		\path (cm) -- node[right]{\(\ell_1\)} (mass);
+		\draw [dashed] (C) -- (A);
+		\draw pic [draw, "$\varphi$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=mass--C--A};
+
+		\draw [<-] (-0.5, 1) -- node[left]{\(g\)} (-0.5, 2);
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzDoublePendulum}{
+	\begin{tikzpicture}
+		\def\L{3};
+		\node [draw, circle, fill, minimum width = 0.5cm] (C) at (0, 0) {};
+		\node [draw, circle] (mass1) at (270+20:\L) {\(m_{\mathclap{\,\,1}}\)};
+		\coordinate (A) at (270:\L);
+		\draw (C) -- coordinate(cm1) (mass1);
+		\path (cm1) -- node[right]{\(\ell_1\)} (mass1);
+		\draw [dashed] (C) -- (A);
+		\draw pic [draw, "$\,\varphi_1$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=A--C--mass1};
+
+		\draw [<-] (-0.5, -2) -- node[left]{\(g\)} (-0.5, -1);
+
+		\begin{scope}[rotate=300, shift=(mass1)]
+			\coordinate (B) at (0:\L);
+			\node [draw, circle] (mass2) at (30:\L) {\(m_{\mathclap{\,\;2}}\)};
+			\draw (mass1) -- coordinate(cm2) (mass2);
+			\path (cm2) -- node[right, yshift = 2pt]{\(\ell_2\)} (mass2);
+			\draw [dashed] (mass1) -- (B);
+			\draw pic [draw, "$\,\varphi_2$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=B--mass1--mass2};
+		\end{scope}
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzCartpole}{
+	\begin{tikzpicture}
+		\coordinate (cartTopLeft);
+		\draw [fill] (cartTopLeft) rectangle coordinate(C) ++(1.5, 0.5);
+		\coordinate [above = 3 of C] (A);
+		\draw [dashed] (C) -- (A);
+		\coordinate [left = 4 of C] (a);
+		\coordinate [right = 4 of C] (b);
+		\draw (a) -- (b);
+
+		\draw [<-] (0.25, 1.5) -- node[left]{\(g\)} (0.25, 2.5);
+
+		\coordinate [below = 0.5 of C] (xInd);
+		\coordinate [above = 0.1 of xInd] (xIndA);
+		\coordinate [below = 0.1 of xInd] (xIndB);
+		\draw (xIndA) -- (xIndB);
+		\coordinate [right = 0.75 of xInd] (xInd2);
+		\draw [->] (xInd) -- node[below, xshift = -1pt]{\(x\)} (xInd2);
+
+		\begin{scope}[shift=(C)]
+			\coordinate (mass) at (90-30:3);
+			\draw [line width = 1mm] (C) -- coordinate(cm) (mass);
+			\path (cm) -- node[right, yshift=-2pt]{\(L\)} (mass);
+			\draw pic [draw, "$\theta$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=mass--C--A};
+		\end{scope}
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzKoopmanOperator}{
+	\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
+		\node [state]                  (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+		\node [state, right = 1 of y1] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+		\node [state, right = 1 of y2] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+		\node [minimum width = 1cm, minimum height = 1cm, right = 1 of y3] (yD) {\(\cdots\)};
+		\node [state, right = 1 of yD] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+		\node [state, below = 1 of y1] (x1) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,1}}\)}};
+		\node [state, below = 1 of y2] (x2) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,2}}\)}};
+		\node [state, below = 1 of y3] (x3) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,3}}\)}};
+		\node [minimum width = 1cm, minimum height = 1cm, below = 1 of yD] (xD) {\(\cdots\)};
+		\node [state, below = 1 of yT] (xT) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,T}}\)}};
+
+		% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
+		\coordinate [left = 0.5 of x1] (needle1);
+		\coordinate [right = 0.5 of xT] (needle2);
+		\draw [opacity = 0] (needle1) -- (x1);
+		\draw [opacity = 0] (needle2) -- (xT);
+
+		\draw (y1) -- node[above]{\(\mathcal{K}\,\)} (y2);
+		\draw (y2) -- node[above]{\(\mathcal{K}\,\)} (y3);
+		\draw (y3) -- node[above]{\(\mathcal{K}\,\)} (yD);
+		\draw (yD) -- node[above]{\(\mathcal{K}\,\)} (yT);
+
+		\draw (x1) -- node[below]{\(\vec{F}\)} (x2);
+		\draw (x2) -- node[below]{\(\vec{F}\)} (x3);
+		\draw (x3) -- node[below]{\(\vec{F}\)} (xD);
+		\draw (xD) -- node[below]{\(\vec{F}\)} (xT);
+
+		\draw (y1) to[bend right = 15] node[left]{\(\vec{h}\)} (x1);
+		\draw (y2) to[bend right = 15] node[left]{\(\vec{h}\)} (x2);
+		\draw (y3) to[bend right = 15] node[left]{\(\vec{h}\)} (x3);
+		\draw (yT) to[bend right = 15] node[left]{\(\vec{h}\)} (xT);
+
+		\draw [dashed] (x1) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y1);
+		\draw [dashed] (x2) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y2);
+		\draw [dashed] (x3) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y3);
+		\draw [dashed] (xT) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (yT);
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzHiddenMarkovModel}{
+	\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
+		\node [state]                  (s1) {\raisebox{-5pt}{\(s_{\,\mathclap{\,1}}\)}};
+		\node [state, right = 1 of s1] (s2) {\raisebox{-5pt}{\(s_{\,\mathclap{\,2}}\)}};
+		\node [state, right = 1 of s2] (s3) {\raisebox{-5pt}{\(s_{\,\mathclap{\,3}}\)}};
+		\node [minimum width = 1cm, minimum height = 1cm, right = 1 of s3] (sD) {\(\cdots\)};
+		\node [state, right = 1 of sD] (sT) {\raisebox{-5pt}{\(s_{\,\mathclap{\,T}}\)}};
+
+		\node [state, below = 1 of s1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+		\node [state, below = 1 of s2] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+		\node [state, below = 1 of s3] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+		\node [state, below = 1 of sT] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+		% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
+		\coordinate [left = 0.5 of s1] (needle1);
+		\coordinate [right = 0.5 of sT] (needle2);
+		\draw [opacity = 0] (needle1) -- (s1);
+		\draw [opacity = 0] (needle2) -- (sT);
+
+		\draw (s1) -- (s2);
+		\draw (s2) -- (s3);
+		\draw (s3) -- (sD);
+		\draw (sD) -- (sT);
+
+		\draw (s1) -- (y1);
+		\draw (s2) -- (y2);
+		\draw (s3) -- (y3);
+		\draw (sT) -- (yT);
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzLinearGaussianDynamicalSystem}{
+	\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
+		\node [state]                  (x1) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,1}}\)}};
+		\node [state, right = 1 of x1] (x2) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,2}}\)}};
+		\node [state, right = 1 of x2] (x3) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,3}}\)}};
+		\node [minimum width = 1cm, minimum height = 1cm, right = 1 of x3] (xD) {\(\cdots\)};
+		\node [state, right = 1 of xD] (xT) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,T}}\)}};
+
+		\node [state, below = 1 of x1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+		\node [state, below = 1 of x2] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+		\node [state, below = 1 of x3] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+		\node [state, below = 1 of xT] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+		% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
+		\coordinate [left = 0.5 of x1] (needle1);
+		\coordinate [right = 0.5 of xT] (needle2);
+		\draw [opacity = 0] (needle1) -- (x1);
+		\draw [opacity = 0] (needle2) -- (xT);
+
+		\draw (x1) -- node[above]{\(\mat{A}\)} (x2);
+		\draw (x2) -- node[above]{\(\mat{A}\)} (x3);
+		\draw (x3) -- node[above]{\(\mat{A}\)} (xD);
+		\draw (xD) -- node[above]{\(\mat{A}\)} (xT);
+
+		\draw (x1) -- node[left]{\(\mat{C}\)} (y1);
+		\draw (x2) -- node[left]{\(\mat{C}\)} (y2);
+		\draw (x3) -- node[left]{\(\mat{C}\)} (y3);
+		\draw (xT) -- node[left]{\(\mat{C}\)} (yT);
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzNonlinearGaussianKoopman}{
+\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
+	\node [state]                  (x1) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,1}}\)}};
+	\node [state, right = 1 of x1] (x2) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,2}}\)}};
+	\node [state, right = 1 of x2] (x3) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,3}}\)}};
+	\node [minimum width = 1cm, minimum height = 1cm, right = 1 of x3] (xD) {\(\cdots\)};
+	\node [state, right = 1 of xD] (xT) {\raisebox{-5pt}{\(\vec{s}_{\,\mathclap{\,T}}\)}};
+
+	\node [state, below = 1 of x1] (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+	\node [state, below = 1 of x2] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+	\node [state, below = 1 of x3] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+	\node [state, below = 1 of xT] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+
+	% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
+	\coordinate [left = 0.5 of x1] (needle1);
+	\coordinate [right = 0.5 of xT] (needle2);
+	\draw [opacity = 0] (needle1) -- (x1);
+	\draw [opacity = 0] (needle2) -- (xT);
+
+	\draw (x1) -- node[above]{\(\mat{A}\)} (x2);
+	\draw (x2) -- node[above]{\(\mat{A}\)} (x3);
+	\draw (x3) -- node[above]{\(\mat{A}\)} (xD);
+	\draw (xD) -- node[above]{\(\mat{A}\)} (xT);
+
+	\draw (x1) -- node[left]{\(\vec{g}(\cdot)\)} (y1);
+	\draw (x2) -- node[left]{\(\vec{g}(\cdot)\)} (y2);
+	\draw (x3) -- node[left]{\(\vec{g}(\cdot)\)} (y3);
+	\draw (xT) -- node[left]{\(\vec{g}(\cdot)\)} (yT);
+\end{tikzpicture}
+}
+
+% #1 := Optional TikZ style arguments.
+% #2 := Number of input neurons.
+% #3 := Number of hidden neurons.
+% #4 := Number of output neurons.
+% #5 := Number of hidden layers plus one.
+\newcommand{\tikzNeuralNetwork}[5][]{
+	\begin{scope}[
+				input neuron/.style = { draw, circle, minimum width = 0.2cm, minimum height = 0.2cm, fill = TUDa-4a },
+				neuron/.style = { draw, circle, minimum width = 0.2cm, minimum height = 0.2cm, fill = TUDa-1a },
+				output neuron/.style = { draw, circle, minimum width = 0.2cm, minimum height = 0.2cm, fill = TUDa-6a },
+				#1
+			]
+		\def\xMultiplier{1}
+		\foreach \x in { 0, ..., #5 }
+			\ifthenelse{\x = 0}
+				{\foreach \y in { 1, ..., #2 }}
+				{\ifthenelse{\x = #5}
+					{\foreach \y in { 1, ..., #4 }}
+					{\foreach \y in { 1, ..., #3 }}}
+				\ifthenelse{\x = 0}
+					{\node [input neuron] (e\x\y) at (\xMultiplier*\x, \y+#3/2-#2/2) {}}
+					{\ifthenelse{\x = #5}
+						{\node [output neuron] (e\x\y) at (\xMultiplier*\x, \y+#3/2-#4/2) {}}
+						{\node [neuron] (e\x\y) at (\xMultiplier*\x, \y) {}}};
+		\foreach \xB [count = \xA from 0] in { 1, ..., #5 }
+			\ifthenelse{\xA = 0}
+				{\foreach \yA in { 1, ..., #2 }}
+				{\foreach \yA in { 1, ..., #3 }}
+				\ifthenelse{\xB = #5}
+					{\foreach \yB in { 1, ..., #4 }}
+					{\foreach \yB in { 1, ..., #3 }}
+					\draw (e\xA\yA) -- (e\xB\yB);
+		\ifthenelse{#2 > #3}
+			{
+				\def\m{#2};
+				\def\cA{e01};
+				\def\cB{e0#2};
+			}
+			{
+				\def\m{#3};
+				\def\cA{e11};
+				\def\cB{e1#3};
+			}
+		\ifthenelse{\m > #4}{}{
+			\def\cA{e#51};
+			\def\cB{e#5#4};
+		}
+		\path let \p1 = (e01.west), \p2 = (\cA.south) in coordinate (bottom-left) at (\x1, \y2);
+		\path let \p1 = (e#51.east), \p2 = (\cB.north) in coordinate (top-right) at (\x1, \y2);
+		\path [use as bounding box] (bottom-left) rectangle (top-right);
+	\end{scope}
+}
+
+% #1 := Optional TikZ style arguments.
+% #2 := Observation dimension.
+% #3 := Latent dimension.
+% #4 := Number of neurons.
+% #5 := Number of hidden layers plus one.
+\newcommand{\tikzAutoEncoder}[5][]{
+	\begin{scope}[#1]
+		\tikzNeuralNetwork{#2}{#4}{#3}{#5}
+		\tikzNeuralNetwork[input neuron/.style = { draw, circle, minimum width = 0.2cm, minimum height = 0.2cm, fill = TUDa-3a }, xshift = #5cm]{#3}{#4}{#2}{#5}
+	\end{scope}
+}
+
+\newcommand{\tikzVariationalAutoEncoder}{
+	\begin{tikzpicture}[yscale=-1]
+		\coordinate (pa) at (0, 0.5);
+		\coordinate (pb) at (2, 1.5);
+		\coordinate (pc) at (2, 2.5);
+		\coordinate (pd) at (0, 3.5);
+		\path (pa) -- coordinate(pA) (pd);
+		\path (pb) -- coordinate(pB) (pc);
+		\path (pA) -- coordinate(pC) (pB);
+		\path (pb) -- coordinate(pD) (pc);
+
+		\coordinate (a) at (2.5, 1.5);
+		\coordinate (b) at (3.5, 1.5);
+		\coordinate (c) at (3.5, 2.5);
+		\coordinate (d) at (2.5, 2.5);
+		\path (c) -- coordinate(A) (d);
+		\path (a) -- coordinate(B) (c);
+		\path (b) -- coordinate(E) (c);
+		\path (a) -- coordinate(D) (d);
+
+		\coordinate (qa) at (4, 1.5);
+		\coordinate (qb) at (6, 0.5);
+		\coordinate (qc) at (6, 3.5);
+		\coordinate (qd) at (4, 2.5);
+		\path (qa) -- coordinate(qA) (qd);
+		\path (qb) -- coordinate(qB) (qc);
+		\path (qA) -- coordinate(qC) (qB);
+		\path (qa) -- coordinate(qE) (qd);
+
+		\draw (pa) -- (pb) -- (pc) -- (pd) -- cycle;
+		\draw (a) -- (b) -- (c) -- (d) -- cycle;
+		\draw (qa) -- (qb) -- (qc) -- (qd) -- cycle;
+
+		\node at (pC) {\( q_{\vec{\phi}}(\vec{x} \given \vec{y}) \)};
+		\node at (qC) {\( p_{\vec{\theta}}(\vec{y} \given \vec{x}) \)};
+		\node at (B) {\( \vec{x} \)};
+		\node (prior) [below = 0.5 of A] {\( p(\vec{x}) \)};
+
+		\node (y) [left = 0.5 of pA] {\( \vec{y} \)};
+		\node (yT) [right = 0.5 of qB] {\( \tilde{\vec{y}} \)};
+
+		\draw [->, dotted] (prior) -- (A);
+		\draw [->] (pD) -- (D);
+		\draw [->] (E) -- (qE);
+		\draw [->] (y) -- (pA);
+		\draw [->] (qB) -- (yT);
+	\end{tikzpicture}
+}
+
+\newcommand{\tikzPredictionFilteringSmoothing}{
+	\begin{tikzpicture}
+		\coordinate (aStart) at (0, 0);
+		\coordinate (bStart) at (0, 1);
+		\coordinate (cStart) at (0, 2);
+		\coordinate (aEnd) at (10, 0);
+		\coordinate (bEnd) at (10, 1);
+		\coordinate (cEnd) at (10, 2);
+		\coordinate (kA) at (4.5, -0.5);
+		\coordinate (kB) at (4.5, 2.5);
+		\coordinate (kpA) at (5, -0.5);
+		\coordinate (kpB) at (5, 2.5);
+		\coordinate (t1) at (0, -0.5);
+		\coordinate (tT) at (10, -0.5);
+
+		\foreach \n in { 0, 1, 2 } {
+			\foreach \t in { 0, ..., 20 } {
+				\ifthenelse{\t = 0 \OR \t = 20}{
+					\draw (\t*0.5, \n+0.25) -- (\t*0.5, \n-0.25);
+				}{
+					\draw (\t*0.5, \n+0.125) -- (\t*0.5, \n-0.125);
+				}
+			}
+		}
+
+		\draw (aStart) -- (aEnd);
+		\draw (bStart) -- (bEnd);
+		\draw (cStart) -- (cEnd);
+
+		\draw [line width = 1pt, dotted] (kA) -- (kB);
+		\draw [line width = 0.75pt] (kpA) -- (kpB);
+
+		\node [right = 0.5 of aEnd] {Smoothing};
+		\node [right = 0.5 of bEnd] {Filtering};
+		\node [right = 0.5 of cEnd] {Prediction};
+
+		\node [below = 0 of kA] {\small \( t - 1 \)};
+		\node [below = 0 of kpA] {\small \( t \)};
+
+		\node [below = 0 of t1] {\( 1 \)};
+		\node [below = 0 of tT] {\( T \)};
+
+		\path [fill = black, opacity = 0.2] (0, 0.2) -- (10, 0.2) -- (10, -0.2) -- (0, -0.2) -- cycle;
+		\path [fill = black, opacity = 0.2] (0, 1.2) -- (5, 1.2) -- (5, 0.8) -- (0, 0.8) -- cycle;
+		\path [fill = black, opacity = 0.2] (0, 2.2) -- (4.5, 2.2) -- (4.5, 1.8) -- (0, 1.8) -- cycle;
+	\end{tikzpicture}
+}
