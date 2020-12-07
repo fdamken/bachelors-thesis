@@ -1,0 +1,102 @@
+% To add the outline to every section, add \AtBeginSection{\sectionslide} to the preamble.
+\newcommand{\sectionslide}{
+	\begin{frame}{\insertsectionhead \\ {\small Outline}}
+		\tableofcontents[currentsection]
+	\end{frame}
+}
+
+% To add the outline to every section, add \AtBeginSubsection{\subsectionslide} to the preamble.
+\newcommand{\subsectionslide}{
+	\begin{frame}{\insertsubsectionhead \\ {\small Outline}}
+		\tableofcontents[currentsection, currentsubsection]
+	\end{frame}
+}
+
+
+% Style definitions.
+
+% Description-list styling.
+\SetLabelAlign{parright}{\parbox[t]{\labelwidth}{\raggedleft#1}}
+\setlist[description]{style = multiline, leftmargin = 4cm, align = parright}
+
+\MakeOuterQuote{"}
+
+% Do not print "Figure:" in beamer legends.
+\captionsetup{labelformat=empty}
+
+% Matrix/Vector notation.
+\renewcommand{\vec}[1]{\boldsymbol{\mathrm{#1}}}
+\newcommand{\mat}[1]{\boldsymbol{\mathrm{#1}}}
+% Shorthands.
+\renewcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\normal}{\mathcal{N}}
+\newcommand{\gaussianMulti}[4]{\frac{1}{\left(2\pi\right)^{#4/2} \cdot \lvert #3 \rvert^{1/2}} \exp \bigg\{\! -\frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right) \bigg\}}
+\newcommand{\logGaussianMulti}[4]{-\frac{1}{2} \log \lvert #3 \rvert - \frac{#4}{2} \log\left(2\pi\right) - \frac{1}{2} \left(#1 - #2\right)^T #3^{-1} \left(#1 - #2\right)}
+\newcommand{\subgiven}{\vert}
+\newcommand{\given}{\,\vert\,}
+\newcommand{\biggiven}{\,\big\vert\,}
+\newcommand{\Biggiven}{\,\Big\vert\,}
+\newcommand{\bigggiven}{\,\bigg\vert\,}
+\newcommand{\Bigggiven}{\,\Bigg\vert\,}
+\newcommand{\new}{\mathrm{new}}
+\newcommand{\KL}[2]{D_\mathrm{KL}\big( #1 \,\Vert\, #2 \big)}
+\newcommand{\SRC}{\mathit{SRC}}
+\newcommand{\rangedots}{\,\cdots\!}
+\newcommand{\train}{\mathrm{train}}
+% Math operators.
+\DeclareMathOperator{\const}{const}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\diag}{diag}
+
+\newcommand{\oversetfootnotemark}[1]{\stepcounter{footnote} \overset{\mathclap{(\thefootnote)}}{#1}}
+\let\realfootnote\footnote
+\let\realfootnotetext\footnotetext
+\renewcommand{\footnote}[1]{\realfootnote{\, #1}}
+\renewcommand{\footnotetext}[1]{\realfootnotetext{\, #1}}
+\newcommand{\doublefootnotetext}[2]{\addtocounter{footnote}{-1} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2}}
+\newcommand{\triplefootnotetext}[3]{\addtocounter{footnote}{-2} \footnotetext{#1} \stepcounter{footnote} \footnotetext{#2} \stepcounter{footnote} \footnotetext{#3}}
+
+\parindent0pt
+
+% TikZ-related stuff.
+\tikzset{> = { Latex[length = 2mm] }}
+
+% algorithm2e.
+\SetCommentSty{text}
+
+% Listings.
+\colorlet{changedpurple}{TUDa-11a}
+\colorlet{lerrorred}{TUDa-9b}
+\colorlet{lstcomments}{TUDa-4c}
+\colorlet{lstkeywords}{TUDa-9d}
+\colorlet{lstlinenumbers}{TUDa-0c}
+\colorlet{lststrings}{TUDa-2c}
+\lstdefinestyle{base}{
+	moredelim = **[is][\color{errorred}]{@@!}{@@@},
+	moredelim = **[is][\color{changedpurple}]{@@?}{@@@}
+}
+\lstset{
+	backgroundcolor   = \color{white},
+	basicstyle        = \ttfamily\scriptsize\color{black},
+	breakatwhitespace = true,
+	breaklines        = true,
+	breakautoindent   = true,
+	captionpos        = b,
+	commentstyle      = \color{lstcomments},
+	escapeinside      = {{*@}{@*}},
+	keywordstyle      = \color{lstkeywords},
+	language          = Python,
+	numbers           = left,
+	numberstyle       = \tiny\color{lstlinenumbers},
+	showstringspaces  = false,
+	stringstyle       = \color{lststrings},
+	style             = base,
+	tabsize           = 4
+}
+
+% Ignore well-known acronyms in write-first-long rule.
+\newcommand{\eg}{\acrshort{eg}\xspace}
+\newcommand{\ie}{\acrshort{ie}\xspace}
+\newcommand{\wrt}{\acrshort{wrt}\xspace}
