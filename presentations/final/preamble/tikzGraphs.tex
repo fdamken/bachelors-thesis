@@ -19,7 +19,7 @@
 		\node [draw, circle] (mass) at (90-30:3cm) {\(m\)};
 		\coordinate (A) at (90:3cm);
 		\draw (C) -- coordinate(cm) (mass);
-		\path (cm) -- node[right]{\(\ell_1\)} (mass);
+		\path (cm) -- node[right]{\(L\)} (mass);
 		\draw [dashed] (C) -- (A);
 		\draw pic [draw, "$\varphi$", angle radius = 1.5cm, angle eccentricity = 0.85] {angle=mass--C--A};
 
@@ -207,10 +207,10 @@
 	\draw (x3) -- node[above]{\(\mat{A}\)} (xD);
 	\draw (xD) -- node[above]{\(\mat{A}\)} (xT);
 
-	\draw (x1) -- node[left]{\(\vec{g}(\cdot)\)} (y1);
-	\draw (x2) -- node[left]{\(\vec{g}(\cdot)\)} (y2);
-	\draw (x3) -- node[left]{\(\vec{g}(\cdot)\)} (y3);
-	\draw (xT) -- node[left]{\(\vec{g}(\cdot)\)} (yT);
+	\draw (x1) -- node[left]{\color{TUDa-9b} \(\vec{g}(\cdot)\)} (y1);
+	\draw (x2) -- node[left]{\color{TUDa-9b} \(\vec{g}(\cdot)\)} (y2);
+	\draw (x3) -- node[left]{\color{TUDa-9b} \(\vec{g}(\cdot)\)} (y3);
+	\draw (xT) -- node[left]{\color{TUDa-9b} \(\vec{g}(\cdot)\)} (yT);
 \end{tikzpicture}
 }
 

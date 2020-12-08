@@ -68,19 +68,20 @@
 			This is possible for every nonlinear dynamical system. And globalizes linearly! But the embedding \(\vec{h}\) is typically infinite-dimensional\dots
 		\end{frame}
 
-		\begin{frame}{Koopman Dynamical System}
-			\begin{figure}
-				\centering
+		\begin{frame}[c]{Koopman Dynamical System}
+			\begin{center}
 				\tikzKoopmanOperator
-				\caption{Adopted from Brunton et al. "Koopman Invariant Subspaces and Finite Linear Representations of Nonlinear Dynamical Systems for Control".}
-			\end{figure}
+			\end{center}
+			\begin{center}
+				\small
+				Adopted from Brunton et al. "Koopman Invariant Subspaces and Finite Linear Representations of Nonlinear Dynamical Systems for Control".
+			\end{center}
 		\end{frame}
 
-		\begin{frame}{Linear Gaussian Dynamical System}
-			\begin{figure}
-				\centering
+		\begin{frame}[c]{Linear Gaussian Dynamical System}
+			\begin{center}
 				\tikzLinearGaussianDynamicalSystem
-			\end{figure}
+			\end{center}
 
 			\begin{equation*}
 				\begin{aligned}
@@ -90,34 +91,29 @@
 				\qquad\iff\qquad
 				\begin{aligned}
 					\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
-					\vec{y}_t &\sim \normal(\mat{C} \vec{s}_t, \mat{R})
+					\vec{y}_t &\sim \eqmakebox[c][l]{\(\normal(\mat{C} \vec{s}_t, \mat{R})\)}
 				\end{aligned}
 			\end{equation*}
 		\end{frame}
 	% end
 
 	\section{Koopman Inference}
-		\begin{frame}{The Koopman Inference Model}
-			\begin{figure}
-				\centering
+		\begin{frame}[c]{The Koopman Inference Model}
+			\begin{center}
 				\tikzNonlinearGaussianKoopman
-			\end{figure}
+			\end{center}
 
 			\begin{equation*}
 				\begin{aligned}
 					\vec{s}_{t + 1} &= \eqmakebox[a][l]{\( \mat{A} \vec{s}_t + \vec{w}, \)}\quad \eqmakebox[b][r]{\( \vec{w} \)} \sim \normal(\vec{0}, \mat{Q}) \\
-					\vec{y}_t &= \eqmakebox[a][l]{\( \vec{g}_{\vec{\theta}}(\vec{s}_t) + \vec{v}, \)}\quad \eqmakebox[b][r]{\( \vec{v} \)} \sim \normal(\vec{0}, \mat{R})
+					\vec{y}_t &= \eqmakebox[a][l]{\( {\color{TUDa-9b} \vec{g}(\vec{s}_t)} + \vec{v}, \)}\quad \eqmakebox[b][r]{\( \vec{v} \)} \sim \normal(\vec{0}, \mat{R})
 				\end{aligned}
 				\qquad\iff\qquad
 				\begin{aligned}
 					\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
-					\vec{y}_t &\sim \normal\big(\vec{g}_{\vec{\theta}}(\vec{s}_t), \mat{R}\big)
+					\vec{y}_t &\sim \eqmakebox[c][l]{\(\normal({\color{TUDa-9b} \vec{g}(\vec{s}_t)}, \mat{R})\)}
 				\end{aligned}
 			\end{equation*}
-
-			\onslide<2->{
-				Observation function \( \vec{g}(\cdot) \) represents inverse Koopman observation \( \vec{h}^{-1}(\cdot) \).
-			}
 		\end{frame}
 
 		\begin{frame}{How to learn?}
@@ -171,80 +167,235 @@
 	% end
 
 	\section{Experiments}
-		\begin{frame}{Experiments \\ Questions}
+		\begin{frame}{Experimental Questions and Environments}
 			\begin{enumerate}
 				\item How does the latent dimensionality affect the model performance?
 				\item How does our model perform in relation to the DVK model?
 				\item How do different feature transformations of the environment affect the model performance?
 			\end{enumerate}
 
-			We will focus on a small subset of the experiments here!
+			\onslide<2->{
+				\vspace{0.5cm}
+				Environments:
+				\begin{itemize}
+					\item \eqmakebox[envs][l]{Pendulum:}                         \(\theta\),\, \(\dot{\theta}\)
+					\item \eqmakebox[envs][l]{\textbf<2->{Damped Pendulum:}}     \(\theta\),\, \(\dot{\theta}\)
+					\item \eqmakebox[envs][l]{Gym Pendulum:}                     \(\cos\theta\),\, \(\sin\theta\),\, \(\dot{\theta}\)
+					\item \eqmakebox[envs][l]{Gym Cartpole:}                     \(x\),\, \(\dot{x}\),\, \(\theta\),\, \(\dot{\theta}\)
+					\item \eqmakebox[envs][l]{\textbf<2->{Gym Double Pendulum:}} \(\cos\varphi_1\),\, \(\sin\varphi_1\),\, \(\cos\varphi_2\),\, \(\sin\varphi_2\),\, \(\dot{\varphi}_1\),\, \(\dot{\varphi}_2\)
+				\end{itemize}
+			}
 		\end{frame}
 
-		\begin{frame}{Used Environments}{Experiments}
-			\begin{itemize}
-				\item \eqmakebox[envs][l]{Pendulum:}            \qquad \(\theta\), \(\dot{\theta}\)
-				\item \eqmakebox[envs][l]{Damped Pendulum:}     \qquad \(\theta\), \(\dot{\theta}\)
-				\item \eqmakebox[envs][l]{Gym Pendulum:}        \qquad \(\cos\theta\), \(\sin\theta\), \(\dot{\theta}\)
-				\item \eqmakebox[envs][l]{Gym Cartpole:}        \qquad \(x\), \(\dot{x}\), \(\theta\), \(\dot{\theta}\)
-				\item \eqmakebox[envs][l]{Gym Double Pendulum:} \qquad \(\cos\varphi_1\), \(\sin\varphi_1\), \(\cos\varphi_2\), \(\sin\varphi_2\), \(\dot{\varphi}_1\), \(\dot{\varphi}_2\)
-			\end{itemize}
-		\end{frame}
-	% end
-
-	\section{Results}
-		\subsection{The Pendulum}
-			\begin{frame}{Results: Damped Inverted Pendulum \\ Dynamical System}
-				\vspace{-0.7cm}
-				\begin{align*}
-					\ddot{\varphi} = \frac{g}{L} \sin(\varphi) - d \dot{\varphi}
+		\subsection{Damped Pendulum}
+			\begin{frame}{Damped Pendulum}
+				\vspace{-0.5cm}
+				\begin{equation*}
+					m\ddot{\theta} = \frac{g}{L} \sin\theta - d \dot{\theta}
 					\quad\longrightarrow\quad
-					\ddot{\varphi} = \sin(\varphi) - 0.1 \dot{\varphi}
-				\end{align*}
+					\ddot{\theta} = \sin\theta - 0.1 \dot{\theta}
+				\end{equation*}
 
-				\begin{minipage}{0.34\textwidth}
-					Observations:
-					\begin{itemize}
-						\item Displacement \tabto{2.5cm} \(\varphi\)
-						\item Velocity     \tabto{2.5cm} \(\dot{\varphi}\)
-					\end{itemize}
-					\begin{figure}
-						\centering
-						\begin{tikzpicture}
-							\node [draw, circle, fill, minimum width = 0.5cm] (C) at (0, 0) {};
-							\node [draw, circle] (mass) at (120:3cm) {\(m\)};
-							\coordinate (A) at (90:3cm);
-							\draw (C) -- node[left]{\(L\)} (mass);
-							\draw [dashed] (C) -- (A);
-							\draw pic [draw, angle radius = 1.5cm] {angle=A--C--mass};
-							\node at (-0.27, 1.0) {\(\varphi\)};
-
-							\draw [<-] (0.5, 1) -- node[right]{\(g\)} (0.5, 2);
-						\end{tikzpicture}
-					\end{figure}
-				\end{minipage}
-				\begin{minipage}{0.65\textwidth}
-					\begin{figure}
-						\centering
-						\onslide<2->{\includegraphics[width=\textwidth]{figures/results/log-likelihood}}
-					\end{figure}
-				\end{minipage}
+				\begin{columns}[c]
+					\begin{column}{0.35\linewidth}
+						Observations:
+						\begin{itemize}
+							\item \eqmakebox[pendulum][l]{Displacement:} \(\theta\)
+							\item \eqmakebox[pendulum][l]{Velocity:}     \(\dot{\theta}\)
+						\end{itemize}
+						\begin{center}
+							\resizebox{0.85\linewidth}{!}{\tikzSimplePendulum}
+						\end{center}
+					\end{column}
+					\begin{column}{0.65\linewidth}
+						\begin{center}
+							\includegraphics<2->[width=\linewidth]{figures/experiments/pendulum-damped/log-likelihood.pdf}
+						\end{center}
+					\end{column}
+				\end{columns}
 			\end{frame}
 
-			\begin{frame}{Results: Damped Inverted Pendulum \\ Rollout/Prediction in Observation Space, 10 Latents}
-				\vspace{-0.4cm}
-				\begin{figure}
-					\centering
-					\includegraphics[height = 0.8\textheight]{figures/results/latent-dimensions-experiment_rollout}
-				\end{figure}
+			\begin{frame}{Rollout in Observation Space}{Damped Pendulum}
+				\begin{center}
+					\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/different-latent-dims-rollouts.pdf}
+				\end{center}
 			\end{frame}
 
-			\begin{frame}{Results: Damped Inverted Pendulum \\ Different Sizes of Latent Dimension}
-				\vspace{-0.4cm}
-				\begin{figure}
+			\begin{frame}{Effect of the Latent Dimensionality}{Damped Pendulum}
+				\begin{columns}[c]
+					\begin{column}{0.5\linewidth}
+						\begin{center}
+							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/latent-dim/comparison-rmse-rollout-train-mean-vs-latent-dim.pdf}
+						\end{center}
+					\end{column}
+					\begin{column}{0.5\linewidth}
+						\begin{center}
+							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/latent-dim/comparison-rmse-rollout-prediction-mean-vs-latent-dim.pdf}
+						\end{center}
+					\end{column}
+				\end{columns}
+			\end{frame}
+
+			\begin{frame}{Exemplary Run and Energy Level, 10 Latents}{Damped Pendulum}
+				\begin{center}
+					\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/rollout-observations-N0.pdf}
+				\end{center}
+				\vspace{-1cm}
+				\begin{columns}
+					\begin{column}{0.333\linewidth}
+						\begin{center}
+							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/energy-R110-N0-total.pdf}
+						\end{center}
+					\end{column}
+					\begin{column}{0.333\linewidth}
+						\begin{center}
+							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/energy-R110-N0-kinetic.pdf}
+						\end{center}
+					\end{column}
+					\begin{column}{0.333\linewidth}
+						\begin{center}
+							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/energy-R110-N0-potential.pdf}
+						\end{center}
+					\end{column}
+				\end{columns}
+			\end{frame}
+		% end
+
+		\subsection{Double Pendulum}
+			\begin{frame}{Double Pendulum}
+				\begin{columns}[c]
+					\begin{column}{0.35\linewidth}
+						Observations:
+						\begin{itemize}
+							\item \eqmakebox[doublePendulum][l]{Displacements:} \\
+								\quad \(\cos\varphi_1\),\, \(\sin\varphi_1\), \\
+								\quad \(\cos\varphi_2\),\, \(\sin\varphi_2\)
+							\item Velocities: \(\dot{\varphi}_1\),\, \(\dot{\varphi}_2\)
+						\end{itemize}
+						\begin{center}
+							\resizebox{0.85\linewidth}{!}{\tikzDoublePendulum}
+						\end{center}
+					\end{column}
+					\begin{column}{0.65\linewidth}
+						\begin{center}
+							\includegraphics<2->[width=\linewidth]{figures/experiments/acrobot-gym/log-likelihood.pdf}
+						\end{center}
+					\end{column}
+				\end{columns}
+			\end{frame}
+
+			\begin{frame}{Rollout in Reduced Observation Space}{Double Pendulum}
+				\begin{center}
+					\includegraphics[width=0.8\linewidth]{figures/experiments/acrobot-gym/different-latent-dims-rollouts-reduced.pdf}
+				\end{center}
+			\end{frame}
+
+			\begin{frame}{Effect of the Latent Dimensionality}{Double Pendulum}
+				\begin{columns}[c]
+					\begin{column}{0.5\linewidth}
+						\begin{center}
+							\includegraphics[width=\linewidth]{figures/experiments/acrobot-gym/latent-dim/comparison-rmse-rollout-train-mean-vs-latent-dim.pdf}
+						\end{center}
+					\end{column}
+					\begin{column}{0.5\linewidth}
+						\begin{center}
+							\includegraphics[width=\linewidth]{figures/experiments/acrobot-gym/latent-dim/comparison-rmse-rollout-prediction-mean-vs-latent-dim.pdf}
+						\end{center}
+					\end{column}
+				\end{columns}
+			\end{frame}
+		% end
+
+		\subsection{Comparison with Deep Variational Koopman}
+			% Raw results from the morton.py script.
+			\begin{comment}
+				NRMSE, Our Pendulum vs. Their Gym Pendulum
+				Our Run,      5 Seeds: tmp_results_grid_search/latent-dim_pendulum/{157,206,10,108,59}
+				Morton Run, 192 Trajs: benchmarking/morton/results/pendulum-50.json
+				Our NRMSE:          0.11334±0.06053
+				Our NRMSE (Train):  0.07613±0.04338
+				Our NRMSE (Pred.):  0.14050±0.07465
+				Morton NRMSE:          0.21042±0.00843
+				Morton NRMSE (Train):  0.18867±0.01126
+				Morton NRMSE (Pred.):  0.22862±0.01209
+				Are we better?         yes
+				Are we better (Train)? yes
+				Are we better (Pred.)? yes
+
+				NRMSE, Our Gym Pendulum vs. Their Gym Pendulum
+				Our Run,      5 Seeds: tmp_results_grid_search/latent-dim_pendulum_gym/{157,57,7,107,207}
+				Morton Run, 192 Trajs: benchmarking/morton/results/pendulum-50.json
+				Our NRMSE:          0.37470±0.09991
+				Our NRMSE (Train):  0.00626±0.00373
+				Our NRMSE (Pred.):  0.53010±0.14133
+				Morton NRMSE:          0.21042±0.00843
+				Morton NRMSE (Train):  0.18867±0.01126
+				Morton NRMSE (Pred.):  0.22862±0.01209
+				Are we better?         no
+				Are we better (Train)? yes
+				Are we better (Pred.)? no
+
+				NRMSE, Our Gym Cartpole vs. Their Gym Cartpole
+				Our Run,      5 Seeds: tmp_results_grid_search/latent-dim_cartpole_gym/{210,160,110,60,10}
+				Morton Run, 192 Trajs: benchmarking/morton/results/cartpole-32.json
+				Our NRMSE:          0.27037±0.03661
+				Our NRMSE (Train):  0.00757±0.00521
+				Our NRMSE (Pred.):  0.46946±0.05713
+				Morton NRMSE:          0.24579±0.04913
+				Morton NRMSE (Train):  0.98522±0.24730
+				Morton NRMSE (Pred.):  0.34998±0.08218
+				Are we better?         no
+				Are we better (Train)? yes
+				Are we better (Pred.)? no
+
+				NRMSE, Our Gym Acrobot vs. Their Gym Acrobot
+				Our Run,      5 Seeds: tmp_results_grid_search/latent-dim_acrobot_gym/{118,68,168,218,18}
+				Morton Run, 192 Trajs: benchmarking/morton/results/acrobot-64.json
+				Our NRMSE:          0.24000±0.04271
+				Our NRMSE (Train):  0.15187±0.10722
+				Our NRMSE (Pred.):  0.45149±0.05732
+				Morton NRMSE:          0.10333±0.00103
+				Morton NRMSE (Train):  0.10477±0.00127
+				Morton NRMSE (Pred.):  0.10430±0.00094
+				Are we better?         no
+				Are we better (Train)? no
+				Are we better (Pred.)? no
+			\end{comment}
+
+			\begin{frame}[c]{Comparison with DVK: Training Error}
+				\begin{table}
 					\centering
-					\includegraphics[height = 0.8\textheight]{figures/results/latent-dimensions-experiment_mse}
-				\end{figure}
+					\begin{tabular}{c|c|c}
+						\textbf{Environment} & \textbf{Deep Variational Koopman} & \textbf{Koopman Inference} \\ \hline
+						      Pendulum       &         \(0.19 \pm 0.01\)         &   \(\bm{0.08 \pm 0.04}\)   \\
+						    Gym Pendulum     &         \(0.19 \pm 0.01\)         &  \(\bm{0.006 \pm 0.004}\)  \\
+						    Gym Cartpole     &          \(1.0 \pm 0.2\)          &  \(\bm{0.008 \pm 0.005}\)  \\
+						  Double Pendulum    &     \(\bm{0.105 \pm 0.001}\)      &      \(0.2 \pm 0.1\)
+					\end{tabular}
+				\end{table}
+
+				\vspace{0.5cm}
+				\begin{equation*}
+					\mathit{NRMSE} = \frac{1}{D} \sum_{d = 1}^{D} \frac{1}{y_{\mathrm{max}, d} - y_{\mathrm{min}, d}} \sqrt{\frac{1}{T} \sum\nolimits_{t = 1}^{T} (y_{t, d} - \hat{y}_{t, d})^2}
+				\end{equation*}
+			\end{frame}
+
+			\begin{frame}[c]{Comparison with DVK: Prediction Error}
+				\begin{table}
+					\centering
+					\begin{tabular}{c|c|c}
+						\textbf{Environment} & \textbf{Deep Variational Koopman} & \textbf{Koopman Inference} \\ \hline
+						      Pendulum       &         \(0.23 \pm 0.01\)         &   \(\bm{0.14 \pm 0.07}\)   \\
+						    Gym Pendulum     &      \(\bm{0.23 \pm 0.01}\)       &      \(0.5 \pm 0.1\)       \\
+						    Gym Cartpole     &      \(\bm{0.35 \pm 0.08}\)       &     \(0.47 \pm 0.06\)      \\
+						  Double Pendulum    &    \(\bm{0.1043 \pm 0.0009}\)     &     \(0.45 \pm 0.06\)
+					\end{tabular}
+				\end{table}
+
+				\vspace{0.5cm}
+				\begin{equation*}
+					\mathit{NRMSE} = \frac{1}{D} \sum_{d = 1}^{D} \frac{1}{y_{\mathrm{max}, d} - y_{\mathrm{min}, d}} \sqrt{\frac{1}{T} \sum\nolimits_{t = 1}^{T} (y_{t, d} - \hat{y}_{t, d})^2}
+				\end{equation*}
 			\end{frame}
 		% end
 	% end
