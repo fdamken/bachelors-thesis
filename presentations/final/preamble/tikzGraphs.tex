@@ -81,23 +81,17 @@
 
 \newcommand{\tikzKoopmanOperator}{
 	\begin{tikzpicture}[->, state/.style = { draw, circle, minimum width = 1cm, minimum height = 1cm }]
-		\node [state]                  (y1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
-		\node [state, right = 1 of y1] (y2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
-		\node [state, right = 1 of y2] (y3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
+		\node [state]                  (y1) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,1}}\)}};
+		\node [state, right = 1 of y1] (y2) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,2}}\)}};
+		\node [state, right = 1 of y2] (y3) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,3}}\)}};
 		\node [minimum width = 1cm, minimum height = 1cm, right = 1 of y3] (yD) {\(\cdots\)};
-		\node [state, right = 1 of yD] (yT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
+		\node [state, right = 1 of yD] (yT) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,T}}\)}};
 
-		\node [state, below = 1 of y1] (x1) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,1}}\)}};
-		\node [state, below = 1 of y2] (x2) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,2}}\)}};
-		\node [state, below = 1 of y3] (x3) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,3}}\)}};
+		\node [state, below = 1 of y1] (x1) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,1}}\)}};
+		\node [state, below = 1 of y2] (x2) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,2}}\)}};
+		\node [state, below = 1 of y3] (x3) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,3}}\)}};
 		\node [minimum width = 1cm, minimum height = 1cm, below = 1 of yD] (xD) {\(\cdots\)};
-		\node [state, below = 1 of yT] (xT) {\raisebox{-5pt}{\(\vec{x}_{\,\mathclap{\,T}}\)}};
-
-		% TikZ centering magic. Align on the states, not the h^{-1} stuff or so. Ensures all three HMM, LGDS and Koopman have the same width.
-		\coordinate [left = 0.5 of x1] (needle1);
-		\coordinate [right = 0.5 of xT] (needle2);
-		\draw [opacity = 0] (needle1) -- (x1);
-		\draw [opacity = 0] (needle2) -- (xT);
+		\node [state, below = 1 of yT] (xT) {\raisebox{-5pt}{\(\vec{y}_{\,\mathclap{\,T}}\)}};
 
 		\draw (y1) -- node[above]{\(\mathcal{K}\,\)} (y2);
 		\draw (y2) -- node[above]{\(\mathcal{K}\,\)} (y3);
@@ -109,15 +103,15 @@
 		\draw (x3) -- node[below]{\(\vec{F}\)} (xD);
 		\draw (xD) -- node[below]{\(\vec{F}\)} (xT);
 
-		\draw (y1) to[bend right = 15] node[left]{\(\vec{h}\)} (x1);
-		\draw (y2) to[bend right = 15] node[left]{\(\vec{h}\)} (x2);
-		\draw (y3) to[bend right = 15] node[left]{\(\vec{h}\)} (x3);
-		\draw (yT) to[bend right = 15] node[left]{\(\vec{h}\)} (xT);
+		\draw (x1) to[bend right = 15] node[right]{\(\vec{h}\)} (y1);
+		\draw (x2) to[bend right = 15] node[right]{\(\vec{h}\)} (y2);
+		\draw (x3) to[bend right = 15] node[right]{\(\vec{h}\)} (y3);
+		\draw (xT) to[bend right = 15] node[right]{\(\vec{h}\)} (yT);
 
-		\draw [dashed] (x1) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y1);
-		\draw [dashed] (x2) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y2);
-		\draw [dashed] (x3) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (y3);
-		\draw [dashed] (xT) to[bend right = 15] node[right]{\(\vec{h}^{-1}\)} (yT);
+		\draw [dashed] (y1) to[bend right = 15] node[left]{\(\vec{h}^{-1}\)} (x1);
+		\draw [dashed] (y2) to[bend right = 15] node[left]{\(\vec{h}^{-1}\)} (x2);
+		\draw [dashed] (y3) to[bend right = 15] node[left]{\(\vec{h}^{-1}\)} (x3);
+		\draw [dashed] (yT) to[bend right = 15] node[left]{\(\vec{h}^{-1}\)} (xT);
 	\end{tikzpicture}
 }
 

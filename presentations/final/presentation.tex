@@ -36,50 +36,49 @@
 	\section{Introduction}
 		\begin{frame}{Motivation}
 			\begin{itemize}
-				\item<+-> Nonlinear systems are really hard to control and predict.
-				\item<.-> We seek for models that are easier to control.
-				\item<+-> Linear models are (relatively) easy to control!
-				\item<+-> "Classical" Linearization:
+				\item Nonlinear systems are really hard to control and predict.
+				\item We seek for models that are easier to control.
+				\item Linear models are (relatively) easy to control!
+				\item Koopman theory offers a way to get a linear model.
 					\begin{itemize}
-						\item Small angle approximation?
-						\item Diverge fast\dots
-						\item Only provide a local model.
+						\item Introduces a latent state advancing linearly.
+						\item The transition to the latent dimension is nonlinear.
 					\end{itemize}
-				\item<+-> A global but easy model would be nice\dots
-				\item<+-> Koopman theory offers exactly this: Easy (linear) and global models!
 			\end{itemize}
 		\end{frame}
 
-		\begin{frame}{The Koopman Operator}
-			For a \emph{nonlinear} dynamical system
-			\begin{align*}
-				\vec{x}_{t + 1} = \vec{F}(\vec{x}_{t})
-			\end{align*}
-			with \emph{nonlinear} measurements (an \emph{embedding})
-			\begin{align*}
-				\vec{y}_t = \vec{h}(\vec{x}_t)
-			\end{align*}
-			the Koopman operator advances these measurements forward in time \emph{linearly}:
-			\begin{align*}
-				\vec{h}(\vec{x}_{t + 1}) = \mathcal{K} \vec{h}(\vec{x}_t)
-				\quad\iff\quad
-				\vec{y}_{t + 1} = \mathcal{K} \vec{x}_t
-			\end{align*}
-
-			This is possible for every nonlinear dynamical system. And globalizes linearly! But the embedding \(\vec{h}\) is typically infinite-dimensional\dots
-		\end{frame}
-
 		\begin{frame}[c]{Koopman Dynamical System}
-			\begin{center}
-				\tikzKoopmanOperator
-			\end{center}
-			\begin{center}
-				\small
-				Adopted from Brunton et al. "Koopman Invariant Subspaces and Finite Linear Representations of Nonlinear Dynamical Systems for Control".
-			\end{center}
+			\vspace{-0.5cm}
+			\begin{columns}[c]
+				\begin{column}{0.85\linewidth}
+					\begin{center}
+						\resizebox{\linewidth}{!}{\tikzKoopmanOperator}
+					\end{center}
+					\vspace{-0.5cm}
+					\begin{center}
+						\footnotesize
+						Adopted from Brunton et al., "Koopman Invariant Subspaces and Finite Linear Representations of Nonlinear Dynamical Systems for Control".
+					\end{center}
+				\end{column}
+				\begin{column}{0.15\linewidth}
+					\begin{align*}
+						\vec{y}_{t + 1} &= \vec{F}(\vec{y}_t) \\
+						      \vec{x}_t &= \vec{h}(\vec{y}_t)
+					\end{align*}
+				\end{column}
+			\end{columns}
+			\vspace{0.5cm}
+
+			\begin{equation*}
+				\vec{h}(\vec{y}_{t + 1}) = \mathcal{K} \vec{h}(\vec{y}_t)
+				\quad\iff\quad
+				\vec{x}_{t + 1} = \mathcal{K} \vec{x}_t
+			\end{equation*}
+
+			This is possible for every nonlinear dynamical system. And linearizes globally! But the embedding \(\vec{h}\) is typically infinite-dimensional\dots
 		\end{frame}
 
-		\begin{frame}[c]{Linear Gaussian Dynamical System}
+		\begin{frame}[t]{Linear Gaussian Dynamical System}
 			\begin{center}
 				\tikzLinearGaussianDynamicalSystem
 			\end{center}
@@ -91,15 +90,21 @@
 				\end{aligned}
 				\qquad\iff\qquad
 				\begin{aligned}
-					\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
-					\vec{y}_t &\sim \eqmakebox[c][l]{\(\normal(\mat{C} \vec{s}_t, \mat{R})\)}
+					p(\vec{s}_{t + 1} \given \vec{s}_t) &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
+					      p(\vec{y}_t \given \vec{s}_t) &\sim \eqmakebox[c][l]{\(\normal(\mat{C} \vec{s}_t, \mat{R})\)}
 				\end{aligned}
 			\end{equation*}
+
+			\vspace{0.95cm}
+			\begin{center}
+				\footnotesize
+				Adopted from Minka, "From Hidden Markov Models to Linear Dynamical Systems".
+			\end{center}
 		\end{frame}
 	% end
 
 	\section{Koopman Inference}
-		\begin{frame}[c]{The Koopman Inference Model}
+		\begin{frame}[t]{The Koopman Inference Model}
 			\begin{center}
 				\tikzNonlinearGaussianKoopman
 			\end{center}
@@ -111,17 +116,27 @@
 				\end{aligned}
 				\qquad\iff\qquad
 				\begin{aligned}
-					\vec{s}_{t + 1} &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
-					\vec{y}_t &\sim \eqmakebox[c][l]{\(\normal({\color{TUDa-9b} \vec{g}(\vec{s}_t)}, \mat{R})\)}
+					p(\vec{s}_{t + 1} \given \vec{s}_t) &\sim \normal(\mat{A} \vec{s}_t, \mat{Q}) \\
+					      p(\vec{y}_t \given \vec{s}_t) &\sim \eqmakebox[c][l]{\(\normal({\color{TUDa-9b} \vec{g}(\vec{s}_t)}, \mat{R})\)}
 				\end{aligned}
 			\end{equation*}
+
+			\vspace{0.15cm}
+			\onslide<2->{
+				\begin{align*}
+					\vec{s}_t \approx \vec{x}_t \qquad
+					\mat{A} \approx \mathcal{K} \qquad
+					\vec{g}(\cdot) \approx \vec{h}^{-1}(\cdot)
+				\end{align*}
+			}
 		\end{frame}
 
 		\begin{frame}{How to learn?}
 			Goal: Estimate all of the following:
 			\begin{itemize}
 				\item Latent dynamics matrix \( \mat{A} \).
-				\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (\ie the parameters \(\vec{\theta}\)). \\ Variational auto-encoder without an amortization network.
+				\item Measurement function \( \vec{g}_{\vec{\theta}}(\cdot) \) (\ie the parameters \(\vec{\theta}\)). \\
+					We use a neural network here; like a VAE without an amortization network.
 				\item Noise covariances \(\mat{Q}\), \(\mat{R}\).
 			\end{itemize}
 			We employ an EM-algorithm to do that.
@@ -140,7 +155,57 @@
 				\end{itemize}
 			}
 		\end{frame}
+
+%		\begin{frame}{Quadrature for High Dimensions: Cubature Rules}{The Spherical-Radial Cubature Rule}
+%			\vspace{-0.5cm}
+%			\begin{columns}[c]
+%				\begin{column}{0.5\linewidth}
+%					\begin{flushright}
+%						\includegraphics[width=0.8\linewidth]{figures/spherical-radial-cubature-original.pdf}
+%					\end{flushright}
+%				\end{column}
+%				\begin{column}{0.5\linewidth}
+%					\begin{flushleft}
+%						\includegraphics[width=0.8\linewidth]{figures/spherical-radial-cubature-transformed.pdf}
+%					\end{flushleft}
+%				\end{column}
+%			\end{columns}
+%
+%			\vspace{0.3cm}
+%			Approximation of an arbitrary Gaussian expectation (with \( \vec{\xi}_i = \sqrt{n} [\vec{1}]_i \)):
+%			\vspace{-0.1cm}
+%			\begin{equation*}
+%				\E_{\vec{x} \,\sim\, \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big]
+%					= \int_{\R^n} \! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}}
+%					\approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}\Big(\! \sqrt{\mat{\Sigma}} \vec{\xi}_i + \vec{\mu} \Big)
+%			\end{equation*}
+%		\end{frame}
 	% end
+
+%	\section{Related Work}
+%		\begin{frame}{Related Work}
+%			\begin{itemize}
+%				\item<+-> Lusch et al. "Deep Learning for Universal Linear Embeddings of Nonlinear Dynamics":
+%					\begin{itemize}
+%						\item Use an autoencoder approach with an encoder network.
+%						\item No probabilistic interpretation.
+%					\end{itemize}
+%				\item<+-> Morton et al. "Deep Variational Koopman Models: Inferring Koopman Observations for Uncertainty-Aware Dynamics Modeling and Control":
+%					\begin{itemize}
+%						\item Utilize six different neural networks to perform variational inference.
+%						\item Very complex model, lots of parameters.
+%						\item Utilize much more training data than our method.
+%					\end{itemize}
+%				\item<+-> Becker et al. "Recurrent Kalman Networks: Factorized Inference in High-Dimensional Deep Feature Spaces"
+%					\begin{itemize}
+%						\item Proposal of a new type of recurrent neural networks: Kalman network.
+%						\item Uses high-dimensional linear embeddings with factorized covariances. \\
+%						\quad \(\longrightarrow\,\) Simple Kalman update rules.
+%					\end{itemize}
+%				%\item<+-> Zhang, Vikram et al. "SOLAR: Deep Structured Representations for Model-Based Reinforcement Learning"
+%			\end{itemize}
+%		\end{frame}
+%	% end
 
 	\section{Experiments}
 		\begin{frame}{Experimental Questions and Environments}
@@ -154,12 +219,18 @@
 				\vspace{0.5cm}
 				Environments:
 				\begin{itemize}
-					\item \eqmakebox[envs][l]{Pendulum:}                         \(\theta\),\, \(\dot{\theta}\)
+					\item \eqmakebox[envs][l]{Pendulum\footnotemark[1]:}            \(\theta\),\, \(\dot{\theta}\)
 					\item \eqmakebox[envs][l]{\textbf<2->{Damped Pendulum:}}     \(\theta\),\, \(\dot{\theta}\)
-					\item \eqmakebox[envs][l]{Gym Pendulum:}                     \(\cos\theta\),\, \(\sin\theta\),\, \(\dot{\theta}\)
-					\item \eqmakebox[envs][l]{Gym Cartpole:}                     \(x\),\, \(\dot{x}\),\, \(\theta\),\, \(\dot{\theta}\)
+					\item \eqmakebox[envs][l]{Gym Pendulum\footnotemark[1]:}        \(\cos\theta\),\, \(\sin\theta\),\, \(\dot{\theta}\)
+					\item \eqmakebox[envs][l]{Gym Cartpole\footnotemark[1]:}        \(x\),\, \(\dot{x}\),\, \(\theta\),\, \(\dot{\theta}\)
 					\item \eqmakebox[envs][l]{\textbf<2->{Gym Double Pendulum:}} \(\cos\varphi_1\),\, \(\sin\varphi_1\),\, \(\cos\varphi_2\),\, \(\sin\varphi_2\),\, \(\dot{\varphi}_1\),\, \(\dot{\varphi}_2\)
 				\end{itemize}
+			}
+
+			\onslide<2->{
+				\vspace{0.6cm}
+				\footnoterule
+				{ \footnotesize \footnotemark[1] See thesis for experiment results. }
 			}
 		\end{frame}
 
@@ -197,19 +268,25 @@
 				\end{center}
 			\end{frame}
 
-			\begin{frame}[c]{Effect of the Latent Dimensionality}{Damped Pendulum}
+			\begin{frame}{Effect of the Latent Dimensionality}{Damped Pendulum}
+				\vspace{-0.6cm}
 				\begin{columns}[c]
 					\begin{column}{0.5\linewidth}
 						\begin{center}
-							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/latent-dim/comparison-rmse-rollout-train-mean-vs-latent-dim.pdf}
+							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
 						\end{center}
 					\end{column}
 					\begin{column}{0.5\linewidth}
 						\begin{center}
-							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/latent-dim/comparison-rmse-rollout-prediction-mean-vs-latent-dim.pdf}
+							\includegraphics[width=\linewidth]{figures/experiments/pendulum-damped/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
 						\end{center}
 					\end{column}
 				\end{columns}
+
+				\vspace{-0.4cm}
+				\begin{center}
+					\includegraphics[width=0.36\linewidth]{figures/experiments/pendulum-damped/latent-dim/comparison-log-likelihood-mean-vs-latent-dim.pdf}
+				\end{center}
 			\end{frame}
 
 			\begin{frame}[c]{Exemplary Run and Energy, 10 Latents}{Damped Pendulum}
@@ -267,19 +344,25 @@
 				\end{center}
 			\end{frame}
 
-			\begin{frame}[c]{Effect of the Latent Dimensionality}{Double Pendulum}
+			\begin{frame}{Effect of the Latent Dimensionality}{Double Pendulum}
+				\vspace{-0.6cm}
 				\begin{columns}[c]
 					\begin{column}{0.5\linewidth}
 						\begin{center}
-							\includegraphics[width=\linewidth]{figures/experiments/acrobot-gym/latent-dim/comparison-rmse-rollout-train-mean-vs-latent-dim.pdf}
+							\includegraphics[width=\linewidth]{figures/experiments/acrobot-gym/latent-dim/comparison-rmse-rollout-train-normalized-mean-vs-latent-dim.pdf}
 						\end{center}
 					\end{column}
 					\begin{column}{0.5\linewidth}
 						\begin{center}
-							\includegraphics[width=\linewidth]{figures/experiments/acrobot-gym/latent-dim/comparison-rmse-rollout-prediction-mean-vs-latent-dim.pdf}
+							\includegraphics[width=\linewidth]{figures/experiments/acrobot-gym/latent-dim/comparison-rmse-rollout-prediction-normalized-mean-vs-latent-dim.pdf}
 						\end{center}
 					\end{column}
 				\end{columns}
+
+				\vspace{-0.4cm}
+				\begin{center}
+					\includegraphics[width=0.36\linewidth]{figures/experiments/acrobot-gym/latent-dim/comparison-log-likelihood-mean-vs-latent-dim.pdf}
+				\end{center}
 			\end{frame}
 
 			\begin{frame}{Exemplary Run, 18 Latents}{Double Pendulum}
@@ -357,11 +440,6 @@
 						  Double Pendulum    &     \(\bm{0.105 \pm 0.001}\)      &      \(0.2 \pm 0.1\)
 					\end{tabular}
 				\end{table}
-
-				\vspace{0.5cm}
-				\begin{equation*}
-					\mathit{NRMSE} = \frac{1}{D} \sum_{d = 1}^{D} \frac{1}{y_{\mathrm{max}, d} - y_{\mathrm{min}, d}} \sqrt{\frac{1}{T} \sum\nolimits_{t = 1}^{T} (y_{t, d} - \hat{y}_{t, d})^2}
-				\end{equation*}
 			\end{frame}
 
 			\begin{frame}[c]{Comparison with DVK: Prediction Error}
@@ -375,28 +453,34 @@
 						  Double Pendulum    &    \(\bm{0.1043 \pm 0.0009}\)     &     \(0.45 \pm 0.06\)
 					\end{tabular}
 				\end{table}
+			\end{frame}
 
-				\vspace{0.5cm}
-				\begin{equation*}
-					\mathit{NRMSE} = \frac{1}{D} \sum_{d = 1}^{D} \frac{1}{y_{\mathrm{max}, d} - y_{\mathrm{min}, d}} \sqrt{\frac{1}{T} \sum\nolimits_{t = 1}^{T} (y_{t, d} - \hat{y}_{t, d})^2}
-				\end{equation*}
+			\begin{frame}[c]{DVK: Rollout (Pendulum)}
+				\begin{center}
+					\includegraphics[width=\linewidth]{figures/experiments/morton-predictions.pdf}
+				\end{center}
 			\end{frame}
 		% end
 	% end
 
-	\section{Conclusion}
+	\section{Conclusion and Future Work}
 		\begin{frame}{Conclusion}
 			\begin{itemize}
 				\item We proposed the Koopman Inference model and algorithm.
 				\item Uses an approximate EM algorithm with cubature rules to estimate the nonlinear dynamical system.
-				\item Further research is needed into \eg different network architectures.
+				\item Compared to DVK, we managed to get a lot simpler model.
 				\item Results look promising for further research.
-					\onslide<2->{
-						\begin{itemize}
-							\item Bayesian view on the dynamics.
-							\item Automatic relevance determination; detect how many latent dimensions are needed.
-						\end{itemize}
-					}
+			\end{itemize}
+		\end{frame}
+
+		\begin{frame}{Future Work}
+			\begin{itemize}
+				\item Extend the Koopman Inference model for handling control inputs.
+				\item Employ a Bayesian view on the parameters; gauge the uncertainty on \eg the state dynamics matrix.
+				\item Use automatic relevance determination to detect how many latent dimensions are necessary.
+				\item Test different network architectures and function approximators for the observation function, \eg residual networks.
+				\item Investigate further into the potential overfitting problem.
+				\item Also investigate higher latent dimensions.
 			\end{itemize}
 		\end{frame}
 	% end
@@ -439,52 +523,15 @@
 			\end{frame}
 		% end
 
-		\subsection{Cubature Rules}
-			\begin{frame}{Quadrature for High Dimensions: Cubature Rules \\ The Spherical-Radial Cubature Rule}
-				Approximation of an arbitrary Gaussian expectation:
-				\begin{align*}
-					\E_{\vec{x} \,\sim\, \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big]
-						&= \int_{\R^n} \! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}} \\
-						&\approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}\Big(\! \sqrt{\mat{\Sigma}} \vec{\xi}_i + \vec{\mu} \Big),\quad \vec{\xi}_i = \sqrt{n} [\vec{1}]_i
-				\end{align*}
-				This finite sum can be evaluated!
-			\end{frame}
-		% end
-
-		\subsection{Related Work}
-			\begin{frame}{Related Work}
+		\subsection{Future Work}
+			\begin{frame}{Future Work}
 				\begin{itemize}
-					\item<+-> Lusch et al. "Deep Learning for Universal Linear Embeddings of Nonlinear Dynamics":
-						\begin{itemize}
-							\item Use an autoencoder approach with an encoder network.
-							\item No probabilistic interpretation.
-						\end{itemize}
-					\item<+-> Morton et al. "Deep Variational Koopman Models: Inferring Koopman Observations for Uncertainty-Aware Dynamics Modeling and Control":
-						\begin{itemize}
-							\item Utilize six different neural networks to perform variational inference.
-							\item Very complex model, lots of parameters.
-							\item Utilize much more training data than our method.
-						\end{itemize}
-					\item<+-> Becker et al. "Recurrent Kalman Networks: Factorized Inference in High-Dimensional Deep Feature Spaces"
-						\begin{itemize}
-							\item Proposal of a new type of recurrent neural networks: Kalman network.
-							\item Uses high-dimensional linear embeddings with factorized covariances. \\
-							\quad \(\longrightarrow\,\) Simple Kalman update rules.
-						\end{itemize}
-					%\item<+-> Zhang, Vikram et al. "SOLAR: Deep Structured Representations for Model-Based Reinforcement Learning"
+					\item Extend the Koopman Inference model for handling control inputs.
+					\item Employ a Bayesian view on the parameters; gauge the uncertainty on \eg the state dynamics matrix.
+					\item Use automatic relevance determination to detect how many latent dimensions are necessary.
+					\item Test different network architectures and function approximators for the observation function, \eg residual networks.
 				\end{itemize}
 			\end{frame}
-
-			\subsection{Future Work}
-				\begin{frame}{Future Work}
-					\begin{itemize}
-						\item Extend the Koopman Inference model for handling control inputs.
-						\item Employ a Bayesian view on the parameters; gauge the uncertainty on \eg the state dynamics matrix.
-						\item Use automatic relevance determination to detect how many latent dimensions are necessary.
-						\item Test different network architectures and function approximators for the observation function, \eg residual networks.
-					\end{itemize}
-				\end{frame}
-			% end
 		% end
 	% end
 \end{document}
