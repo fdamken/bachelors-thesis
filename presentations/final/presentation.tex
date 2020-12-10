@@ -75,7 +75,7 @@
 				\vec{x}_{t + 1} = \mathcal{K} \vec{x}_t
 			\end{equation*}
 
-			This is possible for every nonlinear dynamical system. And linearizes globally! But the embedding \(\vec{h}\) is typically infinite-dimensional\dots
+			This is possible for every nonlinear dynamical system, and linearizes globally! But the embedding \(\vec{h}\) is typically infinite-dimensional\dots
 		\end{frame}
 
 		\begin{frame}[t]{Linear Gaussian Dynamical System}
@@ -156,56 +156,56 @@
 			}
 		\end{frame}
 
-%		\begin{frame}{Quadrature for High Dimensions: Cubature Rules}{The Spherical-Radial Cubature Rule}
-%			\vspace{-0.5cm}
-%			\begin{columns}[c]
-%				\begin{column}{0.5\linewidth}
-%					\begin{flushright}
-%						\includegraphics[width=0.8\linewidth]{figures/spherical-radial-cubature-original.pdf}
-%					\end{flushright}
-%				\end{column}
-%				\begin{column}{0.5\linewidth}
-%					\begin{flushleft}
-%						\includegraphics[width=0.8\linewidth]{figures/spherical-radial-cubature-transformed.pdf}
-%					\end{flushleft}
-%				\end{column}
-%			\end{columns}
-%
-%			\vspace{0.3cm}
-%			Approximation of an arbitrary Gaussian expectation (with \( \vec{\xi}_i = \sqrt{n} [\vec{1}]_i \)):
-%			\vspace{-0.1cm}
-%			\begin{equation*}
-%				\E_{\vec{x} \,\sim\, \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big]
-%					= \int_{\R^n} \! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}}
-%					\approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}\Big(\! \sqrt{\mat{\Sigma}} \vec{\xi}_i + \vec{\mu} \Big)
-%			\end{equation*}
-%		\end{frame}
-	% end
+		\begin{frame}{Quadrature for High Dimensions: Cubature Rules}{The Spherical-Radial Cubature Rule}
+			\vspace{-0.5cm}
+			\begin{columns}[c]
+				\begin{column}{0.5\linewidth}
+					\begin{flushright}
+						\includegraphics[width=0.8\linewidth]{figures/spherical-radial-cubature-original.pdf}
+					\end{flushright}
+				\end{column}
+				\begin{column}{0.5\linewidth}
+					\begin{flushleft}
+						\includegraphics[width=0.8\linewidth]{figures/spherical-radial-cubature-transformed.pdf}
+					\end{flushleft}
+				\end{column}
+			\end{columns}
 
-%	\section{Related Work}
-%		\begin{frame}{Related Work}
-%			\begin{itemize}
-%				\item<+-> Lusch et al. "Deep Learning for Universal Linear Embeddings of Nonlinear Dynamics":
-%					\begin{itemize}
-%						\item Use an autoencoder approach with an encoder network.
-%						\item No probabilistic interpretation.
-%					\end{itemize}
-%				\item<+-> Morton et al. "Deep Variational Koopman Models: Inferring Koopman Observations for Uncertainty-Aware Dynamics Modeling and Control":
-%					\begin{itemize}
-%						\item Utilize six different neural networks to perform variational inference.
-%						\item Very complex model, lots of parameters.
-%						\item Utilize much more training data than our method.
-%					\end{itemize}
-%				\item<+-> Becker et al. "Recurrent Kalman Networks: Factorized Inference in High-Dimensional Deep Feature Spaces"
-%					\begin{itemize}
-%						\item Proposal of a new type of recurrent neural networks: Kalman network.
-%						\item Uses high-dimensional linear embeddings with factorized covariances. \\
-%						\quad \(\longrightarrow\,\) Simple Kalman update rules.
-%					\end{itemize}
-%				%\item<+-> Zhang, Vikram et al. "SOLAR: Deep Structured Representations for Model-Based Reinforcement Learning"
-%			\end{itemize}
-%		\end{frame}
-%	% end
+			\vspace{0.3cm}
+			Approximation of an arbitrary Gaussian expectation (with \( \vec{\xi}_i = \sqrt{n} [\vec{1}]_i \)):
+			\vspace{-0.1cm}
+			\begin{equation*}
+				\E_{\vec{x} \,\sim\, \normal(\vec{\mu}, \mat{\Sigma})}\big[ \vec{f}(\vec{x}) \big]
+					= \int_{\R^n} \! \vec{f}(\vec{x}) \, \normal(\vec{x} \given \vec{\mu}, \mat{\Sigma}) \dd{\vec{x}}
+					\approx \frac{1}{2n} \sum_{i = 1}^{2n} \vec{f}\Big(\! \sqrt{\mat{\Sigma}} \vec{\xi}_i + \vec{\mu} \Big)
+			\end{equation*}
+		\end{frame}
+	 end
+
+	\section{Related Work}
+		\begin{frame}{Related Work}
+			\begin{itemize}
+				\item<+-> Lusch et al. "Deep Learning for Universal Linear Embeddings of Nonlinear Dynamics":
+					\begin{itemize}
+						\item Use an autoencoder approach with an encoder network.
+						\item No probabilistic interpretation.
+					\end{itemize}
+				\item<+-> Morton et al. "Deep Variational Koopman Models: Inferring Koopman Observations for Uncertainty-Aware Dynamics Modeling and Control":
+					\begin{itemize}
+						\item Utilize six different neural networks to perform variational inference.
+						\item Very complex model, lots of parameters.
+						\item Utilize much more training data than our method.
+					\end{itemize}
+				\item<+-> Becker et al. "Recurrent Kalman Networks: Factorized Inference in High-Dimensional Deep Feature Spaces"
+					\begin{itemize}
+						\item Proposal of a new type of recurrent neural networks: Kalman network.
+						\item Uses high-dimensional linear embeddings with factorized covariances. \\
+						\quad \(\longrightarrow\,\) Simple Kalman update rules.
+					\end{itemize}
+				%\item<+-> Zhang, Vikram et al. "SOLAR: Deep Structured Representations for Model-Based Reinforcement Learning"
+			\end{itemize}
+		\end{frame}
+	% end
 
 	\section{Experiments}
 		\begin{frame}{Experimental Questions and Environments}
