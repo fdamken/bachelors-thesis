@@ -40,7 +40,7 @@ We split this chapter into two parts: Firstly, we will present the experiment se
 			\end{equation*}
 			that is solved using the Radau~IIA~\cite{guglielmiImplementingRadauIIA2001} \ac{ivp} integrator (after transforming the \ac{ode} to a first-order \ac{ode} system). The initial velocity is set to \(0\) and the initial position is sampled from a Gaussian distribution with mean \( \pi/36 \) and variance \( \pi/8 \). This puts the pendulum in motion as it falls down from its initial position. For the undamped pendulum, we set \( d = 0 \). For both environments, we use an evaluation interval of \( h = 0.1 \) for \( T = 1000 \) time steps where only the first \( T_\train = 500 \) steps are used for training and the remaining \(500\) are used for validation.
 
-			The damped pendulum is especially interesting as the system looses energy (\ie the sum of the kinetic and potential energy decreases over time) and the embedding has to encode this behavior.
+			The damped pendulum is especially interesting as the system loses energy (\ie the sum of the kinetic and potential energy decreases over time) and the embedding has to encode this behavior.
 		% end
 
 		\subsubsection{Gym Pendulum}
